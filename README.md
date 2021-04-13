@@ -1,2 +1,6 @@
 # rhc
-A new approach to libc
+A new approach to libc.
+
+
+## WARNING:
+In active development

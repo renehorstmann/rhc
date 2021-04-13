@@ -1,4 +1,4 @@
-#include "rhc/str.h"
+#include "rhc/strbuf.h"
 
 
 int main() {
