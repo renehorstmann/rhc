@@ -60,8 +60,7 @@ static void strbuf_delete(strbuf *self) {
     memset(self, 0, sizeof(*self));
 }
 
-static void strbuf_append(strbuf *self, str append) {
-    size_t size = self->s.size + append.size;
+static void strbuf_resize(strbuf *self, size_t size) {
     if(size > self->capacity) {
         size_t new_cap = size*2;
         void *data = self->allocator.realloc(self->allocator, self->s.data, new_cap);
@@ -70,8 +69,13 @@ static void strbuf_append(strbuf *self, str append) {
         self->s.data = data;
         self->capacity = new_cap;
     }
-    memcpy(self->s.data+self->s.size, append.data, append.size);
     self->s.size = size;
+}
+
+static void strbuf_append(strbuf *self, str append) {
+    char *end = self->s.data + self->s.size;
+    strbuf_resize(self, self->s.size + append.size);
+    memcpy(end, append.data, append.size);
 }
 
 

@@ -46,7 +46,7 @@ static str strc(char *cstring) {
 }
 
 static bool str_empty(str s) {
-    return s.data == NULL || s.size == 0;
+    return !s.data || s.size <= 0;
 }
 
 // copies from into out_cpy and returns out_cpy
@@ -55,6 +55,19 @@ static str str_cpy(str *out_cpy, str from) {
     size_t size = out_cpy->size < from.size? out_cpy->size : from.size;
     memcpy(out_cpy->data, from.data, size);
     return *out_cpy;
+}
+
+// out_c_string needs to be a buffer of at least s.size+1
+static void str_as_c(char *out_c_string, str s) {
+    memcpy(out_c_string, s.data, s.size);
+    out_c_string[s.size] = '\0';
+}
+
+static char *str_as_c_a(str s, Allocator_s a) {
+    char *buffer = a.alloc(a, s.size+1);
+    if(!buffer) return NULL;
+    str_as_c(buffer, s);
+    return buffer;
 }
 
 static str str_lstrip(str s, char strip) {
@@ -88,6 +101,8 @@ static str str_rstrip(str s, char strip) {
 static str str_strip(str s, char strip) {
     return str_lstrip(str_rstrip(s, strip), strip);
 }
+
+
 
 
 #endif //RHC_STR_H

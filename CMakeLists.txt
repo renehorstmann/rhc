@@ -9,3 +9,4 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wno-long-long -pedantic -Wno-unused-f
 include_directories(include)
 
 add_executable(str examples/str.c)
+add_executable(print examples/print.c)
