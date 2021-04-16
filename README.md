@@ -24,4 +24,6 @@ In active development
 - HashMap
 - scope macros
 - threads?
+- sockets?
+- iterator?
 - sdl option (macrk def? OPTION_SDL)
