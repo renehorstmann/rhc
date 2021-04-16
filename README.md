@@ -1,5 +1,5 @@
 # rhc
-A new approach as a C standard library.
+A new approach as a C standard library addition.
 
 
 ## WARNING:
@@ -32,5 +32,6 @@ In active development
 
 
 ## TODO:
+- log sdl
 - file write
 - str from Utilc/strviu & strviu_parse
