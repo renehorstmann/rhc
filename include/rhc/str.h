@@ -1,44 +1,13 @@
 #ifndef RHC_STR_H
 #define RHC_STR_H
 
-#include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
-#include "alloc.h"
+#include "types.h"
+#include "error.h"
 
 //
 // Options
-//
-
-#ifndef STR_STRARRAY_SIZE
-#define STR_STRARRAY_SIZE 128
-#endif
-
-
-//
-// Types
-//
-
-typedef struct {
-    char *data;
-    size_t size;
-} str;
-
-typedef struct {
-    str array[STR_STRARRAY_SIZE];
-    size_t size;
-} strarray;
-
-typedef struct {
-    str *array;
-    size_t size;
-
-    Allocator_s allocator;
-} StrArray;
-
-
-//
-// Functions
 //
 
 static str strc(char *cstring) {

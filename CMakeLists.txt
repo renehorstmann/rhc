@@ -10,3 +10,5 @@ include_directories(include)
 
 add_executable(str examples/str.c)
 add_executable(print examples/print.c)
+
+add_executable(main examples/main.c)

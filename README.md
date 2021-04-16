@@ -5,12 +5,8 @@ A new approach as a C standard library.
 ## WARNING:
 In active development
 
-## Hints
-Functions may either take str or const char*
-valid system
 
 ## Components
-- types
 - error
   - set_error
   - get_error
@@ -20,15 +16,11 @@ valid system
 - alloc
   - allocator
 - str
-  - size + not be zero terminated
   - view on a string
-  - parse
-- String
-  - size + always zero terminated
+- Str
   - holds a string with an allocator
-- file
-  - file to String
-  - str to file
+- File
+- print
 - log
 - time
   - monotonic, etc.
@@ -36,4 +28,9 @@ valid system
 - HashMap
 - scope macros
 - iterator?
-- sdl option (OPTION_SDL)
+- sdl option (macrk def? OPTION_SDL)
+
+
+## TODO:
+- file write
+- str from Utilc/strviu & strviu_parse
