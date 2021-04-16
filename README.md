@@ -17,10 +17,8 @@ In active development
   - allocator
 - str
   - view on a string
-- Str
+- String
   - holds a string with an allocator
-- File
-- print
 - log
 - time
   - monotonic, etc.
