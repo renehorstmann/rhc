@@ -27,7 +27,5 @@ In active development
 - DynArray
 - HashMap
 - scope macros
-- threads?
-- sockets?
 - iterator?
 - sdl option (macrk def? OPTION_SDL)
