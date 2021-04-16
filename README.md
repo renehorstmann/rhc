@@ -1,5 +1,5 @@
 # rhc
-A new approach to libc.
+A new approach as a C standard library.
 
 
 ## WARNING:
@@ -20,6 +20,9 @@ In active development
 - Str
   - holds a string with an allocator
 - File
+- print
+- time
+  - monotonic, etc.
 - DynArray
 - HashMap
 - scope macros
