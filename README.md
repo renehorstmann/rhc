@@ -21,6 +21,7 @@ In active development
   - holds a string with an allocator
 - File
 - print
+- log
 - time
   - monotonic, etc.
 - DynArray
