@@ -5,8 +5,12 @@ A new approach as a C standard library.
 ## WARNING:
 In active development
 
+## Hints
+Functions may either take str or const char*
+valid system
 
 ## Components
+- types
 - error
   - set_error
   - get_error
@@ -16,11 +20,15 @@ In active development
 - alloc
   - allocator
 - str
+  - size + not be zero terminated
   - view on a string
-- Str
+  - parse
+- String
+  - size + always zero terminated
   - holds a string with an allocator
-- File
-- print
+- file
+  - file to String
+  - str to file
 - log
 - time
   - monotonic, etc.
@@ -28,4 +36,4 @@ In active development
 - HashMap
 - scope macros
 - iterator?
-- sdl option (macrk def? OPTION_SDL)
+- sdl option (OPTION_SDL)
