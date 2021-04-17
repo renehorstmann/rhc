@@ -15,6 +15,8 @@ In active development
       - runtime asserts
 - alloc
   - allocator
+- Buffer
+  - to return loaded data?
 - str
   - view on a string
 - String
@@ -30,6 +32,17 @@ In active development
 
 
 ## TODO:
+- str -> Str_s
+- String_* -> string_*
+- String { union { Str_s str, struct { char *data, size}
+- every function must handle not valid input
+  - assert(allocator_valid)
+  - if(!*_valid) return *_new_invalid()
+- alloc?
+  - alloc_new_empty
+  - alloc_new_zero
+  - alloc_renew
+  - alloc_delete?
 - log sdl
 - file write
 - str from Utilc/strviu & strviu_parse
