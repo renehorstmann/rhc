@@ -24,6 +24,8 @@ In active development
 - log
 - time
   - monotonic, etc.
+- test
+  - calls exit(EXIT_FAILURE) for conditions
 - DynArray
 - HashMap
 - scope macros
