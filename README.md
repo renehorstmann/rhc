@@ -44,5 +44,6 @@ In active development
   - alloc_renew
   - alloc_delete?
 - log sdl
-- file write
+- file write (bool ascii)
+- file append
 - str from Utilc/strviu & strviu_parse
