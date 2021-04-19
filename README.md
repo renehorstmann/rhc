@@ -27,6 +27,7 @@ Some functions set the type invalid and may log and set `rhc_error` to an error.
 With this style, the following [example](examples/safety.c) is possible:
 ```c
 // only in a single header file, to implement some rhc source functions
+//    use rhc/rhc.h or single headers instead
 #include "rhc/rhc_impl.h"
 
 int main() {
