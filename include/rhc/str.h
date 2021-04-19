@@ -4,8 +4,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include "types.h"
+#include "alloc.h"
 #include "error.h"
+#include "log.h"
 
 //
 // Options
@@ -17,8 +18,8 @@ static Str_s str_new_invalid() {
 }
 
 // Str_s from a c string
-static Str_s strc(char *cstring) {
-    return (Str_s) {cstring, strlen(cstring)};
+static Str_s strc(const char *cstring) {
+    return (Str_s) {(char *) cstring, strlen(cstring)};
 }
 
 // returns true if the str is empty

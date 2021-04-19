@@ -26,23 +26,23 @@ String file_read_a(const char *file, bool ascii, Allocator_s a) {
     if (!f) {
         rhc_error = "file read failed";
         log_warn("file read failed: %s", file);
-        return String_new_invalid_a(a);
+        return string_new_invalid_a(a);
     }
 
-    Sint64 length = SDL_RWsize(rw);
-    String res = String_new_a(length, a);
+    Sint64 length = SDL_RWsize(f);
+    String res = string_new_a(length, a);
 
-    if (String_valid(red)) {
-        Sint64 chars_read = 0, buf_appended = 1;
+    if (string_valid(res)) {
+        Sint64 buf_appended = 1;
         char *buf = res.data;
-        while (chars_read < length && buf_appended != 0) {
-            buf_appended = SDL_RWread(f, buf, 1, length - chars_read);
-            chars_read += buf_appended;
+        while (res.size < length && buf_appended != 0) {
+            buf_appended = SDL_RWread(f, buf, 1, length - res.size);
+            res.size += buf_appended;
             buf += buf_appended;
         }
-        if (chars_read != length) {
-            log_error("reading file failed: %s %d/%d bytes read", file, chars_read, length);
-            String_delete(&res);
+        if (res.size != length) {
+            log_error("reading file failed: %s %d/%d bytes read", file, res.size, length);
+            string_kill(&res);
         } else {
             res.data[length] = '\0';  // should have been set in String, just to be sure
         }
@@ -137,15 +137,15 @@ String file_read_a(const char *file, bool ascii, Allocator_s a) {
     String res = string_new_a(length, a);
 
     if (string_valid(res)) {
-        size_t chars_read = 0, buf_appended = 1;
+        size_t buf_appended = 1;
         char *buf = res.data;
-        while(chars_read < length && buf_appended != 0) {
-            buf_appended = fread(buf, 1, (length - chars_read), f);
-            chars_read += buf_appended;
+        while(res.size < length && buf_appended != 0) {
+            buf_appended = fread(buf, 1, (length - res.size), f);
+            res.size += buf_appended;
             buf += buf_appended;
         }
-        if (chars_read != length) {
-            log_error("reading file failed: %s %d/%d bytes read", file, chars_read, length);
+        if (res.size != length) {
+            log_error("reading file failed: %s %d/%d bytes read", file, res.size, length);
             string_kill(&res);
         } else {
             res.data[length] = '\0';  // should have been set in String, just to be sure

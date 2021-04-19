@@ -3,6 +3,12 @@
 
 #include "types.h"
 
+//
+// Options
+//
+#ifndef RHC_STRING_DEFAULT_ALLOCATOR
+#define RHC_STRING_DEFAULT_ALLOCATOR allocator_init_raising()
+#endif
 
 //
 // Functions

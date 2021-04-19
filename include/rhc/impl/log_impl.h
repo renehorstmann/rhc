@@ -45,6 +45,9 @@ static const char *rhc_log_src_level_names_[] = {
 };
 
 void rhc_log_set_min_level(enum rhc_log_level level) {
+#ifdef OPTION_SDL
+    SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, rhc_log_sdl_priority(level));
+#endif
     rhc_log_L.level = level;
 }
 
@@ -67,13 +70,12 @@ void rhc_log_base_(enum rhc_log_level level, const char *file, int line, const c
     char buf[16];
     buf[strftime(buf, sizeof(buf), "%H:%M:%S", lt)] = '\0';
 
-    const char *sdl_format = "%s %s:%d: ";
-    int pre_format_size = sprintf(NULL, "%s %s:%d: %s", buf, file, line, format);
+    int pre_format_size = snprintf(NULL, 0, "%s %s:%d: %s", buf, file, line, format);
     char *pre_format = malloc(pre_format_size + 1);
     if(pre_format) {
         sprintf(pre_format, "%s %s:%d: %s", buf, file, line, format);
         va_start(args, format);
-        SDL_LogMessageV(SDL_LOG_CATEGORY_APPLICATION, rhc_log_sdl_priority(), pre_format, args);
+        SDL_LogMessageV(SDL_LOG_CATEGORY_APPLICATION, rhc_log_sdl_priority(level), pre_format, args);
         va_end(args);
         free(pre_format);
     }

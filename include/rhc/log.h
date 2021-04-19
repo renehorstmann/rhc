@@ -20,9 +20,9 @@ enum rhc_log_level {
     RHC_LOG_TRACE, RHC_LOG_DEBUG, RHC_LOG_INFO, RHC_LOG_WARN, RHC_LOG_ERROR, RHC_LOG_WTF, RHC_LOG_NUM_LEVELS
 };
 
-#define log_trace(...) rhc_log_base_(LOG_TRACE, __FILE__, __LINE__, __VA_ARGS__)
+#define log_trace(...) rhc_log_base_(RHC_LOG_TRACE, __FILE__, __LINE__, __VA_ARGS__)
 
-#define log_debug(...) rhc_log_base_(LOG_DEBUG, __FILE__, __LINE__, __VA_ARGS__)
+#define log_debug(...) rhc_log_base_(RHC_LOG_DEBUG, __FILE__, __LINE__, __VA_ARGS__)
 
 #define log_info(...)  rhc_log_base_(RHC_LOG_INFO, __FILE__, __LINE__, __VA_ARGS__)
 
@@ -30,7 +30,7 @@ enum rhc_log_level {
 
 #define log_error(...) rhc_log_base_(RHC_LOG_ERROR, __FILE__, __LINE__, __VA_ARGS__)
 
-#define log_wtf(...)   rhc_log_base_(LOG_WTF, __FILE__, __LINE__, __VA_ARGS__)
+#define log_wtf(...)   rhc_log_base_(RHC_LOG_WTF, __FILE__, __LINE__, __VA_ARGS__)
 
 
 void rhc_log_set_min_level(enum rhc_log_level level);
