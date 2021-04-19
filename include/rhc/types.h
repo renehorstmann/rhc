@@ -8,10 +8,6 @@
 // Options
 //
 
-#ifndef RHC_STRARRAY_S_SIZE
-#define RHC_STRARRAY_S_SIZE 128
-#endif
-
 #ifndef RHC_STRING_DEFAULT_ALLOCATOR
 #define RHC_STRING_DEFAULT_ALLOCATOR allocator_init_raising()
 #endif
@@ -35,30 +31,80 @@ typedef struct Allocator_s {
 typedef struct {
     char *data;
     size_t size;
-} str;
+} Str_s;
 
-// array of str with fixed max size
+// array of Str_s, allocated
 typedef struct {
-    str array[RHC_STRARRAY_S_SIZE];
-    size_t size;
-} StrArray_s;
-
-// array of str, allocated
-typedef struct {
-    str *restrict array;
+    Str_s *restrict array;
     size_t size;
 
     Allocator_s allocator;
 } StrArray;
 
-// dynamic str + always null terminated
+// dynamic Str_s + always null terminated
 typedef struct {
-    // str
-    str s;
+    // Str_s
+    union {
+        Str_s str;
+        struct {
+            char *data;
+            size_t size;
+        };
+    };
 
     // buf
     size_t capacity;
     Allocator_s allocator;
 } String;
+
+
+
+//
+// Autotype / struct  functions
+//
+
+
+// returns true if the allocator seems to be valid
+static bool allocator_valid(Allocator_s a) {
+    return a.alloc && a.realloc && a.free;  // vfunctions available?
+}
+
+// returns true if str is valid
+static bool str_valid(Str_s s) {
+    return s.data != NULL && s.size >= 0;
+}
+
+
+
+//
+// Class functions / methods
+//
+
+// returns true if str array is valid
+static bool strarray_valid(StrArray self) {
+    return self.array != NULL && self.size >= 0 && allocator_valid(self.allocator);
+}
+
+// kills the str array
+static void strarray_kill(StrArray *self) {
+    if(strarray_valid(*self))
+        self->allocator.free(self->allocator, self->array);
+    self->array = NULL;
+    self->size = 0;
+}
+
+// returns true if the string is valid
+static bool string_valid(String self) {
+    return str_valid(self.str) && self.capacity >= 0 && allocator_valid(self.allocator);
+}
+
+// kills the string
+static void string_kill(String *self) {
+    if(string_valid(*self))
+        self->allocator.free(self->allocator, self->data);
+    self->data = NULL;
+    self->size = 0;
+    self->capacity = 0;
+}
 
 #endif //RHC_TYPES_H

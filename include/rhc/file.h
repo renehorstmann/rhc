@@ -4,27 +4,19 @@
 #include "types.h"
 #include "alloc.h"
 
-enum file_read_mode {
-    FILE_READ_MODE_ASCII,
-    FILE_READ_MODE_BINARY,
-    FILE_READ_NUM_MODES,
-};
-
-enum file_write_mode {
-    FILE_WRITE_MODE_ASCII,
-    FILE_WRITE_MODE_BINARY,
-    FILE_WRITE_MODE_ASCII_APPEND,
-    FILE_WRITE_MODE_BINARY_APPEND,
-    FILE_WRITE_NUM_MODES,
-};
 
 
-String file_read_a(const char *file, enum file_read_mode mode, Allocator_s a);
+// reads in a full file into the returned String
+String file_read_a(const char *file, bool ascii, Allocator_s a);
 
-static String file_read(const char *file, enum file_read_mode mode) {
-    return file_read_a(file, mode, RHC_STRING_DEFAULT_ALLOCATOR);
+// reads in a full file into the returned String
+static String file_read(const char *file, bool ascii) {
+    return file_read_a(file, ascii, RHC_STRING_DEFAULT_ALLOCATOR);
 }
 
-bool file_write(const char *file, str content, enum file_write_mode mode);
+
+bool file_write(const char *file, Str_s content, bool ascii);
+
+bool file_append(const char *file, Str_s constent, bool ascii);
 
 #endif //RHC_FILE_H

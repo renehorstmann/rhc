@@ -23,6 +23,7 @@ void *rhc_allocator_raising_alloc_impl_(Allocator_s self, size_t size);
 // realloc + assume
 void *rhc_allocator_raising_realloc_impl_(Allocator_s self, void *memory, size_t size);
 
+
 static Allocator_s allocator_init_default() {
     return (Allocator_s) {NULL,
                           rhc_allocator_default_alloc_impl_,

@@ -4,8 +4,12 @@
 #include "types.h"
 #include "error.h"
 #include "log.h"
+#include "time.h"
 #include "alloc.h"
 #include "file.h"
+#include "str.h"
+#include "string.h"
+#include "str_parse.h"
 
 
 #ifdef RHC_IMPL

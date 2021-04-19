@@ -7,45 +7,44 @@
 #include <time.h>
 #include "../log.h"
 
+
 static struct {
-    FILE *log_file;
-    enum log_level level;
+    enum rhc_log_level level;
     bool quiet;
-    log_lock_function lock_function;
-    void *used_data;
 } rhc_log_L;
 
 
-static const char *rhc_log_src_level_names_[] = {
-        "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "WTF"
-};
+#ifdef OPTION_SDL
+static SDL_LogPriority rhc_log_sdl_priority(enum rhc_log_level level) {
+    switch(level) {
+        case RHC_LOG_TRACE:
+            return SDL_LOG_PRIORITY_VERBOSE;
+        case RHC_LOG_DEBUG:
+            return SDL_LOG_PRIORITY_DEBUG;
+        case RHC_LOG_INFO:
+            return SDL_LOG_PRIORITY_INFO;
+        case RHC_LOG_WARN:
+            return SDL_LOG_PRIORITY_WARN;
+        case RHC_LOG_ERROR:
+            return SDL_LOG_PRIORITY_ERROR;
+        case RHC_LOG_WTF:
+        default:
+            return SDL_LOG_PRIORITY_CRITICAL;
+    }
+}
+#endif
 
-#ifndef LOG_DO_NOT_USE_COLOR
+#ifndef RHC_LOG_DO_NOT_USE_COLOR
 static const char *rhc_log_src_level_colors_[] = {
         "\x1b[94m", "\x1b[36m", "\x1b[32m", "\x1b[33m", "\x1b[31m", "\x1b[35m"
 };
 #endif
 
+static const char *rhc_log_src_level_names_[] = {
+        "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "WTF"
+};
 
-static void rhc_log_src_lock_() {
-    if (rhc_log_L.lock_function) {
-        rhc_log_L.lock_function(rhc_log_L.used_data, true);
-    }
-}
-
-
-static void rhc_log_src_unlock_() {
-    if (rhc_log_L.lock_function) {
-        rhc_log_L.lock_function(rhc_log_L.used_data, false);
-    }
-}
-
-
-void rhc_log_set_log_file(FILE *file) {
-    rhc_log_L.log_file = file;
-}
-
-void rhc_log_set_min_level(enum log_level level) {
+void rhc_log_set_min_level(enum rhc_log_level level) {
     rhc_log_L.level = level;
 }
 
@@ -53,63 +52,64 @@ void rhc_log_set_quiet(bool set) {
     rhc_log_L.quiet = set;
 }
 
-void rhc_log_set_locking_function(log_lock_function fun) {
-    rhc_log_L.lock_function = fun;
-}
-
-void rhc_log_set_locking_function_user_data(void *user_data) {
-    rhc_log_L.used_data = user_data;
-}
-
-
-void rhc_log_base_(enum log_level level, const char *file, int line, const char *format, ...) {
-    if (level < rhc_log_L.level) {
+#ifdef OPTION_SDL
+void rhc_log_base_(enum rhc_log_level level, const char *file, int line, const char *format, ...) {
+    if (level < rhc_log_L.level || rhc_log_L.quiet) {
         return;
     }
 
-    /* Acquire lock_function */
-    rhc_log_src_lock_();
+    /* Get current time */
+    time_t t = time(NULL);
+    struct tm *lt = localtime(&t);
+
+
+    va_list args;
+    char buf[16];
+    buf[strftime(buf, sizeof(buf), "%H:%M:%S", lt)] = '\0';
+
+    const char *sdl_format = "%s %s:%d: ";
+    int pre_format_size = sprintf(NULL, "%s %s:%d: %s", buf, file, line, format);
+    char *pre_format = malloc(pre_format_size + 1);
+    if(pre_format) {
+        sprintf(pre_format, "%s %s:%d: %s", buf, file, line, format);
+        va_start(args, format);
+        SDL_LogMessageV(SDL_LOG_CATEGORY_APPLICATION, rhc_log_sdl_priority(), pre_format, args);
+        va_end(args);
+        free(pre_format);
+    }
+}
+
+#else
+
+void rhc_log_base_(enum rhc_log_level level, const char *file, int line, const char *format, ...) {
+    if (level < rhc_log_L.level || rhc_log_L.quiet) {
+        return;
+    }
 
     /* Get current time */
     time_t t = time(NULL);
     struct tm *lt = localtime(&t);
 
     /* Log to RHC_DEFAULT_FILE (stdout) */
-    if (!rhc_log_L.quiet) {
-        va_list args;
-        char buf[16];
-        buf[strftime(buf, sizeof(buf), "%H:%M:%S", lt)] = '\0';
-#ifdef LOG_DO_NOT_USE_COLOR
-        fprintf(RHC_LOG_DEFAULT_FILE, "%s %-5s %s:%d: ",
-                buf, rhc_log_src_level_names_[level], file, line);
+    va_list args;
+    char buf[16];
+    buf[strftime(buf, sizeof(buf), "%H:%M:%S", lt)] = '\0';
+
+
+#ifdef RHC_LOG_DO_NOT_USE_COLOR
+    fprintf(RHC_LOG_DEFAULT_FILE, "%s %-5s %s:%d: ",
+            buf, rhc_log_src_level_names_[level], file, line);
 #else
-        fprintf(RHC_LOG_DEFAULT_FILE, "%s %s%-5s\x1b[0m \x1b[90m%s:%d:\x1b[0m ",
-                buf, rhc_log_src_level_colors_[level], rhc_log_src_level_names_[level], file, line);
+    fprintf(RHC_LOG_DEFAULT_FILE, "%s %s%-5s\x1b[0m \x1b[90m%s:%d:\x1b[0m ",
+            buf, rhc_log_src_level_colors_[level], rhc_log_src_level_names_[level], file, line);
 #endif
-        va_start(args, format);
-        vfprintf(RHC_LOG_DEFAULT_FILE, format, args);
-        va_end(args);
-        fprintf(RHC_LOG_DEFAULT_FILE, "\n");
-        fflush(RHC_LOG_DEFAULT_FILE);
-    }
-
-    /* Log to file */
-    if (rhc_log_L.log_file) {
-        va_list args;
-        char buf[32];
-        buf[strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", lt)] = '\0';
-        fprintf(rhc_log_L.log_file, "%s %-5s %s:%d: ",
-                buf, rhc_log_src_level_names_[level], file, line);
-        va_start(args, format);
-        vfprintf(rhc_log_L.log_file, format, args);
-        va_end(args);
-        fprintf(rhc_log_L.log_file, "\n");
-        fflush(rhc_log_L.log_file);
-    }
-
-    /* Release lock_function */
-    rhc_log_src_unlock_();
+    va_start(args, format);
+    vfprintf(RHC_LOG_DEFAULT_FILE, format, args);
+    va_end(args);
+    fprintf(RHC_LOG_DEFAULT_FILE, "\n");
+    fflush(RHC_LOG_DEFAULT_FILE);
 }
+#endif
 
 #endif //RHC_IMPL
 #endif //RHC_LOG_IMPL_H
