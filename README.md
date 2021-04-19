@@ -1,5 +1,5 @@
 # rhc
-A new approach as a C standard library addition.
+A C standard library addition.
 
 ## Getting started
 Copy the headers into your project and include `rhc_impl.h` once in a single source file.
