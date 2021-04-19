@@ -1,4 +1,5 @@
 // only in a single header file, to implement some rhc source functions
+//    use rhc/rhc.h or single headers instead
 #include "rhc/rhc_impl.h"
 
 int main() {
