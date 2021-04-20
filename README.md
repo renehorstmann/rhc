@@ -95,8 +95,9 @@ See the [safety.c](examples/safety.c) example above. In that, a `String` is retu
 The names for methods and functions in generell are written in snake_case.
 Methods use their class name at the beginning as prefix to the method name:
 - `string_resize(String *self, size_t size)`
-The first parameter of the class is always the class data and called `self`.
+
+The first parameter of the class is always the class data and is called `self`.
 
 ### Modules
 Module functions like `file_read` always begin with the module name (here [file.h](include/rhc/file.h)).
-If a function is not neccesarry, chances are, it has an additional `rhc_*` prefix.
+If a function is not neccesarry to the user, chances are, it has an additional `rhc_*` prefix.
