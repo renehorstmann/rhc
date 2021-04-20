@@ -10,4 +10,6 @@ include_directories(include)
 
 add_executable(main examples/main.c)
 
+add_executable(dynarray examples/dynarray.c)
+add_executable(hashmap examples/hashmap.c)
 add_executable(safety examples/safety.c)

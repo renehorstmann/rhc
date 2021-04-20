@@ -2,6 +2,7 @@
 // can be used multiple times, with different types
 
 #include <string.h>     // memcpy
+#include "error.h"
 #include "allocator.h"
 #include "log.h"
 

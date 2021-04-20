@@ -57,7 +57,7 @@ void rhc_log_set_quiet(bool set) {
     rhc_log_L.quiet = set;
 }
 
-#ifndef OPTION_SDL
+#ifdef OPTION_SDL
 void rhc_log_base_(enum rhc_log_level level, const char *file, int line, const char *format, ...) {
     if (level < rhc_log_L.level || rhc_log_L.quiet) {
         return;
