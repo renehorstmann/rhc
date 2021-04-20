@@ -76,7 +76,7 @@ The [types.h](include/rhc/types.h) defines some useful additional structs and is
   - see [string.h](include/rhc/string.h) for methods working on a `String`
 
 ## Naming
-As seen above, their is a strict naming rules for pod structs (autotypes) classes, methods and functions.
+As seen above, there are strict naming rules for pod structs (autotypes) classes, methods and functions.
 
 ### Autotypes
 POD-Structs (plain old data), that must not be killed / freed have the prefix _s and are written in PascalCase: `Type_s`.
