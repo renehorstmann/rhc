@@ -2,7 +2,7 @@
 // can be used multiple times, with different types
 
 #include <string.h>     // memcpy
-#include "alloc.h"
+#include "allocator.h"
 #include "log.h"
 
 
@@ -33,9 +33,6 @@
 // remove copying functions (push)
 //#define NO_COPY
 
-#ifndef RHC_DYNARRAY_DEFAULT_ALLOCATOR
-#define RHC_DYNARRAY_DEFAULT_ALLOCATOR allocator_init_raising()
-#endif
 
 
 // so the example would be:

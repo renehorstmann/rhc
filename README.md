@@ -9,7 +9,7 @@ Copy the headers into your project and include `rhc_impl.h` once in a single sou
 - [error.h](include/rhc/error.h) error management and `assume` (`assert` in runtime)
 - [log.h](include/rhc/log.h) logging
 - [time.h](include/rhc/time.h) monotonic time as `double` in seconds
-- [alloc.h](include/rhc/alloc.h) default allocators (`malloc, ...`) for `Àllocation_s`
+- [allocator.h](include/rhc/allocator.h) default allocators (`malloc, ...`) for `Àllocation_s`
 - [file.h](include/rhc/file.h) read, write and append files
 - [str.h](include/rhc/str.h) functions, working on string views with `Str_s`
 - [string.h](include/rhc/string.h) `String` class, that holds a string
@@ -61,7 +61,7 @@ The [types.h](include/rhc/types.h) defines some useful additional structs and is
   - If a function needs an `Allocator_s`, chances are, that their will be two versions:
     - `some_fn_*_a`: takes the `Allocator_s` as last parameter
     - `some_fn_*: calls *_a with the default `Allocator_s`
-  - see [alloc.h](include/rhc/alloc.h) to get an `Allocator_s` from the default `malloc`, etc.
+  - see [allocator.h](include/rhc/allocator.h) to get an `Allocator_s` from the default `malloc`, etc.
     - `alloc_new_default()`: the default `malloc`, `realloc`, `free` `Allocator_s`.
     - `alloc_new_raising()`: also uses the default allocators, but will raise a signal, if the memory couldn't be allocated
 - `Str_s`
@@ -75,29 +75,5 @@ The [types.h](include/rhc/types.h) defines some useful additional structs and is
   - call `string_kill` to free the data via its `Allocator_s`
   - see [string.h](include/rhc/string.h) for methods working on a `String`
 
-## Naming
-As seen above, there are strict naming rules for pod structs (autotypes) classes, methods and functions.
-
-### Autotypes
-POD-Structs (plain old data), that must not be killed / freed have the prefix _s and are written in PascalCase: `Type_s`.
-Or are only lowercase (not used in rhc, but in [Mathc](https://github.con/renehorstmann/Mathc): vec3)
-Examples are:
-  - `Str_s`: just a view on a string
-  - `Allocator_s`: just holds virtual functions
-
-### Classes
-Classes are also written in PascalCase, but are missing the _s prefix: `Type`.
-For example the `String` class.
-If you get a type with PascalCase from a function, you have to kill it at some point.
-See the [safety.c](examples/safety.c) example above. In that, a `String` is returned by `file_read` and has to be killed.
-
-### Methods
-The names for methods and functions in generell are written in snake_case.
-Methods use their class name at the beginning as prefix to the method name:
-- `string_resize(String *self, size_t size)`
-
-The first parameter of the class is always the class data and is called `self`.
-
-### Modules
-Module functions like `file_read` always begin with the module name (here [file.h](include/rhc/file.h)).
-If a function is not neccesarry to the user, chances are, it has an additional `rhc_*` prefix.
+## Style
+For a detailed style guide, see [style.md](style.md).
