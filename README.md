@@ -58,6 +58,9 @@ The [types.h](include/rhc/types.h) defines some useful additional structs and is
 - `Allocator_s`
   - holds virtual functions for `malloc`, `realloc` and `free`
   - Every function in rhc, that allocates and holds memory, uses and owns an `Allocator_s`
+  - If a function needs an `Allocator_s`, chances are, that their will be two versions:
+    - `some_fn_*_a`: takes the `Allocator_s` as last parameter
+    - `some_fn_*: calls *_a with the default `Allocator_s`
   - see [alloc.h](include/rhc/alloc.h) to get an `Allocator_s` from the default `malloc`, etc.
     - `alloc_new_default()`: the default `malloc`, `realloc`, `free` `Allocator_s`.
     - `alloc_new_raising()`: also uses the default allocators, but will raise a signal, if the memory couldn't be allocated
@@ -71,3 +74,29 @@ The [types.h](include/rhc/types.h) defines some useful additional structs and is
   - in contrast to `Str_s`, a `String` is always null terminated
   - call `string_kill` to free the data via its `Allocator_s`
   - see [string.h](include/rhc/string.h) for methods working on a `String`
+
+## Naming
+As seen above, their is a strict naming rules for pod structs (autotypes) classes, methods and functions.
+
+### Autotypes
+POD-Structs (plain old data), that must not be killed / freed have the prefix _s and are written in PascalCase: `Type_s`.
+Or are only lowercase (not used in rhc, but in [Mathc](https://github.con/renehorstmann/Mathc): vec3)
+Examples are:
+  - `Str_s`: just a view on a string
+  - `Allocator_s`: just holds virtual functions
+
+### Classes
+Classes are also written in PascalCase, but are missing the _s prefix: `Type`.
+For example the `String` class.
+If you get a type with PascalCase from a functions, you have to kill it at some point.
+See the [safety.c](examples/safety.c) example above. In that, a `String` is returned by `file_read` and has to be killed.
+
+### Methods
+The methods for functions and functions in generell are written in snake_case.
+Methods use their class name at the beginning as prefix to the method name:
+- `string_resize(String *self, size_t size)`
+The first parameter of the class is always the class data and called `self`.
+
+### Modules
+Module functions like `file_read` always begin with the module name (here [file.h](include/rhc/file.h)).
+If a function is not neccesarry, chances are, it has an additional `rhc_*` prefix.
