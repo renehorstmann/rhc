@@ -77,3 +77,6 @@ The [types.h](include/rhc/types.h) defines some useful additional structs and is
 
 ## Style
 For a detailed style guide, see [style.md](style.md).
+
+## Todo
+- rhc_alloc, rhc_alloc_raising, rtc.
