@@ -88,11 +88,11 @@ Examples are:
 ### Classes
 Classes are also written in PascalCase, but are missing the _s prefix: `Type`.
 For example the `String` class.
-If you get a type with PascalCase from a functions, you have to kill it at some point.
+If you get a type with PascalCase from a function, you have to kill it at some point.
 See the [safety.c](examples/safety.c) example above. In that, a `String` is returned by `file_read` and has to be killed.
 
 ### Methods
-The methods for functions and functions in generell are written in snake_case.
+The names for methods and functions in generell are written in snake_case.
 Methods use their class name at the beginning as prefix to the method name:
 - `string_resize(String *self, size_t size)`
 The first parameter of the class is always the class data and called `self`.
