@@ -52,3 +52,22 @@ int main() {
 }
 ```
 If you want to extend the code, for example with a function that loads an image from a `Str_s`, use the valid pattern.
+
+## Types
+The [types.h](include/rhc/types.h) defines some useful additional structs and is included in most other headers.
+- `Allocator_s`
+  - holds virtual functions for `malloc`, `realloc` and `free`
+  - Every function in rhc, that allocates and holds memory, uses and owns an `Allocator_s`
+  - see [alloc.h](include/rhc/alloc.h) to get an `Allocator_s` from the default `malloc`, etc.
+    - `Allocator_s alloc_new_default()`: the default `malloc`, `realloc`, `free` `Allocator_s`.
+    - `Allocator_s alloc_new_raising()`: also uses the default allocators, but will raise a signal, if the memory couldn't be allocated
+- `Str_s`
+  - represents a view on a string, ignoring the null terminator (so may not be null terminated)
+  - `char *data`: pointer to the first char
+  - `size_t size`: length of the string
+  - see [str.h](include/rhc/str.h) for functions working on a `Str_s`
+- `String`
+  - holds a string in memory, via an `Allocator_s` and a `Str_s`
+  - in contrast to `Str_s`, a `String` is always null terminated
+  - call `string_kill` to free the data via its `Allocator_s`
+  - see [string.h](include/rhc/string.h) for methods working on a `String`
