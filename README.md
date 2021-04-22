@@ -5,7 +5,7 @@ A C standard library addition.
 Copy the headers into your project and include `rhc_impl.h` once in a single source file.
 
 ## Components
-- [types.h](include/rhc/types.h) containing the basic types, like `Allocation_s, Str_s, String`
+- [types.h](include/rhc/types.h) containing some basic types, like `Allocation_s, Str_s, String`
 - [error.h](include/rhc/error.h) error management and `assume` (`assert` in runtime)
 - [log.h](include/rhc/log.h) logging
 - [time.h](include/rhc/time.h) monotonic time as `double` in seconds
