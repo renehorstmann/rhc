@@ -60,7 +60,7 @@ The [types.h](include/rhc/types.h) header defines some useful additional structs
   - Every function in rhc, that allocates and holds memory, uses and owns an `Allocator_s`
   - If a function needs an `Allocator_s`, chances are, that their will be two versions:
     - `some_fn_*_a`: takes the `Allocator_s` as last parameter
-    - `some_fn_*: calls *_a with the default `Allocator_s`
+    - `some_fn_*:` calls `*_a` with the default `Allocator_s`
   - see [allocator.h](include/rhc/allocator.h) to get an `Allocator_s` from the default `malloc`, etc.
     - `alloc_new_default()`: the default `malloc`, `realloc`, `free` `Allocator_s`.
     - `alloc_new_raising()`: also uses the default allocators, but will raise a signal, if the memory couldn't be allocated
