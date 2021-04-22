@@ -24,7 +24,7 @@ Copy the headers into your project and include `rhc_impl.h` once in a single sou
 All functions should operate on not valid input.
 Types have a function called *_valid() to check if the type is in a valid context.
 Some functions set the type invalid and may log and set `rhc_error` to an error.
-With this style, the following [example](examples/safety.c) is possible:
+With this style, the following [example](examples/safety.c) is possible and safe:
 ```c
 // only in a single header file, to implement some rhc source functions
 //    use rhc/rhc.h or single headers instead
