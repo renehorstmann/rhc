@@ -9,7 +9,7 @@ Copy the headers into your project and include `rhc_impl.h` once in a single sou
 - [error.h](include/rhc/error.h) error management and `assume` (`assert` in runtime)
 - [log.h](include/rhc/log.h) logging
 - [time.h](include/rhc/time.h) monotonic time as `double` in seconds
-- [allocator.h](include/rhc/allocator.h) default allocators (`malloc, ...`) for `Àllocation_s`
+- [allocator.h](include/rhc/allocator.h) default allocators (`malloc, ...`) for `Allocator_s`
 - [file.h](include/rhc/file.h) read, write and append files
 - [str.h](include/rhc/str.h) functions, working on string views with `Str_s`
 - [string.h](include/rhc/string.h) `String` class, that holds a string
