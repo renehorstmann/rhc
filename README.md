@@ -54,7 +54,7 @@ int main() {
 If you want to extend the code, for example with a function that loads an image from a `Str_s`, use the valid pattern.
 
 ## Types
-The [types.h](include/rhc/types.h) defines some useful additional structs and is included in most other headers.
+The [types.h](include/rhc/types.h) header defines some useful additional structs and is included in most other headers.
 - `Allocator_s`
   - holds virtual functions for `malloc`, `realloc` and `free`
   - Every function in rhc, that allocates and holds memory, uses and owns an `Allocator_s`
