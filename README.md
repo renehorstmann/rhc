@@ -33,7 +33,7 @@ With this style, the following [example](examples/safety.c) is possible and safe
 int main() {
 
     // should end in an invalid String
-    String file = file_read("not_available.txt", true);
+    String file = file_read("not_available.txt", true);  // ascii=true
     // produces a log_warn: file read failed: not_available.txt
 
     // should not break
@@ -43,7 +43,7 @@ int main() {
     int cnt = str_count(file.str, 'a');
 
     // should not write and set ok to false
-    bool ok = file_write("not_available.txt", file.str, true);
+    bool ok = file_write("not_available.txt", file.str, true);  // ascii=true
     // producus a log_error: file write failed, content invalid: not_available.txt
     // sets rhc_error = file write failed, content invalid
 
