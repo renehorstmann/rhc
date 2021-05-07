@@ -16,7 +16,7 @@ Copy the headers into your project and include `rhc_impl.h` once in a single sou
 - [str_parse.h](include/rhc/str_parse.h) parse values (`int, float, ...`) from a `Str_s`
 - [rhc.h](include/rhc/rhc.h) includes all of the above headers
 - [rhc_impl.h](include/rhc/rhc_impl.h) include this header in a single source file
-- [dynarray.h](include/rhc/dynarray.h) dynamic array like `std::vector` in C++
+- [dynarray.h](include/rhc/dynarray.h) dynamic array like (C++'s `std::vector`)
 - [hashmap_string.h](include/rhc/hashmap_string.h) hashmap with strings as key
 - [hashmap.h](include/rhc/hashmap.h) hashmap base
 
