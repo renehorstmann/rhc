@@ -1,5 +1,6 @@
 
 //#define RHC_LOG_DO_NOT_PRINT_TIME_FILE
+//#define RHC_LOG_DO_NOT_USE_COLOR
 #include "rhc/rhc_impl.h"
 
 
