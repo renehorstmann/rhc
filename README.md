@@ -77,3 +77,11 @@ The [types.h](include/rhc/types.h) header defines some useful additional structs
 
 ## Style
 For a detailed style guide, see [style.md](style.md).
+
+## Globals
+rhc tries to use as few globals as possible.
+Nevertheless, the following globals are used:
+- [`_Thread_local const char *rhc_error;`](include/rhc/impl/error_impl.h)
+- [`static struct {...} rhc_log_L;`](include/rhc/impl/log_impl.h)
+  - `enum rhc_log_level level;`
+  - `bool quiet;`
