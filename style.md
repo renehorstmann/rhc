@@ -329,15 +329,15 @@ I prefer to use snake_case names for variables, if you want to use a member of a
 ```c
 int car_petrol;
 FILE *file;
-strviu viu;
-intiterator iter;
+Str_s str;
+IntIterator_s iter;
 ```
 
 ### <a name="S-naming-functions"></a>Functions
 Like the variables [above](#S-naming-variables), I also prefer snake_case names.
 ```c
 FILE *open_and_check(const char *filepath);
-intset set_diff(intset a, intset b);
+IntSet_s set_diff(IntSet_s a, IntSet_s b);
 int max(int a, int b);
 ```
 
@@ -383,13 +383,13 @@ create the struct with a typedef:
 
 typedef struct {
     int a, b, c;
-} foo;
+} Foo_s;
 
 // or
 typedef struct item {
     int i;
     struct item *next;
-} item;
+} Item_s;
 ```
 
 If its a not commonly used struct in an interface header,
@@ -399,42 +399,43 @@ In this way, the name of the struct is not wasted for the user (except for struc
 ```c
 // Interface header with uncommon use
 
-struct uncommon {
+struct Uncommen_s {
     uint8_t data[128];
     bool mode;
 };
 
 // the user could instantiate it like so:
-struct uncommon uc;
+struct Uncommen_s uc;
 ```
 
 
 #### <a name="S-naming-structs-usecases"></a>Use Cases
 As explained in Chapter [Prefer autotypes](#S-basics-autotypes), you should always prefer autotype structs.
 Autotype structs should be marked, so the user can directly identify them.
-I use (short) lowercasewithoutunderscores names or PascalCase_s for longer names of them:
+There is a lot of code using `*_t` for struct members, but thats reserved for C snd compiler devs!,
+So Im using PascalCase_s for autotype structs. 
 
 ```c
 // Autotype structs
 
 typedef struct {
     float x, y;
-} point;
+} Point_s;
 
 typedef struct {
-    point tl, br; // top left, bottom right
-} rect;
+    Point_s tl, br; // top left, bottom right
+} Rect_s;
 
 typedef struct {
-    point center;
+    Point_s center;
     float width, height;
     float angle;
-} rotatedrect;
+} RotatedRect_s;
 
 typedef struct {
-    point data[1024];
+    Point_s data[1024];
     int size;
-} pointarray;
+} PointArray_s;
 
 typedef struct {
     int render_options;
