@@ -344,10 +344,22 @@ int max(int a, int b);
 ### <a name="S-naming-macros"></a>Macros
 Lots of C programmers use SCREAM_CASE for macros. But it leads to errors if these are reset by other libraries.
 If you want to use SCREAM_CASE, always use a namespace prefix like MYLIB_SCREAM_CASE (MYLIB should be replaced...).
-Instead of using this, I prefer PascalCase for macros:
+
+IMHO you should avoid macros, if possible, and use functions instead.
+The compiler is very good at inlining known function implementations.
+
+For function like macros, i prefer function style naming (as with stdc):
 ```c
-#define Max(a, b) ((a) > (b) ? (a) : (b))
-#define Free0(ptr) {free(ptr); ptr=NULL;}
+#define max(a, b) ((a) > (b) ? (a) : (b)) // functiom macro
+#define free0(ptr) do {free(ptr); ptr=NULL;} while(0) // procedur macro
+```
+
+Macros that generate stuff (use them as little as possible!) are in SCREAM_CASE:
+```c
+#define NS_GENERATE_INC(type) \
+type inc_ ## type (type t) { \
+    return t++; \
+}
 ```
 
 
