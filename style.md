@@ -188,26 +188,14 @@ The "Should not happen" errors should let the program or module die.
 In order to do this, we can raise a signal.
 
 ##### <a name="S-err-signals"></a> Signals
-As mentioned above, we can use signals to inform the user, that something unexpected happened.
+We can use signals to inform the user, that something unexpected happened.
 For example:
 ```c
-void foo() {
-    int *heap = malloc(sizeof(int));
-
-    // NOT PLATFORM INDEPENDENT, see above...
-    // of not on linux, etc. raise a signal by hand, see below
-    
-    // if we cant malloc 4 bytes, we have much bigger problems!
-    // so just ignore a NULL check and let the program die
-    *heap = 10;
-    // ...
-}
-
 void runtime_assert() {
     int a = get_positive_integer();
 
     // if an assumption fails at runtime, a signal is raised
-    assume(a>0, "get_positive failed");  // see my Utilc repository
+    assume(a>0, "get_positive failed");  // see rhc/error.h
     printf("%d\n", 1/a );
 }
 ```
