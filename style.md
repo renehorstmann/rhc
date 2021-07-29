@@ -288,18 +288,30 @@ int main() {
 
 ### <a name="S-err-error_parameter_options"></a> Error Parameter Options
 
+rhc uses the global: `_Thread_local const char *rhc_error;` to represent errors.
+The rhc function `error` sets and returns `rhc_error`.
 
-*Todo*
+So an error reporting function may be:
+```c
+typedef const char *err;
 
-3. How to represent the error
-- global state
-    - should get a callback function
-- always returns error value
-- return struct union, created by macro?
-- long jump?
+err divide(int a, int b) {
+    if(b==0) return error("Division with 0");
+    return a/b;
+}
+```
 
-4. What about bindings
+Another way would be to return an invalid type and set `rhc_error`:
+```c
+bool string_valid(String self) {
+    return self.s.data && !str_empty(self.s);
+}
 
+String string_cat(Str_s a, Str_s b) {
+    if(str_empty(a) && str_empty(b)) return string_new_invalid();
+    // ...
+}
+```
 
 
 
