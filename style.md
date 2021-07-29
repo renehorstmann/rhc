@@ -79,7 +79,7 @@ Structs that represents dynamic arrays can also make use of them:
 typedef struct {
     int data[1024];
     int size;
-} indices;
+} Indices_s; 
 ```
 The disadvantage is of course, that these array autotypes are limited in size,
 but if the contents are small emough, always prefer them.
