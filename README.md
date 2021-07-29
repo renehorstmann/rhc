@@ -42,6 +42,7 @@ int main() {
     // should end in an invalid String
     String file = file_read("not_available.txt", true);  // ascii=true
     // produces a log_warn: file read failed: not_available.txt
+    // sets rhc_error = file read failed
 
     // should not break
     str_tolower(file.str);
