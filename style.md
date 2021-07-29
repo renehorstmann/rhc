@@ -262,6 +262,7 @@ int main() {
 ```
 
 With this technique, you could build an api this way:
+(pseudo code, but rhc is built this way...) 
 
 ```c
 #include "some_api.h"
@@ -269,7 +270,7 @@ With this technique, you could build an api this way:
 int main() {
     Reader r = reader_new_from_file("some_file.txt");
     File f = reader_read_as_new_file(r);
-    Image img = image_new_from_filr(f);
+    Image img = image_new_from_file(f);
     
     if(!image_valid(img)) {
         puts("error reading file!");
