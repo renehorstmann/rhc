@@ -469,9 +469,11 @@ typedef struct {
 } IntArray;
 
 // Constructor
-void int_array_init(IntArray *self, int size) {
-    self->data = calloc(size, sizeof(int));
-    self->size = size;
+IntArray int_array_init(int size) {
+    IntArray self;
+    self.data = calloc(size, sizeof(int));
+    self.size = size;
+    return self
 }
 
 // Destructor
@@ -491,7 +493,7 @@ void int_array_push(IntArray *self, int append) {
 ### <a name="S-naming-classes"></a>Classes
 As seen in the previos example above, I prefer PascalCase for classes.
 The data section of the class gets the ClassName.
-The constructor is called class_name_init and the destructor class_name_kill.
+The constructor is called class_name_mew and the destructor class_name_kill.
 All methods also use this naming sheme, like class_name_length.
 With this style and an ide with autocompletion, the user gets a similar feeling to an object orientated language.
 
@@ -541,17 +543,17 @@ typedef float geo_vec[2];
 // Autotype struct
 typedef struct {
     float x, y;
-} geo_point;
+} GeoPoint_s;
 
 typedef struct {
-    geo_point center;
+    GeoPoint_s center;
     float radius;
-} geo_circle;
+} GeoCircle_s;
 
 
 // Class
 typedef struct {
-    geo_point *data;
+    GeoPoint_s *data;
     int size;
 } GeoPointArray;
 
@@ -574,7 +576,7 @@ void geo_point_array_kill(GeoPointArray *self) {
 /**
  * @returns: all points that lie in the circle
  */
-GeoPointArray geo_points_in_circle(geo_point *array, int n, geo_circle circle);
+GeoPointArray geo_points_in_circle(GeoPoint_s *array, int n, GeoCircle_s circle);
 
 #endif // GEO_INTERSECTION_H
 ```
