@@ -171,18 +171,11 @@ void machine_send(int msg) {
     printf("%d\n", msg);
 }
 
-
-// platform independent NULL check
-void machine_work(int *data, int n) {
-    assert(data && "must not be NULL");
-    for(int i=0; i<n; i++)
-        printf("%d\n", data[i]);
-}
-
 // dereferencing NULL causes a segmentation fault on some systems,
 // but its still undefined behavior...
 void machine_work(int *data, int n) {
     // would raise SIGSEGV on Linux, but better check it...
+    // platform infependent NULL check
     assert(data && "must not be NULL");
     for(int i=0; i<n; i++)
         printf("%d\n", data[i]);
