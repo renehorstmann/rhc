@@ -295,6 +295,7 @@ So an error reporting function may be:
 ```c
 typedef const char *err;
 
+// bad examaple, to simple function, but you get it...
 err divide(int *out, int a, int b) {
     if(b==0) return error("Division with 0");
     *out = a/b;
