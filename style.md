@@ -412,7 +412,7 @@ struct Uncommen_s uc;
 #### <a name="S-naming-structs-usecases"></a>Use Cases
 As explained in Chapter [Prefer autotypes](#S-basics-autotypes), you should always prefer autotype structs.
 Autotype structs should be marked, so the user can directly identify them.
-There is a lot of code using `*_t` for struct members, but thats reserved for C snd compiler devs!,
+There is a lot of code using `*_t` for struct members, but thats reserved for C and compiler devs!,
 So Im using PascalCase_s for autotype structs. 
 
 ```c
