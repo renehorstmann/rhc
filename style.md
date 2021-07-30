@@ -931,7 +931,7 @@ int main() {
 ```
 
 ### <a name="S-oo-virtual"></a>Virtual Methods
-With virtual methods, the user must not know the exact type, to call the right overlaoded class function (method).
+With virtual methods, the user must not know the exact type, to call the right overloaded class function (method).
 As with the rest of OOP, its easy to implement in C:
 
 ```c
@@ -1029,7 +1029,8 @@ int main() {
 ### <a name="S-oo-interfaces"></a>Interfaces
 Often interfaces perform a better job, compared to inheritance, to provide an easy OOP-feel.
 An interface only consists of virtual methods and so is like an abstract class without data.
-In C you also must also add an void * for the implementation:
+In C you also must also add an void * or space for the implementation.
+Using void * you have to use the pimpl idiom, in where the class is malloced on new.
 
 ```c
 
