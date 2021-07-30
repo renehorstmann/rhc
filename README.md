@@ -80,8 +80,9 @@ The [types.h](include/rhc/types.h) header defines some useful additional structs
 For a detailed style guide, see [style.md](style.md).
 
 ## rhc in a library
-When rhc is used in a library, either rename the globals, or dont include rhc_impl!
-The library user may use multiple libraries, that include rhc. So let the user include the impl at some place.
+When rhc is used in a library, it should not collide with other libraries, also using rhc. So to use it:
+- Let the library user include rhc_impl.h, instead of the library
+- rename all rhc_* stuff with your own namespace. (search replace...)
 
 ## Globals
 rhc tries to use as few globals as possible.
