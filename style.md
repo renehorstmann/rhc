@@ -611,7 +611,8 @@ If you still want an OO-Hierarchy, take the focos on the data, and than let your
 
 ### <a name="S-oo-simple"></a>Simple machine
 A little example of a simple "machine" class was already shown in chapter [Naming structs (use cases)](#S-naming-structs-usecases).
-If you know that there will never be more than one instance of your class, go the procedure way:
+If you know that there will never be more than one instance of your class, go the procedure way.
+Examples for this style include loggers and systeminfo machines.
 
 ```c
 // max. 1 instance of Foo
@@ -670,10 +671,11 @@ void foo_print() {
 
 ```
 
-I like to call constructors class_name_init and destructors class_name_kill.
+I like to call constructors class_name_init / _new and destructors class_name_kill.
 If you stick with this, or another name, your users can easily find them for other classes as well.
 Destructors should always have the function form: void(ClassName *self)
-The same "machine", but with multiple possible instances looks like the following:
+The same "machine", but with multiple possible instances looks like the following.
+This may be the best style to do a class, but the data (also private data) must be declared in the header, just like C++.
 
 ```c
 // multiple instances of foo possible
@@ -686,13 +688,14 @@ typedef struct {
     // public data
     int cnt;
   
-    // private data (tailing underscore)
-    //    leading underscores are saved for compilers and the C language (not in structs btw...))
-    int internal_cnt_;
+    // private data
+    struct {
+        int internal_cnt;
+    } L;
 } Foo;
 
 // constructor
-void foo_init(Foo *self);
+Foo foo_new();
 
 // destructor
 void foo_kill(Foo *self);
@@ -702,12 +705,6 @@ void foo_add(Foo *self, int add);
 
 void foo_print(const Foo *self);
 
-// optional heap constructor
-Foo *foo_new();
-
-// optional heap destructor
-void foo_delete(Foo *self);
-
 
 //
 // foo.c
@@ -715,9 +712,11 @@ void foo_delete(Foo *self);
 
 #include "foo.h" 
 
-void foo_init(Foo *self) {
-    self->cnt = 1;
-    self->internal_cnt = -1;
+Foo foo_new() {
+    Foo self;
+    self.cnt = 1;
+    self.L.internal_cnt = -1;
+    return seld;
 }
 
 void foo_kill(Foo *self) {
@@ -730,21 +729,8 @@ void foo_add(Foo *self, int add) {
 }
 
 void foo_print(const Foo *self) {
-    printf("foo %d\n", self->cnt+self->internal_cnt);
+    printf("foo %d\n", self->cnt+self->L.internal_cnt);
 }
-
-
-Foo *foo_new() {
-    Foo *res = malloc(sizeof(Foo));
-    foo_init(res);
-    return res;
-}
-
-void Foo_delete(Foo *self) {
-    foo_kill(self);
-    free(self);
-}
-
 
 ```
 
@@ -762,9 +748,11 @@ typedef struct {
     int a;
 } Mother;
 
-void mother_init(Mother *self, int amount) {
-    self->data = malloc(amount);
-    self->a = amount;
+Mother mother_new(int amount) {
+    Mother self;
+    self.data = malloc(amount);
+    self.a = amount;
+    return Mother
 }
 
 void mother_kill(Mother *self) {
@@ -773,7 +761,7 @@ void mother_kill(Mother *self) {
     self->a = 0;
 }
 
-void mother_print(Mother *self, int pos) {
+void mother_print(const Mother *self, int pos) {
     assert(pos>=0 && pos<self->a);
     printf("%c", self->data[pos]);
 }
@@ -787,11 +775,12 @@ typedef struct {
     int b;
 } Child;
 
-void child_init(Child *self, int beta) {
+Child child_new(int beta) {
+    Child self;
     // call super.init
     // casting to Mother works, 
     //   because the first data in Child is Mother
-    mother_init((Mother *) self, beta*2);
+    self.base = mother_new(beta*2);
     self->b = beta;
 }
 
@@ -800,15 +789,14 @@ void child_kill(Child *self) {
     self->b = 0;
 }
 
-int child_length(Child *self) {
+int child_length(const Child *self) {
     return self->base.a - self->b;
 }
 
 
 // Usage:
 int main() {
-    Child c;
-    child_init(&c, 10);
+    Child c = child_new(10);
 
     int len = child_length(&c);
     
@@ -841,11 +829,13 @@ typedef struct {
     char type[64];
 } Object;
 
-void object_init(Object *self, const char *type) {
-    strcpy(self->type, type);
+Object object_new(const char *type) {
+    Object self;
+    strcpy(self.type, type);
+    return self;
 }
 
-void *as_instance(void *object, const char *type) {
+void *object_as_instance(void *object, const char *type) {
     if(strncmp(object, type, strlen(type)) == 0) 
         return object;
     return NULL;
@@ -861,9 +851,11 @@ typedef struct {
 
 const char *FOO_TYPE = "Foo";
 
-void foo_init(Foo *self) {
-    object_init((Object *)self, FOO_TYPE);
-    self->a = 1;
+Foo foo_new() {
+    Foo self;
+    self.base = object_new(FOO_TYPE);
+    self.a = 1;
+    return self;
 }
 
 // class Bar : Foo
@@ -875,10 +867,12 @@ typedef struct {
 
 const char *BAR_TYPE = "FooBar";
 
-void bar_init(Bar *self) {
-    foo_init((Foo *) self);
-    object_init((Object *) self, BAR_TYPE);
-    self->b = 2;
+Bar bar_new() {
+    Bar self;
+    self.base = foo_new();
+    *((Object *) &self) = object_new(BAR_TYPE);
+    self.b = 2;
+    return self;
 }
 
 // class Pub : Foo
@@ -890,10 +884,12 @@ typedef struct {
 
 const char *PUB_TYPE = "FooPub";
 
-void pub_init(Pub *self) {
-    foo_init((Foo *) self);
-    object_init((Object *) self, PUB_TYPE);
-    self->p = 3;
+Pub pub_new() {
+    Pub self;
+    self.base = foo_new();
+    *((Object *) &self) = object_new(PUB_TYPE);
+    self.p = 3;
+    return self;
 }
 
 
@@ -906,29 +902,30 @@ typedef struct {
 
 const char *CAR_TYPE = "Car";
 
-void car_init(Car *self) {
-    object_init((Object *) self, CAR_TYPE);
-    self->color = 0xff00ff;
+Car car_new() {
+    Car self;
+    self.base = object_new(CAR_TYPE);
+    self.color = 0xff00ff;
+    return self;
 }
 
 
 // usage
 int main() {
-    Bar b;
-    bar_init(&b);
+    Bar b = bar_new();
 
-    Foo *as_foo = as_instance(&b, Foo_TYPE);
+    Foo *as_foo = object_as_instance(&b, Foo_TYPE);
     if(as_foo)
          puts("Bar is a Foo");
     
-    Bar *as_bar = as_instance(as_foo, Bar_TYPE);
+    Bar *as_bar = object_as_instance(as_foo, Bar_TYPE);
     if(as_bar)
          puts("Bar that was casted to Foo still is a Bar");
 
-    Pub *as_pub = as_instance(as_foo, Pub_TYPE);
+    Pub *as_pub = object_as_instance(as_foo, Pub_TYPE);
     assert(!as_pub);
 
-    Car *as_car = as_instance(as_foo, Car_TYPE); 
+    Car *as_car = object_as_instance(as_foo, Car_TYPE); 
     assert(!as_car);
 }
 ```
@@ -964,10 +961,12 @@ int foo_add(Foo *self, int add) {
     return f;
 }
 
-void foo_init(Foo *self) {
-    self->f = 1;
-    self->print = foo_print;
-    self->add = foo_add;
+Foo foo_new() {
+    Foo self;
+    self.f = 1;
+    self.print = foo_print;
+    self.add = foo_add;
+    return self;
 }
 
 
@@ -991,25 +990,25 @@ int bar_add(Bar *self, int add) {
     return foo;
 }
 
-void bar_init(Bar *self, float init) {
+Bar bar_new(float init) {
+    Bar self;
     // call super.init
-    foo_init((Foo *) self);
+    self.base = foo_new();
 
-    self->b = init;
+    self.b = init;
 
     // change overloaded vtable methods
-    self->base.print = (foo_print_function) bar_print;  // optional cast...
-    self->base.add = (foo_add_function) bar_add;
+    self.base.print = (foo_print_function) bar_print;  // optional cast...
+    self.base.add = (foo_add_function) bar_add;
+    return self;
 }
 
 
 // Usage
 int main() {
-    Foo foo;
-    foo_init(&foo);
+    Foo foo = foo_new();
 
-    Bar bar;
-    bar_init(&bar, 1.23f);
+    Bar bar = bar_new(1.23f);
 
 
     Foo *foos[2] = {&foo, (Foo *) &bar}; // optional cast...
@@ -1041,7 +1040,7 @@ struct Printable;
 typedef void (*printable_print_function)(struct Printable self);
 
 typedef struct Printable {
-    void *impl_;
+    void *impl;
 
     printable_print_function print;
 } Printable;
@@ -1067,7 +1066,8 @@ void foo_print(Printable self) {
     printf("Foo(%f)\n", foo->f);
 }
 
-void foo_init(Foo *self) {
+Foo *foo_new() {
+    Foo *self = rhc_raising_malloc(sizeof(*self));
     self->f = 0;
     self->printable = (Printable) {
         (void *) self,    // opt. cast
@@ -1075,14 +1075,21 @@ void foo_init(Foo *self) {
     };
 }
 
+void foo_kill(Foo **self_ptr) {
+    if(!self_ptr) return;
+    free(*self_ptr);
+    *self_ptr = NULL;
+}
+
 
 // usage
 int main() {
-    Foo foo;
-    foo_init(&foo);
-    foo.f = 1.23f;
+    Foo *foo = foo_new();
+    foo->f = 1.23f;
     
-    bar(foo.printable, 3);
+    bar(foo->printable, 3);
+
+    foo_kill(&foo);
 }
 
 ```
