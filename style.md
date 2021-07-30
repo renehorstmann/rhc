@@ -1113,20 +1113,14 @@ int main() {
 ### <a name="S-oo-interfaces"></a>Interfaces
 Often interfaces perform a better job, compared to inheritance, to provide an easy OOP-feel.
 An interface only consists of virtual methods and so is like an abstract class without data.
-In C you also must also add an void * or space for the implementation.
-Using void * you have to use the pimpl idiom, in where the class is malloced on new.
+In C you also must pass an void * or keep space in the printable struct for the implementation.
 
 ```c
 
-// Interface Printable
-struct Printable;
-
 // Virtual function types
-typedef void (*printable_print_function)(struct Printable self);
+typedef void (*printable_print_function)(const void *object);
 
 typedef struct Printable {
-    void *impl;
-
     printable_print_function print;
 } Printable;
 
@@ -1139,42 +1133,33 @@ typedef struct {
 } Foo;
 
 // function that takes a Printable
-void bar(Printable p, int n) {
+void bar(Printable p, const void *object, int n) {
     for(int i=0; i<n; i++) 
-        p.print(p);
+        p.print(object);
 }
 
 
 
-void foo_print(Printable self) {
-    Foo *foo = (Foo *) self.impl_;
+void foo_print(const void *object) {
+    Foo *foo = (Foo *) object;
     printf("Foo(%f)\n", foo->f);
 }
 
-Foo *foo_new() {
-    Foo *self = rhc_raising_malloc(sizeof(*self));
-    self->f = 0;
-    self->printable = (Printable) {
-        (void *) self,    // opt. cast
+Foo foo_new() {
+    Foo self;
+    self.f = 0;
+    self.printable = (Printable) {
         foo_print
     };
-}
-
-void foo_kill(Foo **self_ptr) {
-    if(!self_ptr) return;
-    free(*self_ptr);
-    *self_ptr = NULL;
 }
 
 
 // usage
 int main() {
-    Foo *foo = foo_new();
-    foo->f = 1.23f;
+    Foo foo = foo_new();
+    foo.f = 1.23f;
     
-    bar(foo->printable, 3);
-
-    foo_kill(&foo);
+    bar(foo->printable, foo, 3);
 }
 
 ```
