@@ -734,6 +734,90 @@ void foo_print(const Foo *self) {
 
 ```
 
+If you want to hide stuff from the class data in the header, use the pimpl (pointer to implementation) idiom, or return a malloced class on new:
+
+
+```c
+// multiple instances of foo possible, data hidden.
+
+//
+// foo.h
+//
+
+typedef struct {
+    int cnt;
+} FooPublic;
+
+struct Foo;
+typedef struct Foo Foo;
+
+// constructor
+Foo *foo_new();
+
+// destructor
+void foo_kill(Foo **self_ptr);
+
+// getter and setter
+
+// public data
+FooPublic *foo_public(Foo *foo);
+
+// read only
+int foo_get_bar(const Foo *foo);
+
+// methods:
+void foo_add(Foo *self, int add);
+
+void foo_print(const Foo *self);
+
+
+//
+// foo.c
+//
+
+#include "foo.h" 
+
+struct Foo {
+    FooPublic public;
+    int bar;
+};
+
+
+Foo *foo_new() {
+    Foo *self = rhc_raising_malloc(sizeof *self);
+    self->public.cnt = 1;
+    self->bar= 123;
+    return seld;
+}
+
+void foo_kill(Foo **self_ptr) {
+    // invalid safe
+    if(!self_ptr) return;
+
+    // free data and set the ptr to NULL
+    free(*self_ptr);
+    *self_ptr = NULL;
+}
+
+FooPublic *foo_public(Foo *foo) {
+    return &foo->public;
+}
+
+int foo_get_bar(const Foo *foo) {
+    return foo->bar;
+}
+
+void foo_add(Foo *self, int add) {
+    self->cnt += add;
+}
+
+void foo_print(const Foo *self) {
+    printf("foo %d\n", self->cnt+self->L.internal_cnt);
+}
+
+```
+
+
 
 ### <a name="S-oo-inheritance"></a>Inheritance
 Deriving from a class is easy in C. But its important that your users know the base class.
