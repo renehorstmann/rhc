@@ -20,13 +20,6 @@ Copy the headers into your project and include `rhc_impl.h` once in a single sou
 - [hashmap_string.h](include/rhc/hashmap_string.h) hashmap with strings as key
 - [hashmap.h](include/rhc/hashmap.h) hashmap base
 
-## Todo
-- finish this readme + style.md
-- thread safe queue
-  - pthread or sdl
-- thread pool
-  - pthread or sdl
-
 ## Safety
 All functions should operate on not valid input.
 Types have a function called *_valid() to check if the type is in a valid context.
@@ -85,6 +78,10 @@ The [types.h](include/rhc/types.h) header defines some useful additional structs
 
 ## Style
 For a detailed style guide, see [style.md](style.md).
+
+## rhc in a library
+When rhc is used in a library, either rename the globals, or dont include rhc_impl!
+The library user may use multiple libraries, that include rhc. So let the user include the impl at some place.
 
 ## Globals
 rhc tries to use as few globals as possible.
