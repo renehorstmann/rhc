@@ -15,12 +15,10 @@ static String string_new_invalid_a(Allocator_s a);
 static String string_new_a(size_t start_capacity, Allocator_s a) {
     assume(allocator_valid(a), "allocator needs to be valid");
     String self = {
-            {
-                a.malloc(a, start_capacity + 1),
-                0
-            },
-            start_capacity,
-            a
+            .str.data = a.malloc(a, start_capacity + 1),
+            .str.size = 0,
+            .capacity = start_capacity,
+            .allocator = a
     };
     if(!self.data)
         return string_new_invalid_a(a);
@@ -35,12 +33,12 @@ static String string_new(size_t start_capacity) {
 
 // new empty invalid string
 static String string_new_invalid_a(Allocator_s a) {
-    return (String) {NULL, .allocator = a};
+    return (String) {0, .allocator = a};
 }
 
 // new empty invalid string with the default allocator
 static String string_new_invalid() {
-    return (String) {NULL, .allocator = RHC_STRING_DEFAULT_ALLOCATOR};
+    return (String) {0, .allocator = RHC_STRING_DEFAULT_ALLOCATOR};
 }
 
 // clones Str_s and appends null
