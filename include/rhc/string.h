@@ -33,12 +33,16 @@ static String string_new(size_t start_capacity) {
 
 // new empty invalid string
 static String string_new_invalid_a(Allocator_s a) {
-    return (String) {0, .allocator = a};
+    String self = {0};
+    self.allocator = a;
+    return self;
 }
 
 // new empty invalid string with the default allocator
 static String string_new_invalid() {
-    return (String) {0, .allocator = RHC_STRING_DEFAULT_ALLOCATOR};
+    String self = {0};
+    self.allocator = RHC_STRING_DEFAULT_ALLOCATOR;
+    return self;
 }
 
 // clones Str_s and appends null
