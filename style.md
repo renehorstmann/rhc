@@ -1,7 +1,7 @@
 # rhc C style guide
 A style guide for modern C programming
 
-In this repository I'll show you my recommendations for a good coding style in the C programming language.
+In this file I'll show you my recommendations for a good coding style in the C programming language.
 
 
 ## <a name="S-contents"></a>Contents
