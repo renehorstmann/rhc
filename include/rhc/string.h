@@ -64,7 +64,7 @@ static String string_new_replace_a(Str_s to_replace, Str_s old, Str_s replacemen
     if(str_empty(to_replace) || str_empty(old) || !str_valid(replacement)) {
         return string_new_invalid_a(a);
     }
-    int cnt = str_count_str(to_replace, old);
+    size_t cnt = str_count_str(to_replace, old);
     if(cnt <= 0) {
         return string_new_clone_a(to_replace, a);
     }
@@ -84,14 +84,14 @@ static String string_new_replace(Str_s to_replace, Str_s old, Str_s replacement)
 // concatenates all strs
 static String string_new_cat_a(Str_s *strs, int n, Allocator_s a) {
     size_t size = 0;
-    for(int i=0; i<n; i++) {
+    for(size_t i=0; i<n; i++) {
         size += str_empty(strs[i])? 0 : strs[i].size;
     }
     String res = string_new_a(size, a);
     if(!string_valid(res))
         return res;
 
-    for(int i=0; i<n; i++) {
+    for(size_t i=0; i<n; i++) {
         if(!str_empty(strs[i])) {
             str_cpy(strs[i], (Str_s) {res.data + res.size, strs[i].size});
             res.size += strs[i].size;
