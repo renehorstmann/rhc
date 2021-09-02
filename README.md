@@ -13,7 +13,7 @@ Copy the headers into your project and include `rhc_impl.h` once in a single sou
 - [file.h](include/rhc/file.h) read, write and append files
 - [str.h](include/rhc/str.h) functions, working on string views with `Str_s`
 - [string.h](include/rhc/string.h) `String` class, that holds a string
-- [str_parse.h](include/rhc/str_parse.h) parse values (`int, float, ...`) from a `Str_s`
+- [str_parse.h](include/rhc/str_parse.h) parse/serialize values (`int, float, ...`) from and into a `Str_s`
 - [rhc.h](include/rhc/rhc.h) includes all of the above headers
 - [rhc_impl.h](include/rhc/rhc_impl.h) include this header in a single source file
 - [dynarray.h](include/rhc/dynarray.h) dynamic array like (C++'s `std::vector`)

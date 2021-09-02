@@ -11,6 +11,5 @@ int main() {
     log_warn("hey");
     log_error("hey");
     log_wtf("hey");
-
 }
 
