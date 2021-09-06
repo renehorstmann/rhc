@@ -7,15 +7,15 @@
 // Options
 //
 #ifndef RHC_STRING_DEFAULT_ALLOCATOR
-#define RHC_STRING_DEFAULT_ALLOCATOR allocator_new_raising()
+#define RHC_STRING_DEFAULT_ALLOCATOR rhc_allocator_new_raising()
 #endif
 
 #ifndef RHC_DYNARRAY_DEFAULT_ALLOCATOR
-#define RHC_DYNARRAY_DEFAULT_ALLOCATOR allocator_new_raising()
+#define RHC_DYNARRAY_DEFAULT_ALLOCATOR rhc_allocator_new_raising()
 #endif
 
 #ifndef RHC_HASHMAP_DEFAULT_ALLOCATOR
-#define RHC_HASHMAP_DEFAULT_ALLOCATOR allocator_new_raising()
+#define RHC_HASHMAP_DEFAULT_ALLOCATOR rhc_allocator_new_raising()
 #endif
 
 //
@@ -45,18 +45,18 @@ void *rhc_realloc_raising(void *memory, size_t size);
 
 
 // uses rhc_malloc, rhc_realloc, rhc_free
-Allocator_s allocator_new_default();
+Allocator_s rhc_allocator_new_default();
 
 // uses rhc_malloc_raising, rhc_realloc_raising, rhc_free
-Allocator_s allocator_new_raising();
+Allocator_s rhc_allocator_new_raising();
 
 // does nothing, but is valid
 // malloc, realloc will return NULL
-Allocator_s allocator_new_empty();
+Allocator_s rhc_allocator_new_empty();
 
 // will always raise a signal, but is valid
 // if the signal is catched and ignored, NULL is returned
-Allocator_s allocator_new_empty_raising();
+Allocator_s rhc_allocator_new_empty_raising();
 
 
 #endif //RHC_ALLOCATOR_H

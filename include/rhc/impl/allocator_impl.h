@@ -143,7 +143,7 @@ static void rhc_allocator_empty_raising_free_impl_(Allocator_s self, void *memor
 }
 
 
-Allocator_s allocator_new_default() {
+Allocator_s rhc_allocator_new_default() {
     return (Allocator_s) {
         NULL,
         rhc_allocator_default_malloc_impl_,
@@ -154,7 +154,7 @@ Allocator_s allocator_new_default() {
 }
 
 
-Allocator_s allocator_new_raising() {
+Allocator_s rhc_allocator_new_raising() {
     return (Allocator_s) {
         NULL,
         rhc_allocator_raising_malloc_impl_,
@@ -164,7 +164,7 @@ Allocator_s allocator_new_raising() {
     };
 }
 
-Allocator_s allocator_new_empty() {
+Allocator_s rhc_allocator_new_empty() {
     return (Allocator_s) {
         NULL,
         rhc_allocator_empty_malloc_impl_,
@@ -174,7 +174,7 @@ Allocator_s allocator_new_empty() {
     };
 }
 
-Allocator_s allocator_new_empty_raising() {
+Allocator_s rhc_allocator_new_empty_raising() {
     return (Allocator_s) {
         NULL,
         rhc_allocator_empty_raising_malloc_impl_,
