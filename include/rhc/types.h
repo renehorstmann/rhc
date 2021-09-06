@@ -65,7 +65,7 @@ static bool allocator_valid(Allocator_s a) {
 
 // returns true if str is valid
 static bool str_valid(Str_s s) {
-    return s.data != NULL && s.size>0;
+    return s.data != NULL;
 }
 
 
