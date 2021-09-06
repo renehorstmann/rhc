@@ -135,9 +135,9 @@ static void string_resize(String *self, size_t size) {
 static void string_append(String *self, Str_s append) {
     if(!string_valid(*self))
         return;
-    char *end = self->data + self->size;
+    size_t prev_size = self->size;
     string_resize(self, self->size + append.size);
-    memcpy(end, append.data, append.size);
+    memcpy(self->data + prev_size, append.data, append.size);
     self->data[self->size] = '\0';  //just to be sure
 }
 
