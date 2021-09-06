@@ -14,9 +14,10 @@ static String file_read(const char *file, bool ascii) {
     return file_read_a(file, ascii, RHC_STRING_DEFAULT_ALLOCATOR);
 }
 
-
+// writes a file and returns false on error
 bool file_write(const char *file, Str_s content, bool ascii);
 
+// appends to a file and returns false on error
 bool file_append(const char *file, Str_s constent, bool ascii);
 
 #endif //RHC_FILE_H

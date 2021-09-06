@@ -288,6 +288,18 @@ static ssize_t str_find_last_set(Str_s s, const char *char_set) {
     return -1;
 }
 
+// returns new str, based on s, but missing the first n characters
+static Str_s str_eat(Str_s s, size_t n) {
+    if(n>=s.size) {
+        s.data += s.size;
+        s.size = 0;
+    } else {
+        s.data += n;
+        s.size -= n;
+    }
+    return s;
+}
+
 // returns new str, based on s, without every leading char until the char until.
 // The cut is set into opt_get
 static Str_s str_eat_until(Str_s s, char until, Str_s *opt_get) {
