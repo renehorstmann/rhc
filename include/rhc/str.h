@@ -116,7 +116,7 @@ static bool str_ends_with(Str_s s, Str_s cmp) {
 // returns a new str, based on s, but without the leading chars of strip (space -> isspace())
 static Str_s str_lstrip(Str_s s, char strip) {
     // invalid safe
-    if(isspace(strip)) {
+    if(strip==' ') {
         while (!str_empty(s) && isspace(*s.data)) {
             s.data++;
             s.size--;
@@ -133,7 +133,7 @@ static Str_s str_lstrip(Str_s s, char strip) {
 // returns a new str, based on s, but without the least chars of strip (space -> isspace())
 static Str_s str_rstrip(Str_s s, char strip) {
     // invalid safe
-    if(isspace(strip)) {
+    if(strip==' ') {
         while (!str_empty(s) && isspace(s.data[s.size-1])) {
             s.size--;
         }
@@ -155,7 +155,7 @@ static Str_s str_next_split(Str_s s, char split) {
     if(str_empty(s))
         return str_new_invalid();
     Str_s res = {s.data, 0};
-    if (isspace(split)) {
+    if (split==' ') {
         while (res.size < s.size && !isspace(res.data[res.size]))
             res.size++;
     } else {
@@ -210,7 +210,7 @@ static StrArray str_split_allocated(Str_s s, char split, Allocator_s a) {
 static ssize_t str_find_first(Str_s s, char find) {
     if(str_empty(s))
         return -1;
-    if (isspace(find)) {
+    if (find==' ') {
         for(ssize_t i=0; i<s.size; i++) {
             if(isspace(s.data[i]))
                 return i;
@@ -229,7 +229,7 @@ static ssize_t str_find_first(Str_s s, char find) {
 static ssize_t str_find_last(Str_s s, char find) {
     if(str_empty(s))
         return -1;
-    if (isspace(find)) {
+    if (find==' ') {
         for(ssize_t i=s.size-1; i>=0; i--) {
             if(isspace(s.data[i]))
                 return i;
@@ -439,7 +439,7 @@ static size_t str_count(Str_s s, char search) {
     if(str_empty(s))
         return 0;
     size_t cnt = 0;
-    if(isspace(search)) {
+    if(search==' ') {
         for(size_t i=0; i<s.size; i++) {
             if(isspace(s.data[i]))
                 cnt++;
@@ -478,7 +478,7 @@ static size_t str_count_set(Str_s s, const char *set_search) {
 static void str_replace(Str_s s, char old, char replacement) {
     if(str_empty(s))
         return;
-    if(isspace(old)) {
+    if(old==' ') {
         for(size_t i=0; i<s.size; i++) {
             if(isspace(s.data[i]))
                 s.data[i] = replacement;
