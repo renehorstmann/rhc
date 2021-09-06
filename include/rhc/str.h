@@ -300,6 +300,35 @@ static Str_s str_eat(Str_s s, size_t n) {
     return s;
 }
 
+// returns new str, based on s, but missing the last n characters
+static Str_s str_eat_back(Str_s s, size_t n) {
+    if(n>=s.size) {
+        s.size = 0;
+    } else {
+        s.size -= n;
+    }
+    return s;
+}
+
+// checks if s begins with eat_begin and returns a new str, based on s, without eat_begin at the beginning
+// if s does not begin with eat_begin, an invalid str is returned
+static Str_s str_eat_str(Str_s s, Str_s eat_begin) {
+    if(!str_begins_with(s, eat_begin))
+        return str_new_invalid();
+    s.data+=eat_begin.size;
+    s.size-=eat_begin.size;
+    return s;
+}
+
+// checks if s ends with eat_back and returns a new str, based on s, without eat_back at the end
+// if s does not end with eat_back, an invalid str is returned
+static Str_s str_eat_back_str(Str_s s, Str_s eat_back) {
+    if(!str_ends_with(s, eat_back))
+        return str_new_invalid();
+    s.size-=eat_back.size;
+    return s;
+}
+
 // returns new str, based on s, without every leading char until the char until.
 // The cut is set into opt_get
 static Str_s str_eat_until(Str_s s, char until, Str_s *opt_get) {
