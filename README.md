@@ -93,4 +93,4 @@ Nevertheless, the following globals are used:
   - `bool quiet;`
 
 
-There are also non statc functions in the header files rhc/impl/*, which should be included once in a project (`#include "rhc/impl.h"`)
+There are also non static functions in the header files rhc/impl/*, which should be included once in a project (`#include "rhc/impl.h"`)
