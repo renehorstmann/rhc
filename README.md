@@ -91,3 +91,4 @@ Nevertheless, the following globals are used:
 - [`static struct {...} rhc_log_L;`](include/rhc/impl/log_impl.h)
   - `enum rhc_log_level level;`
   - `bool quiet;`
+There are also non statc functions in the header files rhc/impl/*, which should be included once in a project (`#include "rhc/impl.h"`)
