@@ -758,10 +758,9 @@ If you want to hide stuff from the class data in the header, use the pimpl (poin
 
 typedef struct {
     int cnt;
-} FooPublic;
-
-struct Foo;
-typedef struct Foo Foo;
+} Foo;
+// If the class name has a _s at the end, it is trivially copyable
+// If not (like in this case), a _copy method should be used
 
 // constructor
 Foo *foo_new();
@@ -769,13 +768,13 @@ Foo *foo_new();
 // destructor
 void foo_kill(Foo **self_ptr);
 
+// copy method
+Foo *foo_copy(const Foo *self);
+
 // getter and setter
 
-// public data
-FooPublic *foo_public(Foo *foo);
-
 // read only
-int foo_get_bar(const Foo *foo);
+int foo_get_bar(const Foo *self);
 
 // methods:
 void foo_add(Foo *self, int add);
@@ -789,17 +788,18 @@ void foo_print(const Foo *self);
 
 #include "foo.h" 
 
-struct Foo {
-    FooPublic public;
+struct FooImpl {
+    Foo public;
     int bar;
 };
 
 
 Foo *foo_new() {
-    Foo *self = rhc_raising_malloc(sizeof *self);
-    self->public.cnt = 1;
-    self->bar= 123;
-    return seld;
+    FooImpl *impl = malloc(sizeof *impl);
+    Foo *self = &impl->public;
+    self->cnt = 1;
+    impl->bar= 123;
+    return self;
 }
 
 void foo_kill(Foo **self_ptr) {
@@ -811,12 +811,15 @@ void foo_kill(Foo **self_ptr) {
     *self_ptr = NULL;
 }
 
-FooPublic *foo_public(Foo *foo) {
-    return &foo->public;
+Foo *foo_copy(const Foo *self) {
+    FooImpl *copy = malloc(sizeof *copy);
+    memcpy(copy, self, sizeof *copy);
+    return copy;
 }
 
-int foo_get_bar(const Foo *foo) {
-    return foo->bar;
+int foo_get_bar(const Foo *self) {
+    FooImpl *impl = (FooImpl *) self;
+    return impl->bar;
 }
 
 void foo_add(Foo *self, int add) {
@@ -824,7 +827,8 @@ void foo_add(Foo *self, int add) {
 }
 
 void foo_print(const Foo *self) {
-    printf("foo %d\n", self->cnt+self->L.internal_cnt);
+    const FooImpl *impl = (const FooImpl *) self;
+    printf("foo %d\n", self->cnt+impl->bar);
 }
 
 ```
