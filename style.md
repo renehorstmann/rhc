@@ -467,6 +467,13 @@ void string_kill(String *self) {
     self->str = NULL;
 }
 
+// Method (ln = lineend)
+// If the method will not change data, dont use a pointer of self (copy)
+// Or use const String *self, if String is somewhat big
+void string_println(String self) {
+    puts(self.str);
+}
+
 
 typedef struct {
     int *data;
@@ -474,7 +481,7 @@ typedef struct {
 } IntArray;
 
 // Constructor
-IntArray int_array_init(int size) {
+IntArray int_array_new(int size) {
     IntArray self;
     self.data = calloc(size, sizeof(int));
     self.size = size;
@@ -498,7 +505,7 @@ void int_array_push(IntArray *self, int append) {
 ### <a name="S-naming-classes"></a>Classes
 As seen in the previos example above, I prefer PascalCase for classes.
 The data section of the class gets the ClassName.
-The constructor is called class_name_mew and the destructor class_name_kill.
+The constructor is called class_name_new and the destructor class_name_kill.
 All methods also use this naming sheme, like class_name_length.
 With this style and an ide with autocompletion, the user gets a similar feeling to an object orientated language.
 
