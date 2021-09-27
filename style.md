@@ -3,6 +3,8 @@ A style guide for modern C programming
 
 In this file I'll show you my recommendations for a good coding style in the C programming language.
 
+This style guide does not use the rhc library, to be independent...
+(So replace malloc, etc. with rhc_malloc...)
 
 ## <a name="S-contents"></a>Contents
 
