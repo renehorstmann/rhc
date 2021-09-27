@@ -175,7 +175,7 @@ void machine_send(int msg) {
 // but its still undefined behavior...
 void machine_work(int *data, int n) {
     // would raise SIGSEGV on Linux, but better check it...
-    // platform infependent NULL check
+    // platform independent NULL check
     assert(data && "must not be NULL");
     for(int i=0; i<n; i++)
         printf("%d\n", data[i]);
