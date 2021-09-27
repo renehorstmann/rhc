@@ -540,7 +540,7 @@ int save_csv_file(const char *file, const float *array, int n);
 ```
 
 When your library gets bigger and/ or types get into the interface header, that will be part of interfaces for the user, a namespace is needed.
-A namespace is a simple and very short prefix for all names in your interface.
+A namespace is a simple and very short prefix for all names in your interface and your globals.
 A geometry library may look like the following:
 
 ```c
