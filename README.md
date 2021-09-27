@@ -9,7 +9,7 @@ Copy the headers into your project and include `rhc_impl.h` once in a single sou
 - [error.h](include/rhc/error.h) error management and `assume` (`assert` in runtime)
 - [log.h](include/rhc/log.h) logging
 - [time.h](include/rhc/time.h) monotonic time as `double` in seconds
-- [allocator.h](include/rhc/allocator.h) default allocators (`malloc, ...`) for `Allocator_s`
+- [alloc.h](include/rhc/alloc.h) default assuming allocs and allocators for `Allocator_s`
 - [file.h](include/rhc/file.h) read, write and append files
 - [str.h](include/rhc/str.h) functions, working on string views with `Str_s`
 - [string.h](include/rhc/string.h) `String` class, that holds a string
@@ -62,9 +62,9 @@ The [types.h](include/rhc/types.h) header defines some useful additional structs
   - If a function needs an `Allocator_s`, chances are, that their will be two versions:
     - `some_fn_*_a`: takes the `Allocator_s` as last parameter
     - `some_fn_*:` calls `*_a` with the default `Allocator_s`
-  - see [allocator.h](include/rhc/allocator.h) to get an `Allocator_s`.
-    - `allocator_new_default()`: the default `malloc`, `realloc`, `free` `Allocator_s`.
-    - `allocator_new_raising()`: also uses the default allocators, but will raise a signal, if the memory couldn't be allocated
+  - see [alloc.h](include/rhc/alloc.h) to get an `Allocator_s`.
+    - `allocator_new_try()`: the default `malloc`, `realloc`, `free` `Allocator_s`.
+    - `allocator_new()`: also uses the default allocators, but will raise a signal, if the memory couldn't be allocated
 - `Str_s`
   - represents a view on a string, ignoring the null terminator (so may not be null terminated)
   - `char *data`: pointer to the first char
