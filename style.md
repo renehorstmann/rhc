@@ -355,7 +355,7 @@ The compiler is very good at inlining known function implementations.
 
 For function like macros, i prefer function style naming (as with stdc):
 ```c
-#define max(a, b) ((a) > (b) ? (a) : (b)) // functiom macro
+#define max(a, b) ((a) > (b) ? (a) : (b)) // small function macro
 #define free0(ptr) do {free(ptr); ptr=NULL;} while(0) // procedur macro
 ```
 
