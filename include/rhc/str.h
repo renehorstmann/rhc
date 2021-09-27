@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include "allocator.h"
+#include "alloc.h"
 #include "error.h"
 #include "log.h"
 
