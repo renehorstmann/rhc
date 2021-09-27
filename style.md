@@ -3,9 +3,6 @@ A style guide for modern C programming
 
 In this file I'll show you my recommendations for a good coding style in the C programming language.
 
-This style guide does not use the rhc library, to be independent...
-(So replace malloc, etc. with rhc_malloc...)
-
 ## <a name="S-contents"></a>Contents
 
 - [Basics](#S-basics)
@@ -61,10 +58,11 @@ void foo() {
     bool use_array;
     {
         if(sum > 20) {
-            array = (int*) malloc(16);
+            // rhc/alloc.h contains allocators, that can raise a signal if failed (with assume from rhc/error.h)
+            array = (int*) rhc_malloc(16);
             size = 4;
         } else {
-            array = (int*) malloc(4);
+            array = (int*) rhc_malloc(4);
             size = 1;
         }
         use_array = true;
@@ -157,7 +155,8 @@ Array3_s very_good_array3_zero() {
     return (Array3_s) {0};
 }
 ```
-
+Have a look at [Mathc](https://github.com/renehorstmann/Mathc) for a linear algebra math library,
+that contains structs for vectors and matrices (`vec3`, `mat4`)
 
 #### <a name="S-err-debug_time"></a> Debug Time
 If a function is misused (should have called another way), use assertions.
@@ -450,6 +449,8 @@ typedef struct {
     bool mode3d;
 } RenderStateAttributes_s;
 ```
+Have a look at [Mathc](https://github.com/renehorstmann/Mathc) for a linear algebra math library,
+that contains structs for vectors and matrices (`vec3`, `mat4`)
 
 Structs that own data on heap, or classes, needs to be killed/ freed.
 There is a fluid transition between these two, so I treat them the same.
@@ -465,7 +466,7 @@ typedef struct {
 
 // Destructor:
 void string_kill(String *self) {
-    free(self->str);
+    rhc_free(self->str);
     self->str = NULL;
 }
 
@@ -485,21 +486,23 @@ typedef struct {
 // Constructor
 IntArray int_array_new(int size) {
     IntArray self;
-    self.data = calloc(size, sizeof(int));
+    // calloc + assume, see rhc/alloc.h
+    self.data = rhc_calloc(sizeof *self.data * size);
     self.size = size;
     return self
 }
 
 // Destructor
 void int_array_kill(IntArray *self) {
-    free(self->data);
+    rhc_free(self->data);
     self->data = NULL;
     self->size = NULL;
 }
 
 // Method
 void int_array_push(IntArray *self, int append) {
-    self->data = realloc(self->data, ++self->size * sizeof(int));
+    // realloc + assume, see rhc/alloc.h
+    self->data = rhc_realloc(self->data, sizeof *self.data * ++self->size);
     self->data[self->size-1] = append;
 }
 ```
@@ -594,7 +597,8 @@ GeoPointArray geo_points_in_circle(GeoPoint_s *array, int n, GeoCircle_s circle)
 
 #endif // GEO_INTERSECTION_H
 ```
-
+Have a look at [Mathc](https://github.com/renehorstmann/Mathc) for a linear algebra math library,
+that contains structs for vectors and matrices (`vec3`, `mat4`)
 
 
 ## <a name="S-oo"></a>Object Orientation in C
@@ -730,7 +734,7 @@ Foo foo_new() {
     Foo self;
     self.cnt = 1;
     self.L.internal_cnt = -1;
-    return seld;
+    return self;
 }
 
 void foo_kill(Foo *self) {
@@ -797,7 +801,8 @@ struct FooImpl {
 
 
 Foo *foo_new() {
-    FooImpl *impl = malloc(sizeof *impl);
+    // malloc + assume, see rhc/alloc.h
+    FooImpl *impl = rhc_malloc(sizeof *impl);
     Foo *self = &impl->public;
     self->cnt = 1;
     impl->bar= 123;
@@ -809,12 +814,13 @@ void foo_kill(Foo **self_ptr) {
     if(!self_ptr) return;
 
     // free data and set the ptr to NULL
-    free(*self_ptr);
+    rhc_free(*self_ptr);
     *self_ptr = NULL;
 }
 
 Foo *foo_copy(const Foo *self) {
-    FooImpl *copy = malloc(sizeof *copy);
+    // malloc + assume, see rhc/alloc.h
+    FooImpl *copy = rhc_malloc(sizeof *copy);
     memcpy(copy, self, sizeof *copy);
     return copy;
 }
@@ -852,13 +858,14 @@ typedef struct {
 
 Mother mother_new(int amount) {
     Mother self;
-    self.data = malloc(amount);
+    // malloc + assume, see rhc/alloc.h
+    self.data = rhc_malloc(amount);
     self.a = amount;
     return Mother
 }
 
 void mother_kill(Mother *self) {
-    free(self->data);
+    rhc_free(self->data);
     self->data = NULL;
     self->a = 0;
 }
@@ -1167,7 +1174,8 @@ void foo_print(Printable p) {
 
 // Must be an allocated constructor 
 Foo *foo_new() {
-    Foo *self = malloc(sizeof *self);
+    // calloc + assume, see rhc/alloc.h
+    Foo *self = rhc_calloc(sizeof *self);
     self->f = 0;
     self->printable = (Printable) {
         self,
@@ -1177,7 +1185,7 @@ Foo *foo_new() {
 }
 
 void foo_kill(Foo **self_ptr) {
-    free(*self_ptr);
+    rhc_free(*self_ptr);
     *self_ptr = NULL;
 }
 
