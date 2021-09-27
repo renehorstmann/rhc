@@ -391,10 +391,10 @@ typedef struct {
 } Foo_s;
 
 // or
-typedef struct item {
+typedef struct Item {
     int i;
-    struct item *next;
-} Item_s;
+    struct Item *next;
+} Item;
 ```
 
 If its a not commonly used struct in an interface header,
