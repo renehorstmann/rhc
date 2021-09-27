@@ -297,7 +297,9 @@ typedef const char *err;
 
 // bad examaple, to simple function, but you get it...
 err divide(int *out, int a, int b) {
-    if(b==0) return error("Division with 0");
+    if(b==0) {
+        return rhc_error = "Division with 0";
+    }
     *out = a/b;
     return NULL;
 }
@@ -310,7 +312,10 @@ bool string_valid(String self) {
 }
 
 String string_cat(Str_s a, Str_s b) {
-    if(str_empty(a) && str_empty(b)) return string_new_invalid();
+    if(str_empty(a) && str_empty(b)) {
+        rhc_error = "invalid members";
+        return string_new_invalid();
+    }
     // ...
 }
 ```
