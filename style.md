@@ -869,7 +869,7 @@ void mother_print(const Mother *self, int pos) {
 // derived class Child
 typedef struct {
     // include data of mother at first place
-    Mother base;
+    Mother super;
 
     // public data of Child
     int b;
@@ -880,7 +880,7 @@ Child child_new(int beta) {
     // call super.init
     // casting to Mother works, 
     //   because the first data in Child is Mother
-    self.base = mother_new(beta*2);
+    self.super = mother_new(beta*2);
     self->b = beta;
 }
 
@@ -890,7 +890,7 @@ void child_kill(Child *self) {
 }
 
 int child_length(const Child *self) {
-    return self->base.a - self->b;
+    return self->super.a - self->b;
 }
 
 
@@ -904,7 +904,7 @@ int main() {
     mother_print((Mother *) &c, 5)
     
     // or...
-    mother_print(&c.base, len);
+    mother_print(&c.super, len);
 
     child_kill(&c);
 }
@@ -944,7 +944,7 @@ void *object_as_instance(void *object, const char *type) {
 
 // class Foo
 typedef struct {
-    Object base;
+    Object super;
 
     int a;
 } Foo;
@@ -953,14 +953,14 @@ const char *FOO_TYPE = "Foo";
 
 Foo foo_new() {
     Foo self;
-    self.base = object_new(FOO_TYPE);
+    self.super = object_new(FOO_TYPE);
     self.a = 1;
     return self;
 }
 
 // class Bar : Foo
 typedef struct {
-    Foo base;
+    Foo super;
 
     int b;
 } Bar;
@@ -969,7 +969,7 @@ const char *BAR_TYPE = "FooBar";
 
 Bar bar_new() {
     Bar self;
-    self.base = foo_new();
+    self.super = foo_new();
     *((Object *) &self) = object_new(BAR_TYPE);
     self.b = 2;
     return self;
@@ -977,7 +977,7 @@ Bar bar_new() {
 
 // class Pub : Foo
 typedef struct {
-    Foo base;
+    Foo super;
 
     int p;
 } Pub;
@@ -986,7 +986,7 @@ const char *PUB_TYPE = "FooPub";
 
 Pub pub_new() {
     Pub self;
-    self.base = foo_new();
+    self.super = foo_new();
     *((Object *) &self) = object_new(PUB_TYPE);
     self.p = 3;
     return self;
@@ -995,7 +995,7 @@ Pub pub_new() {
 
 // class Car
 typedef struct {
-    Object base;
+    Object super;
 
     int color;
 } Car;
@@ -1004,7 +1004,7 @@ const char *CAR_TYPE = "Car";
 
 Car car_new() {
     Car self;
-    self.base = object_new(CAR_TYPE);
+    self.super = object_new(CAR_TYPE);
     self.color = 0xff00ff;
     return self;
 }
@@ -1072,14 +1072,14 @@ Foo foo_new() {
 
 // Class Bar : Foo
 typedef struct {
-    Foo base;
+    Foo super;
 
     // public data of Bar
     float b;
 } Bar;
 
 void bar_print(const Bar *self) {
-    printf("Bar(%d,%f)\n", self->base.f, self->b);
+    printf("Bar(%d,%f)\n", self->super.f, self->b);
 }
 
 int bar_add(Bar *self, int add) {
@@ -1092,14 +1092,14 @@ int bar_add(Bar *self, int add) {
 
 Bar bar_new(float init) {
     Bar self;
-    // call super.init
-    self.base = foo_new();
+    // call super.new
+    self.super = foo_new();
 
     self.b = init;
 
     // change overloaded vtable methods
-    self.base.print = (foo_print_function) bar_print;  // optional cast...
-    self.base.add = (foo_add_function) bar_add;
+    self.super.print = (foo_print_function) bar_print;  // optional cast...
+    self.super.add = (foo_add_function) bar_add;
     return self;
 }
 
@@ -1134,14 +1134,16 @@ In C you also must pass an void * or keep space in the printable struct for the 
 ```c
 
 // Virtual function types
-typedef void (*printable_print_function)(const void *object);
+struct Printable;
+typedef void (*printable_print_function)(struct Printable);
 
 typedef struct Printable {
+    void *impl
     printable_print_function print;
 } Printable;
 
 
-// class Foo
+// class Foo, must be a malloc class, that is not trivially copyable (_s)
 typedef struct {
     float f;
 
@@ -1149,33 +1151,43 @@ typedef struct {
 } Foo;
 
 // function that takes a Printable
-void bar(Printable p, const void *object, int n) {
+void bar(Printable p, int n) {
     for(int i=0; i<n; i++) 
-        p.print(object);
+        p.print(p);
 }
 
 
 
-void foo_print(const void *object) {
-    Foo *foo = (Foo *) object;
+void foo_print(Printable p) {
+    Foo *foo = (Foo *) p.impl;
     printf("Foo(%f)\n", foo->f);
 }
 
-Foo foo_new() {
-    Foo self;
-    self.f = 0;
-    self.printable = (Printable) {
+// Must be an allocated constructor 
+Foo *foo_new() {
+    Foo *self = malloc(sizeof *self);
+    self->f = 0;
+    self->printable = (Printable) {
+        self,
         foo_print
     };
+    return self;
+}
+
+void foo_kill(Foo **self_ptr) {
+    free(*self_ptr);
+    *self_ptr = NULL;
 }
 
 
 // usage
 int main() {
-    Foo foo = foo_new();
-    foo.f = 1.23f;
+    Foo *foo = foo_new();
+    foo->f = 1.23f;
     
-    bar(foo->printable, foo, 3);
+    bar(foo->printable, 3);
+
+    foo_kill(&foo);
 }
 
 ```
