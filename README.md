@@ -108,4 +108,4 @@ René Horstmann
 
 # License
 
-rhc is licensed under the [MIT-License](LICENSE)
+rhc is licensed under the [MIT License](LICENSE)
