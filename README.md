@@ -94,3 +94,18 @@ Nevertheless, the following globals are used:
 
 
 There are also non static functions in the header files rhc/impl/*, which should be included once in a project (`#include "rhc/impl.h"`)
+
+## todo
+- OPTION_SOCKET
+  - socket.h + impl/socket.h
+  - socket_new server/client
+  - accept
+  - send / read a full buffer (n bytes)
+
+# Author
+
+René Horstmann
+
+# License
+
+rhc is licensed under the [MIT-License](LICENSE)
