@@ -96,10 +96,6 @@ Nevertheless, the following globals are used:
 There are also non static functions in the header files rhc/impl/*, which should be included once in a project (`#include "rhc/impl.h"`)
 
 ## todo
-- remove alloc_impl
-- rhc_malloc => alloc_empty
-- rhc_calloc => alloc_zero
-- ...
 - OPTION_SOCKET?
   - socket.h + impl/socket.h
   - socket_new server/client
