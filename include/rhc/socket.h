@@ -4,8 +4,8 @@
 
 #include <stddef.h>
 
-#define RHC_SOCKET_STORAGE_SIZE 64
-#define RHC_SOCKETSERVER_STORAGE_SIZE 64
+#define RHC_SOCKET_STORAGE_SIZE 8
+#define RHC_SOCKETSERVER_STORAGE_SIZE 8
 
 typedef struct {
     char impl_storage[RHC_SOCKET_STORAGE_SIZE];
