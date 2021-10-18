@@ -6,6 +6,46 @@
 #include "../socket.h"
 #include "../alloc.h"
 
+
+//
+// implementation independent
+//
+
+bool rhc_socket_recv_msg(Socket *self, void *msg, size_t size) {
+    if(!rhc_socket_valid(*self))
+        false;
+    char *buf = msg;
+    while(size > 0) {
+        size_t n = rhc_socket_recv(self, buf, size);
+        if(n == 0)
+            return false;
+        assert(n <= size);
+        buf += n;
+        size -= n;
+    }
+    return true;
+}
+
+bool rhc_socket_send_msg(Socket *self, const void *msg, size_t size) {
+    if(!rhc_socket_valid(*self))
+        false;
+    const char *buf = msg;
+    while(size > 0) {
+        size_t n = rhc_socket_send(self, buf, size);
+        if(n == 0)
+            return false;
+        assert(n <= size);
+        buf += n;
+        size -= n;
+    }
+    return true;
+}
+
+
+//
+// wingw - windows
+//
+
 #ifdef WIN32
 #include <winsock2.h>
 #include <winsock.h>
@@ -209,47 +249,36 @@ void rhc_socket_kill(Socket *self) {
     *self = rhc_socket_new_invalid();
 }
 
-bool rhc_socket_recv(Socket *self, void *msg, size_t size) {
+size_t rhc_socket_recv(Socket *self, void *msg, size_t size) {
     if(!rhc_socket_valid(*self))
         false;
 
     WinSocket *impl = (WinSocket *) self->impl_storage;
 
-    char *buf = msg;
-    while(size > 0) {
-        int n = recv(impl->so, buf, (int) size, 0);
-        if(n <= 0) {
-            log_error("rhc_socket_recv failed, killing socket...");
-            rhc_socket_kill(self);
-            return false;
-        }
-        assert(n <= size);
-        buf += n;
-        size -= n;
+    int n = recv(impl->so, msg, (int) size, 0);
+    if(n <= 0) {
+        log_error("rhc_socket_recv failed, killing socket...");
+        rhc_socket_kill(self);
+        return 0;
     }
-    return true;
+    assert(n <= size);
+    return (size_t) n;
 }
 
-bool rhc_socket_send(Socket *self, const void *msg, size_t size) {
+size_t rhc_socket_send(Socket *self, const void *msg, size_t size) {
     if(!rhc_socket_valid(*self))
         false;
 
     WinSocket *impl = (WinSocket *) self->impl_storage;
 
-    const char *buf = msg;
-    while(size > 0) {
-        int n = send(impl->so, buf, (int) size, 0);
-        if(n <= 0) {
-            log_error("rhc_socket_send failed, killing socket...");
-            rhc_socket_kill(self);
-            return false;
-        }
-        assert(n <= size);
-
-        buf += n;
-        size -= n;
+    int n = send(impl->so, msg, (int) size, 0);
+    if(n <= 0) {
+        log_error("rhc_socket_send failed, killing socket...");
+        rhc_socket_kill(self);
+        return 0;
     }
-    return true;
+    assert(n <= size);
+    return (size_t) n;
 }
 
 #endif

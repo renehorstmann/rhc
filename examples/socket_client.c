@@ -8,10 +8,10 @@ int main() {
     char msg[32];
     sprintf(msg, "Hello Server");
     printf("send msg: <%32s>\n", msg);
-    socket_send(&socket, msg, 32);
+    socket_send_msg(&socket, msg, 32);
 
     puts("receiving");
-    socket_recv(&socket, msg, 32);
+    socket_recv_msg(&socket, msg, 32);
     printf("recv msg: <%32s>\n", msg);
 
     puts("killing socket");

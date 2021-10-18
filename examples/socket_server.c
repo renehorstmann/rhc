@@ -11,13 +11,13 @@ int main() {
 
     puts("receiving a msg");
     char msg[32];
-    socket_recv(&client, msg, 32);
+    socket_recv_msg(&client, msg, 32);
     printf("recv msg: <%32s>\n", msg);
 
     str_toupper((Str_s) {msg, 32});
 
     printf("send msg: <%32s>\n", msg);
-    socket_send(&client, msg, 32);
+    socket_send_msg(&client, msg, 32);
 
     puts("killing sockets");
     socket_kill(&client);
