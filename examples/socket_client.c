@@ -1,11 +1,9 @@
 #include "rhc/rhc_impl.h"   // once in a project
 #include <stdio.h>
-#include "rhc/socket.h"
-
 
 int main() {
     puts("creating the connection");
-    Socket socket = socket_new_client("127.0.0.1", "12345");
+    Socket socket = socket_new("127.0.0.1", "12345");
 
     char msg[32];
     sprintf(msg, "Hello Server");

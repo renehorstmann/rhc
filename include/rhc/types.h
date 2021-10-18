@@ -52,7 +52,6 @@ typedef struct {
 } String;
 
 
-
 //
 // Autotype / struct  functions
 //
