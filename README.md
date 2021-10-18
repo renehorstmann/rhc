@@ -11,6 +11,7 @@ Copy the headers into your project and include `rhc_impl.h` once in a single sou
 - [time.h](include/rhc/time.h) monotonic time as `double` in seconds
 - [alloc.h](include/rhc/alloc.h) default assuming allocs and allocators for `Allocator_s`
 - [file.h](include/rhc/file.h) read, write and append files
+- [socket.h](include/rhc/socket.h) client and server tcp sockets for fixed sized messages (recv/send exactly n bytes)
 - [str.h](include/rhc/str.h) functions, working on string views with `Str_s`
 - [string.h](include/rhc/string.h) `String` class, that holds a string
 - [str_parse.h](include/rhc/str_parse.h) parse/serialize values (`int, float, ...`) from and into a `Str_s`
