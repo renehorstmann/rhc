@@ -10,6 +10,7 @@
 #include "str.h"
 #include "string.h"
 #include "str_parse.h"
+#include "stream.h"
 #include "socket.h"
 
 #ifdef RHC_IMPL
@@ -17,6 +18,7 @@
 #include "impl/log_impl.h"
 #include "impl/alloc_impl.h"
 #include "impl/file_impl.h"
+#include "impl/stream_impl.h"
 #include "impl/socket_impl.h"
 #endif
 

@@ -10,7 +10,7 @@
 // Types
 //
 
-// virtual allocator, see alloc.h
+// virtual allocator interface, see alloc.h
 typedef struct Allocator_s {
     void *user_data;
 
@@ -20,6 +20,23 @@ typedef struct Allocator_s {
     void *(*realloc)(struct Allocator_s self, void *memory, size_t size);
     void (*free)(struct Allocator_s self, void *memory);
 } Allocator_s;
+
+// virtual stream interface, see stream.h
+typedef struct Stream_s {
+    void *user_data;
+    
+    // virtual functions
+    
+    // reads up to n bytes from the stream into memory
+    // returns bytes read or 0 on error
+    // optional, function may be NULL
+    size_t (*opt_read)(struct Stream_s self, void *memory, size_t n);
+    
+    // writes up to n bytes into the stream from memory
+    // returns bytes written or 0 on error
+    // optional, function may be NULL
+    size_t (*opt_write)(struct Stream_s self, const void *memory, size_t n);
+} Stream_s;
 
 // string view, data is not null terminated
 typedef struct {
