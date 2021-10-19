@@ -98,6 +98,7 @@ There are also non static functions in the header files rhc/impl/*, which should
 
 ## todo
 - socket.h
+  - accept may not kill server?
   - unix
   - sdl?
   - UDP?
