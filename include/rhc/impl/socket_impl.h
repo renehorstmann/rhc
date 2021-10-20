@@ -7,43 +7,10 @@
 #include "../alloc.h"
 
 
-//
-// implementation independent
-//
-
-bool rhc_socket_recv_msg(Socket *self, void *msg, size_t size) {
-    if(!rhc_socket_valid(*self))
-        false;
-    char *buf = msg;
-    while(size > 0) {
-        size_t n = rhc_socket_recv(self, buf, size);
-        if(n == 0)
-            return false;
-        assert(n <= size);
-        buf += n;
-        size -= n;
-    }
-    return true;
-}
-
-bool rhc_socket_send_msg(Socket *self, const void *msg, size_t size) {
-    if(!rhc_socket_valid(*self))
-        false;
-    const char *buf = msg;
-    while(size > 0) {
-        size_t n = rhc_socket_send(self, buf, size);
-        if(n == 0)
-            return false;
-        assert(n <= size);
-        buf += n;
-        size -= n;
-    }
-    return true;
-}
 
 
 //
-// wingw - windows
+// mingw - windows
 //
 
 #ifdef WIN32
@@ -56,6 +23,59 @@ typedef struct {
     SOCKET so;
 } WinSocket;
 _Static_assert(sizeof (WinSocket) <= RHC_SOCKET_STORAGE_SIZE, "storage not big enough");
+
+static void socket_set_invalid(Stream stream) {
+    Socket *self = stream.user_data;
+    if(!rhc_socket_valid(self))
+        return;
+    WinSocket *impl = (WinSocket *) self->impl_storage;
+    impl->so = INVALID_SOCKET;
+}
+
+static size_t socket_recv(Stream stream, void *msg, size_t size) {
+    Socket *self = stream.user_data;
+    if(!rhc_socket_valid(self))
+        return 0;
+
+    WinSocket *impl = (WinSocket *) self->impl_storage;
+
+    int n = recv(impl->so, msg, (int) size, 0);
+    if(n <= 0) {
+        log_error("rhc_socket_recv failed, killing socket...");
+        socket_set_invalid(stream);
+        return 0;
+    }
+    assert(n <= size);
+    return (size_t) n;
+}
+
+static size_t rhc_socket_send(Stream stream, const void *msg, size_t size) {
+    Socket *self = stream.user_data;
+    if(!rhc_socket_valid(self))
+        false;
+
+    WinSocket *impl = (WinSocket *) self->impl_storage;
+
+    int n = send(impl->so, msg, (int) size, 0);
+    if(n <= 0) {
+        log_error("rhc_socket_send failed, killing socket...");
+        socket_set_invalid(stream);
+        return 0;
+    }
+    assert(n <= size);
+    return (size_t) n;
+}
+
+static Stream socket_create_stream(Socket *self) {
+    return (Stream) {
+        self, socket_recv, socket_send
+    };
+}
+
+
+//
+// public
+//
 
 
 bool rhc_socketserver_valid(SocketServer self) {
@@ -148,14 +168,16 @@ void rhc_socketserver_kill(SocketServer *self) {
     *self = rhc_socketserver_new_invalid();
 }
 
-Socket rhc_socketserver_accept(SocketServer *self) {
+Socket *rhc_socketserver_accept(SocketServer *self, Allocator_s a) {
     if(!rhc_socketserver_valid(*self))
         return rhc_socket_new_invalid();
 
     WinSocket *impl = (WinSocket *) self->impl_storage;
 
-    Socket client = {0};
-    WinSocket *client_impl = (WinSocket *) client.impl_storage;
+    Socket *client = a.calloc(a, sizeof *client);
+    client->stream = socket_create_stream(client);
+    client->a = a;
+    WinSocket *client_impl = (WinSocket *) client->impl_storage;
 
     struct sockaddr_storage addr;
     int addrlen = sizeof addr;
@@ -164,6 +186,7 @@ Socket rhc_socketserver_accept(SocketServer *self) {
     if(!rhc_socket_valid(client)) {
         log_error("rhc_socketserver_accept failed, killing the server");
         rhc_socketserver_kill(self);
+        a.free(a, client);
         return rhc_socket_new_invalid();
     }
 
@@ -173,21 +196,22 @@ Socket rhc_socketserver_accept(SocketServer *self) {
     return client;
 }
 
-bool rhc_socket_valid(Socket self) {
-    WinSocket *impl = (WinSocket *) self.impl_storage;
+bool rhc_socket_valid(const Socket *self) {
+    if(!self)
+        return false;
+    WinSocket *impl = (WinSocket *) self->impl_storage;
     return impl->so != INVALID_SOCKET;
 }
 
-Socket rhc_socket_new_invalid() {
-    Socket self = {0};
-    WinSocket *impl = (WinSocket *) self.impl_storage;
-    impl->so = INVALID_SOCKET;
-    return self;
+Socket *rhc_socket_new_invalid() {
+    return NULL;
 }
 
-Socket rhc_socket_new(const char *address, const char *port) {
-    Socket self = {0};
-    WinSocket *impl = (WinSocket *) self.impl_storage;
+Socket *rhc_socket_new_a(const char *address, const char *port, Allocator_s a) {
+    Socket *self = a.calloc(a, sizeof *self);
+    self->stream = socket_create_stream(self);
+    self->a = a;
+    WinSocket *impl = (WinSocket *) self->impl_storage;
 
     // winsock startup (can be called multiple times...)
     {
@@ -197,6 +221,7 @@ Socket rhc_socket_new(const char *address, const char *port) {
         if(status != 0) {
             log_error("rhc_socket_new_server failed, WSAStartup failed: &i", status);
             rhc_error = "rhc_socket_new_server failed";
+            a.free(a, self);
             return rhc_socket_new_invalid();
         }
     }
@@ -213,6 +238,7 @@ Socket rhc_socket_new(const char *address, const char *port) {
         if (status != 0) {
             log_error("rhc_socket_new failed: getaddrinfo error: %s\n", gai_strerror(status));
             rhc_error = "rhc_socket_new failed";
+            a.free(a, self);
             return rhc_socket_new_invalid();
         }
 
@@ -237,49 +263,24 @@ Socket rhc_socket_new(const char *address, const char *port) {
     if(!rhc_socket_valid(self)) {
         log_error("rhc_socket_new failed to create the connection");
         rhc_error = "rhc_socket_new failed";
+        a.free(a, self);
         return rhc_socket_new_invalid();
     }
 
     return self;
 }
 
-void rhc_socket_kill(Socket *self) {
+void rhc_socket_kill(Socket **self_ptr) {
+    Socket *self = *self_ptr;
+    if(!self)
+        return;
     WinSocket *impl = (WinSocket *) self->impl_storage;
     closesocket(impl->so);
-    *self = rhc_socket_new_invalid();
+    self->a.free(self->a, self);
+    *self_ptr = NULL;
 }
 
-size_t rhc_socket_recv(Socket *self, void *msg, size_t size) {
-    if(!rhc_socket_valid(*self))
-        false;
 
-    WinSocket *impl = (WinSocket *) self->impl_storage;
-
-    int n = recv(impl->so, msg, (int) size, 0);
-    if(n <= 0) {
-        log_error("rhc_socket_recv failed, killing socket...");
-        rhc_socket_kill(self);
-        return 0;
-    }
-    assert(n <= size);
-    return (size_t) n;
-}
-
-size_t rhc_socket_send(Socket *self, const void *msg, size_t size) {
-    if(!rhc_socket_valid(*self))
-        false;
-
-    WinSocket *impl = (WinSocket *) self->impl_storage;
-
-    int n = send(impl->so, msg, (int) size, 0);
-    if(n <= 0) {
-        log_error("rhc_socket_send failed, killing socket...");
-        rhc_socket_kill(self);
-        return 0;
-    }
-    assert(n <= size);
-    return (size_t) n;
-}
 
 #endif
 

@@ -22,6 +22,7 @@ typedef struct Allocator_s {
 } Allocator_s;
 
 // virtual stream interface, see stream.h
+// stream.h also contains more useful functions, like stream_read/write_msg
 typedef struct Stream_s {
     void *user_data;
     

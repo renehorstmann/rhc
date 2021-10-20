@@ -94,7 +94,7 @@ static char *str_as_new_c_a(Str_s s, Allocator_s a) {
 
 // returns a new allocated buffer with str as cstring
 static char *str_as_new_c(Str_s s) {
-    return str_as_new_c_a(s, RHC_STRING_DEFAULT_ALLOCATOR);
+    return str_as_new_c_a(s, RHC_DEFAULT_ALLOCATOR);
 }
 
 

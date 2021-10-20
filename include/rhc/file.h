@@ -15,7 +15,7 @@ bool rhc_file_append(const char *file, Str_s content, bool ascii);
 
 // reads in a full file into the returned String
 static String file_read(const char *file, bool ascii) {
-    return rhc_file_read_a(file, ascii, RHC_STRING_DEFAULT_ALLOCATOR);
+    return rhc_file_read_a(file, ascii, RHC_DEFAULT_ALLOCATOR);
 }
 
 //

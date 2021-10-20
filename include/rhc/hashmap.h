@@ -118,7 +118,7 @@ static CLASS RHC_NAME_CONCAT2(FN_NAME, _new_a)(size_t approx_size, Allocator_s a
 // Foo foo_new(size_t approx_size)
 static CLASS RHC_NAME_CONCAT2(FN_NAME, _new)(size_t approx_size) {
     // new_a
-    return RHC_NAME_CONCAT2(FN_NAME, _new_a)(approx_size, RHC_HASHMAP_DEFAULT_ALLOCATOR);
+    return RHC_NAME_CONCAT2(FN_NAME, _new_a)(approx_size, RHC_DEFAULT_ALLOCATOR);
 }
 
 // Foo foo_new_invalid_a(Allocator_s a)
@@ -129,7 +129,7 @@ static CLASS RHC_NAME_CONCAT2(FN_NAME, _new_invalid_a)(Allocator_s a) {
 // Foo foo_new_invalid_a()
 static CLASS RHC_NAME_CONCAT2(FN_NAME, _new_invalid)() {
     // new_invalid_a
-    return RHC_NAME_CONCAT2(FN_NAME, _new_invalid_a)(RHC_HASHMAP_DEFAULT_ALLOCATOR);
+    return RHC_NAME_CONCAT2(FN_NAME, _new_invalid_a)(RHC_DEFAULT_ALLOCATOR);
 }
 
 

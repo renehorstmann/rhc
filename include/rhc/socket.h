@@ -2,17 +2,19 @@
 #define RHC_SOCKET_H
 #ifdef OPTION_SOCKET
 
-#include <stddef.h>
+#include "types.h"
+#include "alloc.h"
 
 #define RHC_SOCKET_STORAGE_SIZE 8
-#define RHC_SOCKETSERVER_STORAGE_SIZE 8
+
+typedef struct {
+    Stream_s stream;
+    Allocator_s a;
+    char impl_storage[RHC_SOCKET_STORAGE_SIZE];
+} Socket
 
 typedef struct {
     char impl_storage[RHC_SOCKET_STORAGE_SIZE];
-} Socket;
-
-typedef struct {
-    char impl_storage[RHC_SOCKETSERVER_STORAGE_SIZE];
 } SocketServer;
 
 
@@ -36,7 +38,7 @@ void rhc_socketserver_kill(SocketServer *self);
 
 // Accepts a new client for a SocketServer
 // If an error occures, SocketServer will be set invalid and false is returned
-Socket rhc_socketserver_accept(SocketServer *self);
+Socket *rhc_socketserver_accept_a(SocketServer *self, Allocator_s a);
 
 
 //
@@ -44,34 +46,33 @@ Socket rhc_socketserver_accept(SocketServer *self);
 //
 
 // returns true if the Socket is valid to use
-bool rhc_socket_valid(Socket self);
+bool rhc_socket_valid(const Socket *self);
 // returns a new invalid Socket
-Socket rhc_socket_new_invalid();
+Socket *rhc_socket_new_invalid();
 
 // Creates and connects to a server
-Socket rhc_socket_new(const char *address, const char *port);
+Socket *rhc_socket_new_a(const char *address, const char *port, Allocator_s a);
 
 // kills the socket and sets it invalid
-void rhc_socket_kill(Socket *self);
+void rhc_socket_kill(Socket **self_ptr);
 
-// Receives up to size bytes into msg and returns the number of received bytes
-// If an error occures, Socket will be set invalid and 0 is returned
-size_t rhc_socket_recv(Socket *self, void *msg, size_t size);
-// Sends aup to size bytes from msg and returns the number of send bytes
-// If an error occures, Socket will be set invalid and 0 is returned
-size_t rhc_socket_send(Socket *self, const void *msg, size_t size);
-
-// Receives a full message (blocks until size bytes are received)
-// If an error occures, Socket will be set invalid and false is returned
-bool rhc_socket_recv_msg(Socket *self, void *msg, size_t size);
-// Sends a full message (blocks until size bytes are send)
-// If an error occures, Socket will be set invalid and false is returned
-bool rhc_socket_send_msg(Socket *self, const void *msg, size_t size);
 
 
 //
 // wrapper without _rhc
 //
+
+// Accepts a new client for a SocketServer
+// If an error occures, SocketServer will be set invalid and false is returned
+static Socket *socketserver_accept(SocketServer *self) {
+    return rhc_socketserver_accept(self, RHC_DEFAULT_ALLOCATOR);
+}
+
+// Creates and connects to a server
+static Socket *socket_new(const char *address, const char *port) {
+    return rhc_socket_new(address, port, RHC_DEFAULT_ALLOCATOR);
+}
+
 
 // returns true if the SocketServer is valid to use
 #define socketserver_valid rhc_socketserver_valid
@@ -87,35 +88,14 @@ bool rhc_socket_send_msg(Socket *self, const void *msg, size_t size);
 // kills the socketserver and sets it invalid
 #define socketserver_kill rhc_socketserver_kill
 
-// Accepts a new client for a SocketServer
-// If an error occures, SocketServer will be set invalid and false is returned
-#define socketserver_accept rhc_socketserver_accept
-
 
 // returns true if the Socket is valid to use
 #define socket_valid rhc_socket_valid
 // returns a new invalid Socket
 #define socket_new_invalid rhc_socket_new_invalid
 
-// Creates and connects to a server
-#define socket_new rhc_socket_new
-
 // kills the socket and sets it invalid
 #define socket_kill rhc_socket_kill
-
-// Receives up to size bytes into msg and returns the number of received bytes
-// If an error occures, Socket will be set invalid and 0 is returned
-#define socket_recv rhc_socket_recv
-// Sends aup to size bytes from msg and returns the number of send bytes
-// If an error occures, Socket will be set invalid and 0 is returned
-#define socket_send rhc_socket_send
-
-// Receives a full message (blocks until size bytes are received)
-// If an error occures, Socket will be set invalid and false is returned
-#define socket_recv_msg rhc_socket_recv_msg
-// Sends a full message (blocks until size bytes are send)
-// If an error occures, Socket will be set invalid and false is returned
-#define socket_send_msg rhc_socket_send_msg
 
 
 #endif //OPTION_SOCKET

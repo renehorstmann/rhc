@@ -6,16 +6,8 @@
 //
 // Options
 //
-#ifndef RHC_STRING_DEFAULT_ALLOCATOR
-#define RHC_STRING_DEFAULT_ALLOCATOR rhc_allocator_new()
-#endif
-
-#ifndef RHC_DYNARRAY_DEFAULT_ALLOCATOR
-#define RHC_DYNARRAY_DEFAULT_ALLOCATOR rhc_allocator_new()
-#endif
-
-#ifndef RHC_HASHMAP_DEFAULT_ALLOCATOR
-#define RHC_HASHMAP_DEFAULT_ALLOCATOR rhc_allocator_new()
+#ifndef RHC_DEFAULT_ALLOCATOR
+#define RHC_DEFAULT_ALLOCATOR rhc_allocator_new()
 #endif
 
 //
