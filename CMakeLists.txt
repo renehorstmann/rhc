@@ -27,7 +27,6 @@ endif()
 
 if(UNIX)
     message("Unix")
-    add_definitions(-DOPTION_SOCKET)
     target_compile_definitions(socket_server PRIVATE -DOPTION_SOCKET)
     target_compile_definitions(socket_client PRIVATE -DOPTION_SOCKET)
 endif()

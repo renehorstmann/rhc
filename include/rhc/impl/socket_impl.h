@@ -22,14 +22,6 @@ typedef struct {
 } UnixSocket;
 _Static_assert(sizeof (UnixSocket) <= RHC_SOCKET_STORAGE_SIZE, "storage not big enough");
 
-static void socket_set_invalid(Stream_i stream) {
-    Socket *self = stream.user_data;
-    if(!rhc_socket_valid(self))
-        return;
-    UnixSocket *impl = (UnixSocket *) self->impl_storage;
-    impl->so = -1;
-}
-
 static size_t socket_recv(Stream_i stream, void *msg, size_t size) {
     Socket *self = stream.user_data;
     if(!rhc_socket_valid(self))
@@ -40,7 +32,8 @@ static size_t socket_recv(Stream_i stream, void *msg, size_t size) {
     ssize_t n = recv(impl->so, msg, size, MSG_NOSIGNAL);
     if(n <= 0) {
         log_error("rhc_socket_recv failed, killing socket...");
-        socket_set_invalid(stream);
+        close(impl->so);
+        impl->so = -1;
         return 0;
     }
     assert(n <= size);
@@ -57,7 +50,8 @@ static size_t socket_send(Stream_i stream, const void *msg, size_t size) {
     ssize_t n = send(impl->so, msg, size, MSG_NOSIGNAL);
     if(n <= 0) {
         log_error("rhc_socket_send failed, killing socket...");
-        socket_set_invalid(stream);
+        close(impl->so);
+        impl->so = -1;
         return 0;
     }
     assert(n <= size);
@@ -269,14 +263,6 @@ typedef struct {
 } UnixSocket;
 _Static_assert(sizeof (UnixSocket) <= RHC_SOCKET_STORAGE_SIZE, "storage not big enough");
 
-static void socket_set_invalid(Stream_i stream) {
-    Socket *self = stream.user_data;
-    if(!rhc_socket_valid(self))
-        return;
-    UnixSocket *impl = (UnixSocket *) self->impl_storage;
-    impl->so = INVALID_SOCKET;
-}
-
 static size_t socket_recv(Stream_i stream, void *msg, size_t size) {
     Socket *self = stream.user_data;
     if(!rhc_socket_valid(self))
@@ -287,7 +273,8 @@ static size_t socket_recv(Stream_i stream, void *msg, size_t size) {
     int n = recv(impl->so, msg, (int) size, 0);
     if(n <= 0) {
         log_error("rhc_socket_recv failed, killing socket...");
-        socket_set_invalid(stream);
+        closesocket(impl->so);
+        impl->so = INVALID_SOCKET;
         return 0;
     }
     assert(n <= size);
@@ -304,7 +291,8 @@ static size_t socket_send(Stream_i stream, const void *msg, size_t size) {
     int n = send(impl->so, msg, (int) size, 0);
     if(n <= 0) {
         log_error("rhc_socket_send failed, killing socket...");
-        socket_set_invalid(stream);
+        closesocket(impl->so);
+        impl->so = INVALID_SOCKET;
         return 0;
     }
     assert(n <= size);
