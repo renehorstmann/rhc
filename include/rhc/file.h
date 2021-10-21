@@ -6,7 +6,7 @@
 
 
 // reads in a full file into the returned String
-String rhc_file_read_a(const char *file, bool ascii, Allocator_s a);
+String rhc_file_read_a(const char *file, bool ascii, Allocator_i a);
 // writes a file and returns false on error
 bool rhc_file_write(const char *file, Str_s content, bool ascii);
 // appends to a file and returns false on error

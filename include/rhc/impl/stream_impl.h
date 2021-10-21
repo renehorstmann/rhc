@@ -5,21 +5,21 @@
 #include "../stream.h"
 
 
-size_t rhc_stream_read(struct Stream_s self, void *memory, size_t n) {
+size_t rhc_stream_read(struct Stream_i self, void *memory, size_t n) {
     if(!self.opt_read)
         return 0;
     return self.opt_read(self, memory, n);
 }
     
 
-size_t rhc_stream_write(struct Stream_s self, const void *memory, size_t n) {
+size_t rhc_stream_write(struct Stream_i self, const void *memory, size_t n) {
     if(!self.opt_write)
         return 0;
     return self.opt_write(self, memory, n);
 }
 
 
-size_t rhc_stream_read_msg(struct Stream_s self, void *memory, size_t n) {
+size_t rhc_stream_read_msg(struct Stream_i self, void *memory, size_t n) {
     if(!self.opt_read)
         return 0;
     char *buf = memory;
@@ -36,7 +36,7 @@ size_t rhc_stream_read_msg(struct Stream_s self, void *memory, size_t n) {
 }
     
 
-size_t rhc_stream_write_msg(struct Stream_s self, const void *memory, size_t n) {
+size_t rhc_stream_write_msg(struct Stream_i self, const void *memory, size_t n) {
     if(!self.opt_write)
         return 0;
     const char *buf = memory;

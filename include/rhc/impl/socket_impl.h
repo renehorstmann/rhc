@@ -169,7 +169,7 @@ void rhc_socketserver_kill(SocketServer *self) {
     *self = rhc_socketserver_new_invalid();
 }
 
-Socket *rhc_socketserver_accept(SocketServer *self, Allocator_s a) {
+Socket *rhc_socketserver_accept(SocketServer *self, Allocator_i a) {
     if(!rhc_socketserver_valid(*self))
         return rhc_socket_new_invalid();
 
@@ -177,7 +177,7 @@ Socket *rhc_socketserver_accept(SocketServer *self, Allocator_s a) {
 
     Socket *client = a.calloc(a, sizeof *client);
     client->stream = socket_create_stream(client);
-    client->a = a;
+    client->allocator = a;
     WinSocket *client_impl = (WinSocket *) client->impl_storage;
 
     struct sockaddr_storage addr;
@@ -208,10 +208,10 @@ Socket *rhc_socket_new_invalid() {
     return NULL;
 }
 
-Socket *rhc_socket_new_a(const char *address, const char *port, Allocator_s a) {
+Socket *rhc_socket_new_a(const char *address, const char *port, Allocator_i a) {
     Socket *self = a.calloc(a, sizeof *self);
     self->stream = socket_create_stream(self);
-    self->a = a;
+    self->allocator = a;
     WinSocket *impl = (WinSocket *) self->impl_storage;
     
     char port_str[8];
@@ -280,7 +280,7 @@ void rhc_socket_kill(Socket **self_ptr) {
         return;
     WinSocket *impl = (WinSocket *) self->impl_storage;
     closesocket(impl->so);
-    self->a.free(self->a, self);
+    self->allocator.free(self->allocator, self);
     *self_ptr = NULL;
 }
 

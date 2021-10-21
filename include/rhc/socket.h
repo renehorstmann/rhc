@@ -9,8 +9,8 @@
 #define RHC_SOCKET_STORAGE_SIZE 8
 
 typedef struct {
-    Stream_s stream;
-    Allocator_s a;
+    Stream_i stream;
+    Allocator_i allocator;
     char impl_storage[RHC_SOCKET_STORAGE_SIZE];
 } Socket
 
@@ -39,7 +39,7 @@ void rhc_socketserver_kill(SocketServer *self);
 
 // Accepts a new client for a SocketServer
 // If an error occures, SocketServer will be set invalid and false is returned
-Socket *rhc_socketserver_accept_a(SocketServer *self, Allocator_s a);
+Socket *rhc_socketserver_accept_a(SocketServer *self, Allocator_i a);
 
 
 //
@@ -52,7 +52,7 @@ bool rhc_socket_valid(const Socket *self);
 Socket *rhc_socket_new_invalid();
 
 // Creates and connects to a server
-Socket *rhc_socket_new_a(const char *address, uint16_t port, Allocator_s a);
+Socket *rhc_socket_new_a(const char *address, uint16_t port, Allocator_i a);
 
 // kills the socket and sets it invalid
 void rhc_socket_kill(Socket **self_ptr);
