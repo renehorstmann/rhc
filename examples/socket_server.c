@@ -4,20 +4,20 @@
 
 int main() {
     puts("creating the server");
-    SocketServer server = socketserver_new("127.0.0.1", "12345");
+    SocketServer server = socketserver_new("127.0.0.1", 12345);
 
     puts("accepting the client");
-    Socket client = socketserver_accept(&server);
+    Socket *client = socketserver_accept(&server);
 
-    puts("receiving a msg");
+    puts("read a msg");
     char msg[32];
-    socket_recv_msg(&client, msg, 32);
-    printf("recv msg: <%32s>\n", msg);
+    stream_read_msg(client->stream, msg, 32);
+    printf("read msg: <%32s>\n", msg);
 
     str_toupper((Str_s) {msg, 32});
 
-    printf("send msg: <%32s>\n", msg);
-    socket_send_msg(&client, msg, 32);
+    printf("write msg: <%32s>\n", msg);
+    stream_write_msg(client->stream, msg, 32);
 
     puts("killing sockets");
     socket_kill(&client);
