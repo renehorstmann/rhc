@@ -37,7 +37,7 @@ static size_t socket_recv(Stream_i stream, void *msg, size_t size) {
 
     UnixSocket *impl = (UnixSocket *) self->impl_storage;
 
-    ssize_t n = recv(impl->so, msg, size, 0);
+    ssize_t n = recv(impl->so, msg, size, MSG_NOSIGNAL);
     if(n <= 0) {
         log_error("rhc_socket_recv failed, killing socket...");
         socket_set_invalid(stream);
@@ -54,7 +54,7 @@ static size_t socket_send(Stream_i stream, const void *msg, size_t size) {
 
     UnixSocket *impl = (UnixSocket *) self->impl_storage;
 
-    ssize_t n = send(impl->so, msg, size, 0);
+    ssize_t n = send(impl->so, msg, size, MSG_NOSIGNAL);
     if(n <= 0) {
         log_error("rhc_socket_send failed, killing socket...");
         socket_set_invalid(stream);

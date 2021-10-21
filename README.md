@@ -97,11 +97,7 @@ Nevertheless, the following globals are used:
 There are also non static functions in the header files rhc/impl/*, which should be included once in a project (`#include "rhc/impl.h"`)
 
 ## todo
-- rename interfaces to _i
-- stream.h
 - socket.h
-  - accept may not kill server?
-  - unix
   - sdl?
   - UDP?
 - style: tldr naming
