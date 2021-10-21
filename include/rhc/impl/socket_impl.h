@@ -4,8 +4,6 @@
 
 #include <assert.h>
 #include "../socket.h"
-#include "../alloc.h"
-
 
 
 
@@ -90,9 +88,12 @@ SocketServer rhc_socketserver_new_invalid() {
     return self;
 }
 
-SocketServer rhc_socketserver_new(const char *address, const char *port) {
+SocketServer rhc_socketserver_new(const char *address, uint16_t port) {
     SocketServer self = {0};
     WinSocket *impl = (WinSocket *) self.impl_storage;
+    
+    char port_str[8];
+    snprintf(port_str, 8, "%i", port);
 
     // winsock startup (can be called multiple times...)
     {
@@ -115,7 +116,7 @@ SocketServer rhc_socketserver_new(const char *address, const char *port) {
     // find a valid address and create a socket on it
     {
         struct addrinfo *servinfo;
-        int status = getaddrinfo(address, port, &hints, &servinfo);
+        int status = getaddrinfo(address, port_str, &hints, &servinfo);
         if (status != 0) {
             log_error("rhc_socketserver_new failed: getaddrinfo error: %s\n", gai_strerror(status));
             rhc_error = "rhc_socketserver_new failed";
@@ -212,6 +213,9 @@ Socket *rhc_socket_new_a(const char *address, const char *port, Allocator_s a) {
     self->stream = socket_create_stream(self);
     self->a = a;
     WinSocket *impl = (WinSocket *) self->impl_storage;
+    
+    char port_str[8];
+    snprintf(port_str, 8, "%i", port);
 
     // winsock startup (can be called multiple times...)
     {
@@ -234,7 +238,7 @@ Socket *rhc_socket_new_a(const char *address, const char *port, Allocator_s a) {
     // find a valid address and connect to it
     {
         struct addrinfo *servinfo;
-        int status = getaddrinfo(address, port, &hints, &servinfo);
+        int status = getaddrinfo(address, port_str, &hints, &servinfo);
         if (status != 0) {
             log_error("rhc_socket_new failed: getaddrinfo error: %s\n", gai_strerror(status));
             rhc_error = "rhc_socket_new failed";

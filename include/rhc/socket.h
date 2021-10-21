@@ -2,6 +2,7 @@
 #define RHC_SOCKET_H
 #ifdef OPTION_SOCKET
 
+#include <stdint.h>
 #include "types.h"
 #include "alloc.h"
 
@@ -31,7 +32,7 @@ SocketServer rhc_socketserver_new_invalid();
 // Creates a new SocketServer
 // address may be "localhost" or "127.0.0.1", to only enable local connections
 // address may be "0.0.0.0" to enable all incoming connections
-SocketServer rhc_socketserver_new(const char *address, const char *port);
+SocketServer rhc_socketserver_new(const char *address, uint16_t port);
 
 // kills the socketserver and sets it invalid
 void rhc_socketserver_kill(SocketServer *self);
@@ -51,7 +52,7 @@ bool rhc_socket_valid(const Socket *self);
 Socket *rhc_socket_new_invalid();
 
 // Creates and connects to a server
-Socket *rhc_socket_new_a(const char *address, const char *port, Allocator_s a);
+Socket *rhc_socket_new_a(const char *address, uint16_t port, Allocator_s a);
 
 // kills the socket and sets it invalid
 void rhc_socket_kill(Socket **self_ptr);
@@ -69,7 +70,7 @@ static Socket *socketserver_accept(SocketServer *self) {
 }
 
 // Creates and connects to a server
-static Socket *socket_new(const char *address, const char *port) {
+static Socket *socket_new(const char *address, uint16_t port) {
     return rhc_socket_new(address, port, RHC_DEFAULT_ALLOCATOR);
 }
 
