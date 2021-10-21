@@ -46,6 +46,13 @@ Socket *rhc_socketserver_accept_a(SocketServer *self, Allocator_i a);
 // Socket
 //
 
+// safe way to use the Stream interface
+static Stream_i socket_get_stream(Socket *self) {
+    if(!self)
+        return stream_new_invalid();
+    return self->stream;
+}
+
 // returns true if the Socket is valid to use
 bool rhc_socket_valid(const Socket *self);
 // returns a new invalid Socket

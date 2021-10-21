@@ -27,7 +27,7 @@ static size_t file_stream_read(Stream_i stream, void *msg, size_t size) {
 
     SdlFile *impl = (SdlFile*) self->impl_storage;
 
-    size_t n = SDL_RWread(impl->file,msg, size, 1);
+    size_t n = SDL_RWread(impl->file,msg, 1, size);
     if(n <= 0) {
         log_error("rhc_file_read failed, killing file...");
         SDL_RWclose(impl->file);
@@ -45,7 +45,7 @@ static size_t file_stream_write(Stream_i stream, void *msg, size_t size) {
 
     SdlFile *impl = (SdlFile*) self->impl_storage;
 
-    size_t n = SDL_RWwrite(impl->file, msg, size, 1);
+    size_t n = SDL_RWwrite(impl->file, msg, 1, size);
     if(n <= 0) {
         log_error("rhc_file_write failed, killing file...");
         SDL_RWclose(impl->file);
@@ -230,7 +230,7 @@ static size_t file_stream_read(Stream_i stream, void *msg, size_t size) {
 
     UnixFile *impl = (UnixFile*) self->impl_storage;
 
-    size_t n = fread(msg, size, 1, impl->file);
+    size_t n = fread(msg, 1, size, impl->file);
     if(n <= 0) {
         log_error("rhc_file_read failed, killing file...");
         fclose(impl->file);
@@ -241,14 +241,14 @@ static size_t file_stream_read(Stream_i stream, void *msg, size_t size) {
     return (size_t) n;
 }
 
-static size_t file_stream_write(Stream_i stream, void *msg, size_t size) {
+static size_t file_stream_write(Stream_i stream, const void *msg, size_t size) {
     RhcFile *self = stream.user_data;
     if(!rhc_file_valid(self))
         return 0;
 
     UnixFile *impl = (UnixFile*) self->impl_storage;
 
-    size_t n = fwrite(msg, size, 1, impl->file);
+    size_t n = fwrite(msg, 1, size, impl->file);
     if(n <= 0) {
         log_error("rhc_file_write failed, killing file...");
         fclose(impl->file);
@@ -283,7 +283,7 @@ RhcFile *rhc_file_open_read_a(const char *file, bool ascii, Allocator_i a) {
 RhcFile *rhc_file_open_write_a(const char *file, bool ascii, Allocator_i a) {
     RhcFile *self = a.calloc(a, sizeof *self);
     UnixFile *impl = (UnixFile*) self->impl_storage;
-    self->stream = (Stream_i) {self, file_stream_read, NULL};
+    self->stream = (Stream_i) {self, NULL, file_stream_write};
     self->allocator = a;
     impl->file = fopen(file, ascii ? "w" : "wb");
     if (!impl->file) {
@@ -297,7 +297,7 @@ RhcFile *rhc_file_open_write_a(const char *file, bool ascii, Allocator_i a) {
 RhcFile *rhc_file_open_append_a(const char *file, bool ascii, Allocator_i a) {
     RhcFile *self = a.calloc(a, sizeof *self);
     UnixFile *impl = (UnixFile*) self->impl_storage;
-    self->stream = (Stream_i) {self, file_stream_read, NULL};
+    self->stream = (Stream_i) {self, NULL, file_stream_write};
     self->allocator = a;
     impl->file = fopen(file, ascii ? "a" : "ab");
     if (!impl->file) {

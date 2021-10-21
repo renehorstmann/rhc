@@ -12,6 +12,13 @@ typedef struct {
     char impl_storage[RHC_FILE_STORAGE_SIZE];
 } RhcFile;
 
+// safe way to use the Stream interface
+static Stream_i rhc_file_get_stream(RhcFile *self) {
+    if(!self)
+        return stream_new_invalid();
+    return self->stream;
+}
+
 // returns true, if the rhc file is valid to use
 bool rhc_file_valid(const RhcFile *self);
 
