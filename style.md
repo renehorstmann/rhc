@@ -39,41 +39,42 @@ In this file I'll show you my recommendations for a good coding style in the C p
     - [Interfaces](#S-oo-interfaces)
 
 ## <a name="S-tldrnaming"></a>tl;dr naming
+Here is the rhc naming scheme:
 - variables
-  `int snake_case;`
+  - `int snake_case;`
 - globals (only if really necessary)
-  `int ns_snake_case; // ns=namespace like rhc`
+  - `int ns_snake_case; // ns=namespace like rhc`
 - constants
-  `#define NS_SCREAM_CASE 123`
-  `static const int NS_SCREAM_CASE = 123;`
+  - `#define NS_SCREAM_CASE 123`
+  - `static const int NS_SCREAM_CASE = 123;`
 - static functions in source file
-  `static void snake_case();`
+  - `static void snake_case();`
 - static functions in headers
-  `static void ns_snake_case();`
-  `static void module_snake_case(); // e. g. file_read in the file.h module`
+  - `static void ns_snake_case();`
+  - `static void module_snake_case(); // e. g. file_read in the file.h module`
 - global functions
-  `void ns_snake_case();`
+  - `void ns_snake_case();`
 - macros
-  see functions or PascalCase
+  - see functions or PascalCase
 - pod struct (trivially copyable)
-  `typedef struct { int color; } PascalCase_s; // or NsPascalCase_s`
+  - `typedef struct { int color; } PascalCase_s; // or NsPascalCase_s`
 - classes
-  `typedef struct { void *memory; } PascalCase; // or NsPascalCase`
+  - `typedef struct { void *memory; } PascalCase; // or NsPascalCase`
 - interfaces
-  `typedef struct { void *user_data; void (*vfunc)(); } PascalCase_i; // or NsPascalCase_i`
+  - `typedef struct { void *user_data; void (*vfunc)(); } PascalCase_i; // or NsPascalCase_i`
 - methods
-  `void class_name_snake_case(); // e. g. void string_resize(String *self, size_t size);` 
-  `void ns_class_name_snake_case();`
+  - `void class_name_snake_case(); // e. g. void string_resize(String *self, size_t size);` 
+  - `void ns_class_name_snake_case();`
 - class constructor
-  `Class class_new();`
-  `NsClass ns_class_new();`
-  `Class *class_new(); // class is allocated (for interfaces, oop, ...)`
-  `NsClass *ns_class_new();`
+  - `Class class_new();`
+  - `NsClass ns_class_new();`
+  - `Class *class_new(); // class is allocated (for interfaces, oop, ...)`
+  - `NsClass *ns_class_new();`
 - class destructor
-  `void class_kill(Class *self);`
-  `void ns_class_kill(Class *self);`
-  `void class_kill(Class **self_ptr);`
-  `void ns_class_kill(Class **self_ptr);`
+  - `void class_kill(Class *self); // also clears the class with 0 to an invalid state`
+  - `void ns_class_kill(Class *self);`
+  - `void class_kill(Class **self_ptr); // used for allocated classes, to also set the pointer to NULL`
+  - `void ns_class_kill(Class **self_ptr);`
 
 ## <a name="S-basics"></a>Basics
 ### <a name="S-basics-where_variables"></a>Where to put variable instantiations
