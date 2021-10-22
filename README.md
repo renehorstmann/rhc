@@ -5,13 +5,14 @@ A C standard library addition.
 Copy the headers into your project and include `rhc_impl.h` once in a single source file.
 
 ## Components
-- [types.h](include/rhc/types.h) containing some basic types, like `Allocation_s, Str_s, String`
+- [types.h](include/rhc/types.h) containing some basic types, like `Allocation_i, Stream_i, Str_s, String`
 - [error.h](include/rhc/error.h) error management and `assume` (`assert` in runtime)
 - [log.h](include/rhc/log.h) logging
 - [time.h](include/rhc/time.h) monotonic time as `double` in seconds
-- [alloc.h](include/rhc/alloc.h) default assuming allocs and allocators for `Allocator_s`
-- [file.h](include/rhc/file.h) read, write and append files
-- [socket.h](include/rhc/socket.h) client and server tcp sockets for fixed sized messages (recv/send exactly n bytes)
+- [alloc.h](include/rhc/alloc.h) default assuming allocs and allocators for `Allocator_i`
+- [file.h](include/rhc/file.h) read, write and append files, open file with `Stream_i` interface
+- [socket.h](include/rhc/socket.h) client and server tcp sockets with `Stream_i` interface
+- [stream.h](include/rhc/stream.h) functions to read and write on streams, `*_msg` blocks until all bytes are transfered
 - [str.h](include/rhc/str.h) functions, working on string views with `Str_s`
 - [string.h](include/rhc/string.h) `String` class, that holds a string
 - [str_parse.h](include/rhc/str_parse.h) parse/serialize values (`int, float, ...`) from and into a `Str_s`
@@ -57,24 +58,24 @@ If you want to extend the code, for example with a function that loads an image 
 
 ## Types
 The [types.h](include/rhc/types.h) header defines some useful additional structs and is included in most other headers.
-- `Allocator_s`
-  - holds virtual functions for `malloc`, `realloc` and `free`
-  - Every function in rhc, that allocates and holds memory, uses and owns an `Allocator_s`
-  - If a function needs an `Allocator_s`, chances are, that their will be two versions:
-    - `some_fn_*_a`: takes the `Allocator_s` as last parameter
-    - `some_fn_*:` calls `*_a` with the default `Allocator_s`
-  - see [alloc.h](include/rhc/alloc.h) to get an `Allocator_s`.
-    - `allocator_new_try()`: the default `malloc`, `realloc`, `free` `Allocator_s`.
-    - `allocator_new()`: also uses the default allocators, but will raise a signal, if the memory couldn't be allocated
+- `Allocator_i`
+  - holds virtual functions for `malloc`, `calloc`, `realloc` and `free`
+  - Every function in rhc, that allocates and holds memory, uses and owns an `Allocator_i`
+  - If a function needs an `Allocator_i`, chances are, that their will be two versions:
+    - `some_fn_*_a`: takes the `Allocator_i` as last parameter
+    - `some_fn_*:` calls `*_a` with the default `Allocator_i`
+  - see [alloc.h](include/rhc/alloc.h) to get an `Allocator_i`.
+    - `rhc_allocator_new_try()`: the default `malloc`, `realloc`, `free` `Allocator_i`.
+    - `rhc_allocator_new()`: also uses the default allocators, but will raise a signal, if the memory couldn't be allocated
 - `Str_s`
   - represents a view on a string, ignoring the null terminator (so may not be null terminated)
   - `char *data`: pointer to the first char
   - `size_t size`: length of the string
   - see [str.h](include/rhc/str.h) for functions working on a `Str_s`
 - `String`
-  - holds a string in memory, via an `Allocator_s` and a `Str_s`
+  - holds a string in memory, via an `Allocator_i` and a `Str_s`
   - in contrast to `Str_s`, a `String` is always null terminated
-  - call `string_kill` to free the data via its `Allocator_s`
+  - call `string_kill` to free the data via its `Allocator_i`
   - see [string.h](include/rhc/string.h) for methods working on a `String`
 
 ## Style
