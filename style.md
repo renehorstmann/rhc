@@ -40,7 +40,7 @@ In this file I'll show you my recommendations for a good coding style in the C p
 ## <a name="S-basics"></a>Basics
 ### <a name="S-basics-where_variables"></a>Where to put variable instantiations
 In old C compilers, variable instantiations must be at the beginning of a function.
-In modern C, you can and should create variables at the line, where they are first needed.
+In modern C (if you dont care for function stack sizes), you can and should create variables at the line, where they are first needed.
 (If you need a variable multiple times for different use cases (e. g. error codes), put it at the start).
 ```c
 void foo() {
@@ -336,7 +336,7 @@ I prefer to use snake_case names for variables, if you want to use a member of a
 int car_petrol;
 FILE *file;
 Str_s str;
-IntIterator_s iter;
+IntIterator_i iter;
 ```
 
 ### <a name="S-naming-functions"></a>Functions
@@ -1141,34 +1141,29 @@ An interface only consists of virtual methods and so is like an abstract class w
 In C you also must pass an void * or keep space in the printable struct for the implementation.
 
 ```c
-
-// Virtual function types
-struct Printable;
-typedef void (*printable_print_function)(struct Printable);
-
-typedef struct Printable {
-    void *impl
-    printable_print_function print;
-} Printable;
+typedef struct Printable_i {
+    void *user_data
+    void (*print)(struct Printable_i);
+} Printable_i;
 
 
 // class Foo, must be a malloc class, that is not trivially copyable (_s)
 typedef struct {
     float f;
 
-    Printable printable;
+    Printable_i printable;
 } Foo;
 
 // function that takes a Printable
-void bar(Printable p, int n) {
+void bar(Printable_i p, int n) {
     for(int i=0; i<n; i++) 
         p.print(p);
 }
 
 
 
-void foo_print(Printable p) {
-    Foo *foo = (Foo *) p.impl;
+void foo_print(Printable_i p) {
+    Foo *foo = (Foo *) p.user_data;
     printf("Foo(%f)\n", foo->f);
 }
 
@@ -1177,7 +1172,7 @@ Foo *foo_new() {
     // calloc + assume, see rhc/alloc.h
     Foo *self = rhc_calloc(sizeof *self);
     self->f = 0;
-    self->printable = (Printable) {
+    self->printable = (Printable_i) {
         self,
         foo_print
     };
