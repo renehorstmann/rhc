@@ -8,7 +8,7 @@ int main() {
     // returns socket->stream or an invalid Stream_i, if socket is NULL
     Stream_i ss = socket_get_stream(socket);
 
-    char msg[32];
+    char msg[32] = {0};
     sprintf(msg, "Hello Server");
     printf("write msg: <%32s>\n", msg);
     stream_write_msg(ss, msg, 32);

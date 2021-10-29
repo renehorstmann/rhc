@@ -268,7 +268,10 @@ SocketServer rhc_socketserver_new_invalid() {
 SocketServer rhc_socketserver_new(const char *address, uint16_t port) {
     SocketServer self = {0};
     UnixSocket *impl = (UnixSocket *) self.impl_storage;
-    
+
+    if(!address)
+        address = "127.0.0.1";
+
     char port_str[8];
     snprintf(port_str, 8, "%i", port);
 
@@ -377,7 +380,10 @@ Socket *rhc_socket_new_a(const char *address, uint16_t port, Allocator_i a) {
     self->stream = socket_create_stream(self);
     self->allocator = a;
     UnixSocket *impl = (UnixSocket *) self->impl_storage;
-    
+
+    if(!address)
+        address = "127.0.0.1";
+
     char port_str[8];
     snprintf(port_str, 8, "%i", port);
 
@@ -510,6 +516,9 @@ SocketServer rhc_socketserver_new(const char *address, uint16_t port) {
     SocketServer self = {0};
     UnixSocket *impl = (UnixSocket *) self.impl_storage;
 
+    if(!address)
+        address = "127.0.0.1";
+
     char port_str[8];
     snprintf(port_str, 8, "%i", port);
 
@@ -630,6 +639,9 @@ Socket *rhc_socket_new_a(const char *address, uint16_t port, Allocator_i a) {
     self->stream = socket_create_stream(self);
     self->allocator = a;
     UnixSocket *impl = (UnixSocket *) self->impl_storage;
+
+    if(!address)
+        address = "127.0.0.1";
 
     char port_str[8];
     snprintf(port_str, 8, "%i", port);
