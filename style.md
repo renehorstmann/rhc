@@ -48,8 +48,9 @@ Here is the rhc naming scheme:
   - `int ns_snake_case; // ns=namespace like rhc`
 
 - constants
-  - `#define NS_SCREAM_CASE 123`
-  - `static const int NS_SCREAM_CASE = 123;`
+  - `#define SCREAM_CASE 123`
+  - `static const int snake_case = 123;`
+  -  global constants do get a namespace prefix (NS_* ns_*)
 
 - static functions in source file
   - `static void snake_case();`
