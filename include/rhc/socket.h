@@ -62,6 +62,7 @@ Socket *rhc_socket_new_invalid();
 
 // Creates and connects to a server
 // if address is NULL, "127.0.0.1" is used
+// not for emscripten users: compile with -s ASYNCIFY=1, because emscripten_sleep(100); will be called
 Socket *rhc_socket_new_a(const char *address, uint16_t port, Allocator_i a);
 
 // kills the socket and sets it invalid
@@ -81,6 +82,7 @@ static Socket *socketserver_accept(SocketServer *self) {
 
 // Creates and connects to a server
 // if address is NULL, "127.0.0.1" is used
+// not for emscripten users: compile with -s ASYNCIFY=1, because emscripten_sleep(100); will be called
 static Socket *socket_new(const char *address, uint16_t port) {
     return rhc_socket_new_a(address, port, RHC_DEFAULT_ALLOCATOR);
 }
