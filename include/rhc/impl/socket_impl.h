@@ -12,6 +12,9 @@
 // sdl
 //
 #ifdef OPTION_SDL
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 #include <limits.h>
 #include "SDL2/SDL_net.h"
 typedef struct {
@@ -179,6 +182,13 @@ Socket *rhc_socket_new_a(const char *address, uint16_t port, Allocator_i a) {
         a.free(a, self);
         return rhc_socket_new_invalid();
     }
+
+#ifdef __EMSCRIPTEN__
+    if(rhc_socket_valid(self)) {
+        emscripten_sleep(100);  // sleep and let the connection be opened (blocks, but runs the event loop)
+    }
+#endif
+
     return self;
 }
 

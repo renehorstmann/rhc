@@ -9,6 +9,7 @@ Copy the headers into your project and include `rhc_impl.h` once in a single sou
 - [error.h](include/rhc/error.h) error management and `assume` (`assert` in runtime)
 - [log.h](include/rhc/log.h) logging
 - [time.h](include/rhc/time.h) monotonic time as `double` in seconds
+- [endian.h](include/rhc/endian.h) host to little or big endian and vice versa
 - [alloc.h](include/rhc/alloc.h) default assuming allocs and allocators for `Allocator_i`
 - [file.h](include/rhc/file.h) read, write and append files, open file with `Stream_i` interface
 - [socket.h](include/rhc/socket.h) client and server tcp sockets with `Stream_i` interface
