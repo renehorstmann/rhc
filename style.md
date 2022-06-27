@@ -2,6 +2,7 @@
 A style guide for modern C programming
 
 In this file I'll show you my recommendations for a good coding style in the C programming language.
+Its based on the style of glib/gtk, with a few changes and simplifications.
 
 ## <a name="S-contents"></a>Contents
 
@@ -57,7 +58,7 @@ Here is the rhc naming scheme:
 
 - static functions in headers
   - `static void ns_snake_case();`
-  - `static void module_snake_case(); // e. g. file_read in the file.h module`
+  - `static void module_snake_case(); // e. g. rhc_file_read in the file.h module`
 
 - global functions
   - `void ns_snake_case();`
@@ -75,8 +76,12 @@ Here is the rhc naming scheme:
   - `typedef struct { void *user_data; void (*vfunc)(); } PascalCase_i; // or NsPascalCase_i`
 
 - methods
-  - `void class_name_snake_case(); // e. g. void string_resize(String *self, size_t size);` 
+  - `void class_name_snake_case(); // e. g. void rhc_string_resize(RhcString *self, size_t size);` 
   - `void ns_class_name_snake_case();`
+
+- module initializer
+  - `void module_init();`
+  - `void ns_module_init();`
 
 - class constructor
   - `Class class_new();`
@@ -135,7 +140,7 @@ typedef struct {
 } Indices_s; 
 ```
 The disadvantage is of course, that these array autotypes are limited in size,
-but if the contents are small emough, always prefer them.
+but if the contents are small enough, always prefer them.
 
 
 
@@ -209,7 +214,7 @@ Array3_s very_good_array3_zero() {
 }
 ```
 Have a look at [Mathc](https://github.com/renehorstmann/Mathc) for a linear algebra math library,
-that contains structs for vectors and matrices (`vec3`, `mat4`)
+it contains structs for vectors and matrices (`vec3`, `mat4`)
 
 #### <a name="S-err-debug_time"></a> Debug Time
 If a function is misused (should have called another way), use assertions.
@@ -237,7 +242,7 @@ void machine_work(int *data, int n) {
 ```
 
 #### <a name="S-err-run_time"></a> Run Time
-There are two versions of run time erros. Predictable errors and "Should not happen" errors.
+There are two versions of runtime errors. Predictable errors and "Should not happen" errors.
 The "Should not happen" errors should let the program or module die.
 In order to do this, we can raise a signal.
 
@@ -258,7 +263,7 @@ If you do not want a module to crash the whole program, you have two options:
 - Recover from a function call with a signal handler and long jumps
 
 ##### <a name="S-err-parameter"></a> Parameter
-If the error is common or predictable, report the error with a function parameter or return value to the user.
+If the error is common or predictable, report the error with a function parameter or return the value to the user.
 This seems to be the default, but consider the above options to minimize these.
 For more informations on how to use them, see [section below](#S-err-error_parameter_options).
 
@@ -316,7 +321,7 @@ int main() {
 ```
 
 With this technique, you could build an api this way:
-(pseudo code, but rhc is built this way...) 
+(pseudo code, but rhc is written that way...) 
 
 ```c
 #include "some_api.h"
@@ -342,33 +347,35 @@ int main() {
 
 ### <a name="S-err-error_parameter_options"></a> Error Parameter Options
 
-rhc uses the global: `_Thread_local const char *rhc_error;` to represent errors.
-The rhc function `error` sets and returns `rhc_error`.
+rhc uses a thread local error message (`const char *`)
+You can read and write to it with the `rhc_error_get` and `rhc_error_set` functions
 
 So an error reporting function may be:
 ```c
 typedef const char *err;
 
 // bad examaple, to simple function, but you get it...
-err divide(int *out, int a, int b) {
+bool divide(int *out, int a, int b) {
     if(b==0) {
-        return rhc_error = "Division with 0";
+        rhc_error_set("Division with 0");
+        *out = 0;
+        return false;
     }
     *out = a/b;
-    return NULL;
+    return true;
 }
 ```
 
 Another way would be to return an invalid type and set `rhc_error`:
 ```c
-bool string_valid(String self) {
+bool rhc_string_valid(RhcString self) {
     return self.s.data && !str_empty(self.s);
 }
 
-String string_cat(Str_s a, Str_s b) {
+RhcString string_cat(RhcStr_s a, RhcStr_s b) {
     if(str_empty(a) && str_empty(b)) {
-        rhc_error = "invalid members";
-        return string_new_invalid();
+        rhc_error_set("invalid members");
+        return rhc_string_new_invalid();
     }
     // ...
 }
@@ -377,9 +384,9 @@ String string_cat(Str_s a, Str_s b) {
 
 
 ## <a name="S-naming"></a>Naming
-A consistent naming sheme is generelly usefull for all kinds of stuff, but especially in programming and its very very important in C programming.
+A consistent naming scheme is generally useful for all kinds of stuff, but especially in programming and its very very important in C programming.
 In the C programming world, there is no specific definition of, for example, a class and its methods.
-Its the programmers task to use a naming sheme, so that the reader can easily see whats going on.
+Its the programmers task to use a naming scheme, so that the reader can easily see whats going on.
 With autocompletion, there is no need for small names like strtof. The programmer should always write readable code, with only common and/ or good abbreviations.
 
 
@@ -388,7 +395,7 @@ I prefer to use snake_case names for variables, if you want to use a member of a
 ```c
 int car_petrol;
 FILE *file;
-Str_s str;
+RhcStr_s str;
 IntIterator_i iter;
 ```
 
@@ -452,7 +459,7 @@ typedef struct Item {
 ```
 
 If its a not commonly used struct in an interface header,
-don't use a typedef. The user can than self decide if he want to create it.
+don't use a typedef. The user can than self decide if he wants to create it.
 In this way, the name of the struct is not wasted for the user (except for structs).
 
 ```c
@@ -471,8 +478,8 @@ struct Uncommen_s uc;
 #### <a name="S-naming-structs-usecases"></a>Use Cases
 As explained in Chapter [Prefer autotypes](#S-basics-autotypes), you should always prefer autotype structs.
 Autotype structs should be marked, so the user can directly identify them.
-There is a lot of code using `*_t` for struct members, but thats reserved for C and compiler devs!,
-So Im using PascalCase_s for autotype structs. 
+There is a lot of code using `*_t` for struct members, but thats reserved for C and compiler devs.
+So I'm using PascalCase_s for autotype structs. 
 
 ```c
 // Autotype structs
@@ -515,18 +522,18 @@ With this convention, the user directly sees at their instantiation, that he nee
 
 typedef struct {
     char *str;
-} String;
+} RhcString;
 
 // Destructor:
-void string_kill(String *self) {
+void rhc_string_kill(RhcString *self) {
     rhc_free(self->str);
     self->str = NULL;
 }
 
 // Method (ln = lineend)
 // If the method will not change data, dont use a pointer of self (copy)
-// Or use const String *self, if String is somewhat big
-void string_println(String self) {
+// Or use const RhcString *self, if RhcString is somewhat big
+void string_println(RhcString self) {
     puts(self.str);
 }
 
@@ -540,7 +547,7 @@ typedef struct {
 IntArray int_array_new(int size) {
     IntArray self;
     // calloc + assume, see rhc/alloc.h
-    self.data = rhc_calloc(sizeof *self.data * size);
+    self.data = rhc_malloc0(sizeof *self.data * size);
     self.size = size;
     return self
 }
@@ -561,10 +568,10 @@ void int_array_push(IntArray *self, int append) {
 ```
 
 ### <a name="S-naming-classes"></a>Classes
-As seen in the previos example above, I prefer PascalCase for classes.
+As seen in the previous example above, I prefer PascalCase for classes.
 The data section of the class gets the ClassName.
 The constructor is called class_name_new and the destructor class_name_kill.
-All methods also use this naming sheme, like class_name_length.
+All methods also use this naming scheme, like class_name_length.
 With this style and an ide with autocompletion, the user gets a similar feeling to an object orientated language.
 
 
@@ -585,14 +592,14 @@ For example a library that loads a .csv file, can use an interface header like t
  * @param file: The .csv file to load (relative or absolute path, '~' for home)
  * @returns: the number of loaded fields, or -1 on error
  */
-int load_csv_file_to_heap_array(float **out_array, const char *file);
+int csv_load_file_to_heap_array(float **out_array, const char *file);
 
 /**
  * Saves a .csv file into the given file.
  * @param file: The .csv file to save into (relative or absolute path, '~' for home)
  * @returns: the number of saved fields, or -1 on error
  */
-int save_csv_file(const char *file, const float *array, int n);
+int csv_save_file(const char *file, const float *array, int n);
 
 #endif //CSV_H
 ```
@@ -655,12 +662,12 @@ that contains structs for vectors and matrices (`vec3`, `mat4`)
 
 
 ## <a name="S-oo"></a>Object Orientation in C
-Although the C programming language doesn't support object orientated programming nativly,
+Although the C programming language doesn't support object orientated programming natively,
 it's still possible and quite easy.
 
 ### <a name="S-oo-not"></a>When not to use
 Unlike many do, you should NOT use OOP in every scenario!
-In most cases its unaccesary to use all features of it and it can slow down your program.
+In most cases its unnecessary to use all features of it and it can slow down your program.
 Imagine you write a game in an OOP manner with the following hierarchy:
 + Item (base class)
     - Invisible
@@ -677,7 +684,7 @@ This is incredible slow for a normal modern CPU, because of cache misses.
 A slightly better approach would be to list all enemies packed in a seperate list and render these.
 A much better approuch is to pack all data that is necessary to render an enemy and loop over this list.
 In the performance critical section focus on data, not code.
-If you still want an OO-Hierarchy, take the focos on the data, and than let your class point to the data, instead to own it.
+If you still want an OO-Hierarchy, take the focus on the data, and than let your class point to the data, instead to own it.
 
 
 ### <a name="S-oo-simple"></a>Simple machine
@@ -715,7 +722,7 @@ void foo_print();
 //
 
 // public data
-sruct FooGlobals_s foo;
+struct FooGlobals_s foo;
 
 // private data
 static struct {
@@ -742,11 +749,10 @@ void foo_print() {
 
 ```
 
-I like to call constructors class_name_init / _new and destructors class_name_kill.
+I like to call module initializer modulename_init / _new and destructors modulename_kill.
 If you stick with this, or another name, your users can easily find them for other classes as well.
-Destructors should always have the function form: void(ClassName *self)
+Destructors should always have the function form: void classname_kill(ClassName *self) | void classname_kill(ClassName **self_ptr)
 The same "machine", but with multiple possible instances looks like the following.
-This may be the best style to do a class, but the data (also private data) must be declared in the header, just like C++.
 
 ```c
 // multiple instances of foo possible
@@ -848,7 +854,7 @@ void foo_print(const Foo *self);
 #include "foo.h" 
 
 struct FooImpl {
-    Foo public;
+    Foo super;
     int bar;
 };
 
@@ -856,7 +862,7 @@ struct FooImpl {
 Foo *foo_new() {
     // malloc + assume, see rhc/alloc.h
     FooImpl *impl = rhc_malloc(sizeof *impl);
-    Foo *self = &impl->public;
+    Foo *self = &impl->super;
     self->cnt = 1;
     impl->bar= 123;
     return self;
@@ -899,7 +905,7 @@ void foo_print(const Foo *self) {
 ### <a name="S-oo-inheritance"></a>Inheritance
 Deriving from a class is easy in C. But its important that your users know the base class.
 In the following example, the class Child derives (static) from the class Mother:
-(static = no run time information and no virtual methods -> the user must call the right methods himself)
+(static = no runtime information and no virtual methods -> the user must call the right methods himself)
 
 ```c
 
@@ -975,8 +981,8 @@ int main() {
 
 
 ### <a name="S-oo-rtti"></a>RTTI
-Run time type information is needed, to determine the type of a class at runtime (dynamic_cast/ isinstance/ instanceof/ etc.).
-To achieve this, the root base class should have an identification string (as char array autotype).
+Runtime type information is needed, to determine the type of a class at runtime (dynamic_cast/ isinstance/ instanceof/ etc.).
+To achieve this, the root base class could have an identification string (as char array autotype).
 Or all root base classes inherit from an Object class that implements the string.
 These strings contain a chained list of the class name hierarchy.
 For example if class Bar and class Pub derive from class Foo, their type names would be:
@@ -1101,16 +1107,16 @@ As with the rest of OOP, its easy to implement in C:
 struct Foo;
 
 // Virtual function types
-typedef void (*foo_print_function)(const struct Foo *self);
-typedef int (*foo_add_function)(struct Foo *self, int add);
+typedef void (*foo_print_fn)(const struct Foo *self);
+typedef int (*foo_add_fn)(struct Foo *self, int add);
 
 typedef struct Foo {
     // public data
     int f;
 
     // vtable (function ptr of the virtual methods)::
-    foo_print_function print;
-    foo_add_function add;
+    foo_print_fn print;
+    foo_add_fn add;
 } Foo;
 
 void foo_print(const Foo *self) {
@@ -1160,8 +1166,8 @@ Bar bar_new(float init) {
     self.b = init;
 
     // change overloaded vtable methods
-    self.super.print = (foo_print_function) bar_print;  // optional cast...
-    self.super.add = (foo_add_function) bar_add;
+    self.super.print = (foo_print_fn) bar_print;  // optional cast...
+    self.super.add = (foo_add_fn) bar_add;
     return self;
 }
 
@@ -1195,7 +1201,9 @@ In C you also must pass an void * or keep space in the printable struct for the 
 
 ```c
 typedef struct Printable_i {
-    void *user_data
+    void *impl;
+    
+    // vtable
     void (*print)(struct Printable_i);
 } Printable_i;
 
@@ -1216,7 +1224,7 @@ void bar(Printable_i p, int n) {
 
 
 void foo_print(Printable_i p) {
-    Foo *foo = (Foo *) p.user_data;
+    Foo *foo = (Foo *) p.impl;
     printf("Foo(%f)\n", foo->f);
 }
 

@@ -1,4 +1,4 @@
-#include "rhc/rhc_impl.h"
+#include "rhc/rhc_impl.h"   // once in a project
 
 
 // create a hashmap with item type = int, item key = const char *
@@ -6,7 +6,7 @@
 #define TYPE int
 #include "rhc/hashmap_string.h"
 // if CLASS is not defined, it will be HashMap_int in this case
-// if FN_NAME is not definied, it will be hashmap_* in this case
+// if FN_NAME is not defined, it will be hashmap_* in this case
 
 
 

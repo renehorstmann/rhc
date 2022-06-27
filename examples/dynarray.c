@@ -1,11 +1,9 @@
 #include "rhc/rhc_impl.h"   // once in a project
 
-#include <stdio.h>
-
 #define TYPE int
 #include "rhc/dynarray.h"
 // if CLASS is not defined, it will be DynArray_int in this case
-// if FN_NAME is not definied, it will be dynarray_* in this case
+// if FN_NAME is not defined, it will be dynarray_* in this case
 
 
 #define TYPE float

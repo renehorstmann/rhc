@@ -5,26 +5,30 @@ A C standard library addition.
 Copy the headers into your project and include `rhc_impl.h` once in a single source file.
 
 ## Components
-- [types.h](include/rhc/types.h) containing some basic types, like `Allocation_i, Stream_i, Str_s, String`
-- [error.h](include/rhc/error.h) error management and `assume` (`assert` in runtime)
-- [log.h](include/rhc/log.h) logging
-- [time.h](include/rhc/time.h) monotonic time as `double` in seconds
-- [endian.h](include/rhc/endian.h) host to little or big endian and vice versa
-- [alloc.h](include/rhc/alloc.h) default assuming allocs and allocators for `Allocator_i`
-- [file.h](include/rhc/file.h) read, write and append files, open file with `Stream_i` interface
-- [socket.h](include/rhc/socket.h) client and server tcp sockets with `Stream_i` interface
-- [stream.h](include/rhc/stream.h) functions to read and write on streams, `*_msg` blocks until all bytes are transfered
-- [str.h](include/rhc/str.h) functions, working on string views with `Str_s`
-- [string.h](include/rhc/string.h) `String` class, that holds a string
-- [str_parse.h](include/rhc/str_parse.h) parse/serialize values (`int, float, ...`) from and into a `Str_s`
-- [rhc.h](include/rhc/rhc.h) includes all of the above headers
-- [rhc_impl.h](include/rhc/rhc_impl.h) include this header in a single source file
+- [rhc.h](include/rhc/rhc.h) includes the basics of rhc:
+  - [common.h](include/rhc/common.h) contains some default system libraries and a few datatypes like rhcsize
+  - [error.h](include/rhc/error.h) error management
+  - [assume.h](include/rhc/assume.h) `rhc_assume` is a runtime assumption (like `assert` for runtime)
+  - [memory.h](include/rhc/memory.h) rhc_malloc, etc. that use `rhc_assume`
+  - [log.h](include/rhc/log.h) logging
+- [rhc_full.h](include/rhc/rhc_full.h) includes all of rhc (in addition to [rhc.h](include/rhc/rhc.h))
+  - [allocator.h](include/rhc/allocator.h) Allocator interface and functions + arena allocator
+  - [time.h](include/rhc/time.h) monotonic time as `double` in seconds and a `RhcTimer_s`
+  - [terminalcolor.h](include/rhc/terminalcolor.h) Set terminal colors for stdout
+  - [endian.h](include/rhc/endian.h) host to little or big endian and vice versa
+  - [stream.h](include/rhc/stream.h) Interface and functions to read and write on streams
+  - [file.h](include/rhc/file.h) read, write and append files, open file with `RhcStream_i` interface
+  - [socket.h](include/rhc/socket.h) client and server tcp sockets with `RhcStream_i` interface
+  - [str.h](include/rhc/str.h) functions, working on string views with `RhcStr_s`
+  - [string.h](include/rhc/string.h) `RhcString` class, that holds a string
+  - [str_parse.h](include/rhc/str_parse.h) parse/serialize values (`int, float, ...`) from and into a `RhcStr_s`
 - [dynarray.h](include/rhc/dynarray.h) dynamic array like (C++'s `std::vector`)
 - [hashmap_string.h](include/rhc/hashmap_string.h) hashmap with strings as key
 - [hashmap.h](include/rhc/hashmap.h) hashmap base
+- [rhc_impl.h](include/rhc/rhc_impl.h) include this header in a single source file
 
 ## Safety
-All functions should operate on not valid input.
+All functions should operate on none valid input.
 Types have a function called *_valid() to check if the type is in a valid context.
 Some functions set the type invalid and may log and set `rhc_error` to an error.
 With this style, the following [example](examples/safety.c) is possible and safe:
@@ -35,74 +39,40 @@ With this style, the following [example](examples/safety.c) is possible and safe
 
 int main() {
 
-    // should end in an invalid String
-    String file = file_read("not_available.txt", true);  // ascii=true
+    // should end in an invalid RhcString
+    RhcString *file = rhc_file_read("not_available.txt", true);
     // produces a log_warn: file read failed: not_available.txt
-    // sets rhc_error = file read failed
+
+    // returns an invalid str, if file is not valid
+    RhcStr_s str = rhc_string_get_str(file);
 
     // should not break
-    str_tolower(file.str);
+    rhc_str_tolower(str);
 
     // should return 0
-    int cnt = str_count(file.str, 'a');
+    rhcsize cnt = rhc_str_count(str, 'a');
 
     // should not write and set ok to false
-    bool ok = file_write("not_available.txt", file.str, true);  // ascii=true
+    bool ok = rhc_file_write("also_not_available.txt", str, true);
     // producus a log_error: file write failed, content invalid: not_available.txt
     // sets rhc_error = file write failed, content invalid
 
-    printf("cnt: %i, file_valid: %i, ok: %i, error_msg: %s\n", cnt, string_valid(file), ok, rhc_error);
-    // cnt: 0, file_valid: 0, ok: 0, error_msg: file write failed, content invalid
+    printf("cnt: %i, rhc_file_valid: %i, ok: %i, error_msg: %s\n",
+           (int) cnt, rhc_string_valid(file), ok, rhc_error_get());
+    // cnt: 0, rhc_file_valid: 0, ok: 0, error_msg: file write failed, content invalid
 }
-```
-If you want to extend the code, for example with a function that loads an image from a `Str_s`, use the valid pattern.
 
-## Types
-The [types.h](include/rhc/types.h) header defines some useful additional structs and is included in most other headers.
-- `Allocator_i`
-  - holds virtual functions for `malloc`, `calloc`, `realloc` and `free`
-  - Every function in rhc, that allocates and holds memory, uses and owns an `Allocator_i`
-  - If a function needs an `Allocator_i`, chances are, that their will be two versions:
-    - `some_fn_*_a`: takes the `Allocator_i` as last parameter
-    - `some_fn_*:` calls `*_a` with the default `Allocator_i`
-  - see [alloc.h](include/rhc/alloc.h) to get an `Allocator_i`.
-    - `rhc_allocator_new_try()`: the default `malloc`, `realloc`, `free` `Allocator_i`.
-    - `rhc_allocator_new()`: also uses the default allocators, but will raise a signal, if the memory couldn't be allocated
-- `Str_s`
-  - represents a view on a string, ignoring the null terminator (so may not be null terminated)
-  - `char *data`: pointer to the first char
-  - `size_t size`: length of the string
-  - see [str.h](include/rhc/str.h) for functions working on a `Str_s`
-- `String`
-  - holds a string in memory, via an `Allocator_i` and a `Str_s`
-  - in contrast to `Str_s`, a `String` is always null terminated
-  - call `string_kill` to free the data via its `Allocator_i`
-  - see [string.h](include/rhc/string.h) for methods working on a `String`
+```
+If you want to extend the code, for example with a function that loads an image from a `RhcStr_s`, use the valid pattern.
 
 ## Style
 For a detailed style guide, see [style.md](style.md).
 
-## rhc in a library
-When rhc is used in a library, it should not collide with other libraries, also using rhc. So to use it:
-- Let the library user include rhc_impl.h, instead of the library
-- rename all rhc_* stuff with your own namespace. (search replace...)
+## Template
+To change the `rhc` namespace, have a look at the python script [template.py](template/template.py).
+It copies files from `in` to `out` and uses regex to replace the namespace to a user namespace.
 
-## Globals
-rhc tries to use as few globals as possible.
-Nevertheless, the following globals are used:
-- [`_Thread_local const char *rhc_error;`](include/rhc/impl/error_impl.h)
-- [`static struct {...} rhc_log_L;`](include/rhc/impl/log_impl.h)
-  - `enum rhc_log_level level;`
-  - `bool quiet;`
-
-
-There are also non static functions in the header files rhc/impl/*, which should be included once in a project (`#include "rhc/impl.h"`)
-
-## todo
-- socket.h
-  - sdl?
-  - UDP?
-- style: tldr naming
+The [some](https://github.com/renehorstmann/some) framework (C engine for desktop, mobile, web) uses `s` as `rhc` namespace replacement
 
 # Author
 

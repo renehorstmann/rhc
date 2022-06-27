@@ -1,21 +1,22 @@
 
 //#define RHC_LOG_DO_NOT_PRINT_TIME_FILE
-//#define RHC_LOG_DO_NOT_USE_COLOR
+//#define RHC_LOG_DO_NOT_USE_COLORü
 #include "rhc/rhc_impl.h"
+#include "rhc/rhc_full.h"
 
 
 int main() {
-    log_trace("hey");
-    log_debug("hey");
-    log_info("hey");
-    log_warn("hey");
-    log_error("hey");
-    log_wtf("hey");
+    rhc_log_trace("hey");
+    rhc_log_debug("hey");
+    rhc_log_info("hey");
+    rhc_log_warn("hey");
+    rhc_log_error("hey");
+    rhc_log_wtf("hey");
 
-    RhcFile *f = rhc_file_open_write("test.txt", true);
-    Stream_i s = rhc_file_get_stream(f);
+    RhcFile *f = rhc_file_new_write("test.txt", true);
+    RhcStream_i s = rhc_file_stream(f);
     char msg[] = "Hello World\n";
-    stream_write_msg(s, msg, sizeof msg - 1);
+    rhc_stream_write(s, msg, sizeof msg - 1);
     rhc_file_kill(&f);
 }
 
