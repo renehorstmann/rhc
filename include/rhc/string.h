@@ -60,6 +60,7 @@ static RhcStream_i rhc_string_get_stream(RhcString *self) {
 
 
 // allocated start_capacity + 1 (null)
+// start_capacity will be set to a minimum of 7
 RhcString *rhc_string_new_a(rhcsize start_capacity, RhcAllocator_i a);
 
 // allocated start_capacity + 1 (null)

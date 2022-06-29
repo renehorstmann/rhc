@@ -44,6 +44,7 @@ RhcFile *rhc_file_new_read(const char *file, bool ascii) {
     if (!rhc_file_valid(&self_stack)) {
         rhc_error_set("rhc_file_new_read failed");
         rhc_log_warn("rhc_file_new_read failed: %s", file);
+        return NULL;
     }
     RhcFile *self = rhc_new(RhcFile, 1);
     *self = self_stack;
@@ -60,6 +61,7 @@ RhcFile *rhc_file_new_write(const char *file, bool ascii) {
     if (!rhc_file_valid(&self_stack)) {
         rhc_error_set("rhc_file_new_write failed");
         rhc_log_warn("rhc_file_new_write failed: %s", file);
+        return NULL;
     }
     RhcFile *self = rhc_new(RhcFile, 1);
     *self = self_stack;
@@ -76,6 +78,7 @@ RhcFile *rhc_file_new_append(const char *file, bool ascii) {
     if (!rhc_file_valid(&self_stack)) {
         rhc_error_set("rhc_file_new_append failed");
         rhc_log_warn("rhc_file_new_append failed: %s", file);
+        return NULL;
     }
     RhcFile *self = rhc_new(RhcFile, 1);
     *self = self_stack;

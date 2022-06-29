@@ -12,6 +12,8 @@ static bool rhc__string_stream_valid(struct RhcStream_i stream);
 RhcString *rhc_string_new_a(rhcsize start_capacity, RhcAllocator_i a) {
     rhc_assume(rhc_allocator_valid(a), "a needs to be valid");
     RhcString *self = rhc_a_new0(a, RhcString, 1);
+    // at least 8 bytes to be allocated
+    start_capacity = rhc_max(7, start_capacity);
     self->data = rhc_a_malloc0(a, start_capacity + 1);
     self->capacity = start_capacity;
     self->allocator = a;
@@ -23,7 +25,7 @@ RhcString *rhc_string_new_a(rhcsize start_capacity, RhcAllocator_i a) {
     };
     return self;
 }
-// clones RhcStr_s and appends null
+
 RhcString *rhc_string_new_clone_a(RhcStr_s to_clone, RhcAllocator_i a) {
     RhcString *sb = rhc_string_new_a(to_clone.size, a);
     if (!rhc_string_valid(sb))
@@ -33,7 +35,6 @@ RhcString *rhc_string_new_clone_a(RhcStr_s to_clone, RhcAllocator_i a) {
     return sb;
 }
 
-// copies str s into a new string, with old -> replacement.
 RhcString *rhc_string_new_replace_a(RhcStr_s to_replace, RhcStr_s old, RhcStr_s replacement, RhcAllocator_i a) {
     if (rhc_str_empty(to_replace) || rhc_str_empty(old) || !rhc_str_valid(replacement)) {
         return rhc_string_new_invalid();
@@ -52,7 +53,6 @@ RhcString *rhc_string_new_replace_a(RhcStr_s to_replace, RhcStr_s old, RhcStr_s 
     return res;
 }
 
-// concatenates all strs
 RhcString *rhc_string_new_cat_a(RhcStr_s *strs, int n, RhcAllocator_i a) {
     rhcsize size = 0;
     for (int i = 0; i < n; i++) {
@@ -80,7 +80,6 @@ void rhc_string_kill(RhcString **self_ptr) {
     *self_ptr = NULL;
 }
 
-// size is the sum of characters, not including termination null (as strlen)
 void rhc_string_set_capacity(RhcString *self, rhcsize capacity) {
     if (!rhc_string_valid(self))
         return;
@@ -95,7 +94,6 @@ void rhc_string_set_capacity(RhcString *self, rhcsize capacity) {
     memset(&self->data[self->size], 0, self->capacity + 1 - self->size);
 }
 
-// size is the sum of characters, not including termination null (as strlen)
 void rhc_string_resize(RhcString *self, rhcsize size) {
     if (size > self->capacity) {
         rhc_string_set_capacity(self, size * 2);
@@ -106,7 +104,6 @@ void rhc_string_resize(RhcString *self, rhcsize size) {
     self->data[self->size] = '\0';  //just to be sure
 }
 
-// appends a char
 void rhc_string_push(RhcString *self, char push) {
     if (!rhc_string_valid(self))
         return;
@@ -115,7 +112,6 @@ void rhc_string_push(RhcString *self, char push) {
     self->data[self->size] = '\0';  //just to be sure
 }
 
-// appends a string
 void rhc_string_append(RhcString *self, RhcStr_s append) {
     if (!rhc_string_valid(self))
         return;
