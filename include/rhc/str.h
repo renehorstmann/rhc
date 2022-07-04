@@ -23,7 +23,7 @@ static RhcStr_s rhc_strc(const char *cstring) {
 
 // returns true if the str is empty
 static bool rhc_str_empty(RhcStr_s s) {
-    return !s.data || s.size == 0;
+    return !s.data || s.size <= 0;
 }
 
 // prints the str to a stream

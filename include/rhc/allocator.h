@@ -161,7 +161,7 @@ do { \
 // AllocatorArena
 //
 
-// An arena a allocates everythin on the a fixed stack
+// An arena allocates everything on a fixed stack
 // If realloc is called, the new object is either copied to the end,
 //      or if it was the last element, its rhcsize is just updates
 // the arena can be cleared with rhc_allocator_arena_clear to free all allocations
@@ -169,7 +169,7 @@ do { \
 // Stack a version
 RhcAllocator_i rhc_allocator_arena_new_a(rhcsize arena_size, RhcAllocator_i arena_stack_allocator);
 
-// An arena a allocates everythin on the a fixed stack
+// An arena allocates everything on a fixed stack
 // If realloc is called, the new object is either copied to the end,
 //      or if it was the last element, its rhcsize is just updates
 // the arena can be cleared with rhc_allocator_arena_clear to free all allocations
