@@ -32,7 +32,7 @@
 void rhc__rhc_assume_impl(const char *expression, const char *file, int line, const char *format, ...) {
     va_list args;
     va_start(args, format);
-    char msg[RHC_ASSUME_MAX_FORMATED_MSG_SIZE];
+    char *msg = malloc(RHC_ASSUME_MAX_FORMATED_MSG_SIZE);
     vsnprintf(msg, RHC_ASSUME_MAX_FORMATED_MSG_SIZE, format, args);
     va_end(args);
 #ifdef NDEBUG
@@ -40,19 +40,25 @@ void rhc__rhc_assume_impl(const char *expression, const char *file, int line, co
 #else
     fprintf(stderr, "Assumption failed: %s at %s:%d %s\n", expression, file, line, msg);
 #endif
-    raise(RHC_ASSUME_SIGNAL);
-
+    
+    
 #ifdef PLATFORM_EMSCRIPTEN
     // exit emscriptens main loop and call js error handler
+    int script_size = 2*RHC_ASSUME_MAX_FORMATED_MSG_SIZE;
+    char *script = malloc(script_size);
+#ifdef NDEBUG
+    snprintf(script, script_size, "set_assume(\'An assumption in the program failed: %s\');", msg);
+#else
+    snprintf(script, script_size, "set_assume(\'Assumption failed: %s at %s:%d %s\');", expression, file, line, msg);
+#endif
     emscripten_cancel_main_loop();
-    EM_ASM(
-            set_exit_failure_error_msg();
-            );
-    // emscripten does not handle signals
+    emscripten_run_script(script);
+    free(script);
     exit(EXIT_FAILURE);
 #endif
 
-}
+    free(msg);
+    raise(S_ASSUME_SIGNAL);
 
 #endif //RHC_IMPL
 #endif //RHC_ASSUME_IMPL_H
