@@ -37,19 +37,19 @@
 #endif
 
 #ifndef KEY_CLONE_FN
-#error hashmap.h needs a function to clone a key(key key_clone_fn(key to_clone, RhcAllocator_i a))
+#error hashmap.h needs a function to clone a key(key key_clone_fn(key to_clone, sAllocator_i a))
 #endif
 
 #ifndef KEY_KILL_FN
-#error hashmap.h needs a function to kill a key(key key_clone_fn(key to_clone, RhcAllocator_i a))
+#error hashmap.h needs a function to kill a key(void key_kill_fn(key to_kill, sAllocator_i a))
 #endif
 
-#ifndef KEY_EQUALS_FN
+#ifndef KEY_EQUALRHC_FN
 #error hashmap.h needs a function to compare two keys (bool key_equals_fn(key a, key b))
 #endif
 
 #ifndef KEY_HASH_FN
-#error hashmap.h needs a function to hash a key (unsigned key_hash_fn(key k))
+#error hashmap.h needs a function to hash a key (rhcu32 key_hash_fn(key k))
 #endif
 
 
@@ -57,7 +57,7 @@
 // #define TYPE int
 // #define CLASS Foo
 // #define FN_NAME foo
-// #include "rhc/hashmap_string.h"
+// #include "s/hashmap_string.h"
 //
 // Foo foo = foo_new(&foo, 32);   // approx_size
 // *foo_get(&foo, "a") = 7;       // set 7 to key "a"
@@ -86,7 +86,7 @@ typedef struct ITEM {
 typedef struct CLASS {
     ITEM **map;
     rhcsize size;
-    RhcAllocator_i allocator;
+    sAllocator_i allocator;
 } CLASS;
 
 typedef struct ITER {
@@ -101,8 +101,8 @@ static bool RHC_NAME_CONCAT2(FN_NAME, _valid)(CLASS self) {
     return self.map != NULL && self.size >= 1 && rhc_allocator_valid(self.allocator);
 }
 
-// Foo foo_new_a(rhcsize approx_size, RhcAllocator_i a)
-static CLASS RHC_NAME_CONCAT2(FN_NAME, _new_a)(rhcsize approx_size, RhcAllocator_i a) {
+// Foo foo_new_a(rhcsize approx_size, sAllocator_i a)
+static CLASS RHC_NAME_CONCAT2(FN_NAME, _new_a)(rhcsize approx_size, sAllocator_i a) {
     rhc_assume(rhc_allocator_valid(a), "a needs to be valid");
     CLASS self = {
             rhc_a_new(a, ITEM*, approx_size),
@@ -125,8 +125,8 @@ static CLASS RHC_NAME_CONCAT2(FN_NAME, _new)(rhcsize approx_size) {
     return RHC_NAME_CONCAT2(FN_NAME, _new_a)(approx_size, RHC_ALLOCATOR_DEFAULT);
 }
 
-// Foo foo_new_invalid_a(RhcAllocator_i a)
-static CLASS RHC_NAME_CONCAT2(FN_NAME, _new_invalid_a)(RhcAllocator_i a) {
+// Foo foo_new_invalid_a(sAllocator_i a)
+static CLASS RHC_NAME_CONCAT2(FN_NAME, _new_invalid_a)(sAllocator_i a) {
     return (CLASS) {.allocator = a};
 }
 
@@ -150,13 +150,13 @@ static void RHC_NAME_CONCAT2(FN_NAME, _kill)(CLASS *self) {
 // int *foo_get(Foo *self, const char *key)
 static TYPE *RHC_NAME_CONCAT2(FN_NAME, _get)(CLASS *self, KEY key) {
     // key hash
-    unsigned hash = KEY_HASH_FN(key) % self->size;
+    rhcu32 hash = KEY_HASH_FN(key) % self->size;
     
     // first item in hash map array
     ITEM **item = &self->map[hash];
     
     // if item is available, get the right item in the linked list
-    while(*item && !KEY_EQUALS_FN(key, (*item)->key)) {
+    while(*item && !KEY_EQUALRHC_FN(key, (*item)->key)) {
         item = &((*item)->next);
     }
     
@@ -176,13 +176,13 @@ static TYPE *RHC_NAME_CONCAT2(FN_NAME, _get)(CLASS *self, KEY key) {
 // void foo_remove(Foo *self, const char *key)
 void RHC_NAME_CONCAT2(FN_NAME, _remove)(CLASS *self, KEY key) {
     // key hash
-    unsigned hash = KEY_HASH_FN(key) % self->size;
+    rhcu32 hash = KEY_HASH_FN(key) % self->size;
 
     // first item in hash map array
     ITEM **item = &self->map[hash];
 
     // if item is available, get the right item in the linked list
-    while(*item && !KEY_EQUALS_FN(key, (*item)->key)) {
+    while(*item && !KEY_EQUALRHC_FN(key, (*item)->key)) {
         item = &((*item)->next);
     }
     
@@ -237,7 +237,7 @@ ITEM *RHC_NAME_CONCAT2(FN_NAME, _iter_next)(ITER *self) {
 #undef FN_NAME
 #undef KEY_CLONE_FN
 #undef KEY_KILL_FN
-#undef KEY_EQUALS_FN
+#undef KEY_EQUALRHC_FN
 #undef KEY_HASH_FN
 #undef ITEM
 #undef ITER

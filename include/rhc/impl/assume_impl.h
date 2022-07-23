@@ -58,7 +58,7 @@ void rhc__rhc_assume_impl(const char *expression, const char *file, int line, co
 #endif
 
     free(msg);
-    raise(S_ASSUME_SIGNAL);
+    raise(RHC_ASSUME_SIGNAL);
 
 #endif //RHC_IMPL
 #endif //RHC_ASSUME_IMPL_H
