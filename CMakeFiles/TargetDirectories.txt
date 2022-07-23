@@ -1,8 +1,0 @@
-/storage/emulated/0/GitProjects/rhc/CMakeFiles/socket_client.dir
-/storage/emulated/0/GitProjects/rhc/CMakeFiles/edit_cache.dir
-/storage/emulated/0/GitProjects/rhc/CMakeFiles/socket_server.dir
-/storage/emulated/0/GitProjects/rhc/CMakeFiles/safety.dir
-/storage/emulated/0/GitProjects/rhc/CMakeFiles/hashmap.dir
-/storage/emulated/0/GitProjects/rhc/CMakeFiles/rebuild_cache.dir
-/storage/emulated/0/GitProjects/rhc/CMakeFiles/dynarray.dir
-/storage/emulated/0/GitProjects/rhc/CMakeFiles/main.dir
