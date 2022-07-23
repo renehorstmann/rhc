@@ -101,6 +101,7 @@ if __name__ == '__main__':
     apply('file.h')
     apply('hashmap.h')
     apply('hashmap_string.h')
+    apply('hashmap_trivial.h')
     apply('log.h')
     apply('memory.h')
     apply('socket.h')

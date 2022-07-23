@@ -26,7 +26,7 @@ static rhcu32 rhc__hashmap_trivial_key_hash(KEY key) {
     rhcu32 hash = 5381;
     const su8 *it = (su8*) &key;
     int c;
-    for(int i=0; i<sizeof (KEY); i++) {
+    for(int i=0; i<(int) sizeof (KEY); i++) {
         c = it[i];
         hash = ((hash << 5u) + hash) + c; /* hash * 33 + c */
     }
