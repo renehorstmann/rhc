@@ -141,6 +141,15 @@ static CLASS RHC_NAME_CONCAT2(FN_NAME, _new_invalid)() {
 static void RHC_NAME_CONCAT2(FN_NAME, _kill)(CLASS *self) {
     // valid
     if(RHC_NAME_CONCAT2(FN_NAME, _valid)(*self)) {
+        for(int i=0; i<self->size; i++) {
+            // first item in hash map array
+            ITEM *item = self->map[i];
+            while(item) {
+                ITEM *next = item->next;
+                rhc_a_free(self->allocator, item);
+                item = next;
+            }
+        }
         rhc_a_free(self->allocator, self->map);
     }
     // new_invalid_a
