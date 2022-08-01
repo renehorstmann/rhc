@@ -98,6 +98,7 @@ if __name__ == '__main__':
     apply('dynarray.h')
     apply('endian.h')
     apply('error.h')
+    apply('export.h')
     apply('file.h')
     apply('hashmap.h')
     apply('hashmap_string.h')
