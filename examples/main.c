@@ -1,11 +1,12 @@
 
 //#define RHC_LOG_DO_NOT_PRINT_TIME_FILE
-//#define RHC_LOG_DO_NOT_USE_COLORü
+//#define RHC_LOG_DO_NOT_USE_COLOR
 #include "rhc/rhc_impl.h"
 #include "rhc/rhc_full.h"
 
 
 int main() {
+    rhc_assume(0, "wtf");
     rhc_log_trace("hey");
     rhc_log_debug("hey");
     rhc_log_info("hey");

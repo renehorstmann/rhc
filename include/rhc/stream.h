@@ -6,6 +6,7 @@
 //    Implementations are in string.h, file.h and socket.h
 //
 
+RHC_EXPORT
 #include "common.h"
 
 struct RhcString;
@@ -69,23 +70,29 @@ static bool rhc_stream_valid(RhcStream_i self) {
 
 // reads exactly n bytes from the stream into memory
 // returns bytes read or <=0 on error
+RHC_EXPORT
 rhcsize rhc_stream_read(RhcStream_i self, void *memory, rhcsize n);
 
 // reads exactly n bytes, if the stream stays valid
 // returns bytes read or <=0 on error
+RHC_EXPORT
 rhcsize rhc_stream_read_as_long_as_valid(RhcStream_i self, void *memory, rhcsize n);
 
 // writes exactly n bytes into the stream into memory
 // returns bytes written or <=0 on error
+RHC_EXPORT
 rhcsize rhc_stream_write(RhcStream_i self, const void *memory, rhcsize n);
 
 // print formatted on the stream
+RHC_EXPORT
 rhcsize rhc_stream_printf_v(RhcStream_i self, const char *format, va_list args);
 
 // print formatted on the stream
+RHC_EXPORT
 rhcsize rhc_stream_printf(RhcStream_i self, const char *format, ...);
 
 // print a line of text on the stream
+RHC_EXPORT
 rhcsize rhc_stream_puts(RhcStream_i self, const char *text);
 
 // reads a single byte from the stream
@@ -108,10 +115,12 @@ static bool rhc_stream_putchar(RhcStream_i self, char c) {
 //      if(returned_line_len==max && memory[returned_line_len-1]!=until)
 //          // more characters in the line
 // returns 0 on error
+RHC_EXPORT
 rhcsize rhc_stream_read_until_into(RhcStream_i self, void *memory, rhcsize max, char until);
 
 // reads into the returned String, until the given char "until" (which will be included)
 // returns an invalid string on error
+RHC_EXPORT
 struct RhcString *rhc_stream_read_until(RhcStream_i self, char until);
 
 

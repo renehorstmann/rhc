@@ -6,6 +6,7 @@
 //
 
 #include "common.h"
+#include "export.h"
 
 //
 // Options:
@@ -43,8 +44,10 @@ enum rhc_log_level {
 #define rhc_log_wtf(...)   rhc_log_base(RHC_LOG_WTF, __FILE__, __LINE__, __func__, __VA_ARGS__)
 
 
+RHC_EXPORT
 void rhc_log_set_min_level(enum rhc_log_level level);
 
+RHC_EXPORT
 void rhc_log_set_quiet(bool set);
 
 /**
@@ -52,6 +55,7 @@ void rhc_log_set_quiet(bool set);
  * If opt_file is NULL, file and line will be omitted. (Useful for helper functions (like rhc_assume))
  * If opt_func is not NULL, the function name will be printed before format
  */
+RHC_EXPORT
 void rhc_log_base(enum rhc_log_level level, const char *opt_file, int line,
                   const char *opt_func, const char *format, ...);
 

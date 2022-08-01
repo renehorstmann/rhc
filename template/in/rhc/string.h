@@ -7,6 +7,7 @@
 // When a function returns a string, you have to kill it
 //
 
+#include "export.h"
 #include "str_type.h"
 #include "stream.h"
 
@@ -61,6 +62,7 @@ static RhcStream_i rhc_string_get_stream(RhcString *self) {
 
 // allocated start_capacity + 1 (null)
 // start_capacity will be set to a minimum of 7
+RHC_EXPORT
 RhcString *rhc_string_new_a(rhcsize start_capacity, RhcAllocator_i a);
 
 // allocated start_capacity + 1 (null)
@@ -69,6 +71,7 @@ static RhcString *rhc_string_new(rhcsize start_capacity) {
 }
 
 // clones RhcStr_s and appends null
+RHC_EXPORT
 RhcString *rhc_string_new_clone_a(RhcStr_s to_clone, RhcAllocator_i a);
 
 
@@ -78,6 +81,7 @@ static RhcString *rhc_string_new_clone(RhcStr_s to_clone) {
 }
 
 // copies str s into a new string, with old -> replacement.
+RHC_EXPORT
 RhcString *rhc_string_new_replace_a(RhcStr_s to_replace, RhcStr_s old, RhcStr_s replacement, RhcAllocator_i a);
 
 
@@ -87,6 +91,7 @@ static RhcString *rhc_string_new_replace(RhcStr_s to_replace, RhcStr_s old, RhcS
 }
 
 // concatenates all strs
+RHC_EXPORT
 RhcString *rhc_string_new_cat_a(RhcStr_s *strs, int n, RhcAllocator_i a);
 
 // concatenates all strs
@@ -94,18 +99,23 @@ static RhcString *rhc_string_new_cat(RhcStr_s *strs, int n) {
     return rhc_string_new_cat_a(strs, n, RHC_ALLOCATOR_DEFAULT);
 }
 
+RHC_EXPORT
 void rhc_string_kill(RhcString **self_ptr);
 
 // size is the sum of characters, not including termination null (as strlen)
+RHC_EXPORT
 void rhc_string_set_capacity(RhcString *self, rhcsize capacity);
 
 // size is the sum of characters, not including termination null (as strlen)
+RHC_EXPORT
 void rhc_string_resize(RhcString *self, rhcsize size);
 
 // appends a char
+RHC_EXPORT
 void rhc_string_push(RhcString *self, char push);
 
 // appends a string
+RHC_EXPORT
 void rhc_string_append(RhcString *self, RhcStr_s append);
 
 #endif //RHC_STRING_H

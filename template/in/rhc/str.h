@@ -5,6 +5,7 @@
 // functions working on a data view
 //
 
+#include "export.h"
 #include "error.h"
 #include "log.h"
 #include "str_type.h"
@@ -29,11 +30,13 @@ static bool rhc_str_empty(RhcStr_s s) {
 // prints the str to a stream
 // as f.e.: "(RhcStr_s) {"hello world", 11}\n"
 // returns the amount of printed characters
+RHC_EXPORT
 rhcsize rhc_str_stream_print(RhcStr_s str, struct RhcStream_i stream);
 
 // prints the str to stdoud
 // as f.e.: "(RhcStr_s) {"hello world", 11}\n"
 // returns the amount of printed characters
+RHC_EXPORT
 rhcsize rhc_str_print(RhcStr_s s);
 
 // copies from into cpy. cpy and from must have the same size

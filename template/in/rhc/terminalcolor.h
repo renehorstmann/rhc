@@ -5,6 +5,8 @@
 // colors for a terminal
 //
 
+#include "export.h"
+
 #define RHC_TERMINALCOLOR_RESET   "\x1B[0m"
 #define RHC_TERMINALCOLOR_BLACK   "\x1B[0;30m"
 #define RHC_TERMINALCOLOR_RED     "\x1B[0;31m"
@@ -65,11 +67,13 @@
 
 
 // setup the terminal to handle color codes
-// just for windows...
+// just needed for windows...
+RHC_EXPORT
 void rhc_terminalcolor_start();
 
 // stop the terminal from using color codes
-// just for windows...
+// just needed for windows...
+RHC_EXPORT
 void rhc_terminalcolor_stop();
 
 #endif //RHC_TERMINALCOLOR_H

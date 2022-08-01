@@ -10,14 +10,14 @@
 #include "memory.h"
 #include "error.h"
 
-static const char *rhc__hashmap_string_key_clone(const char *key, sAllocator_i a) {
+static const char *rhc__hashmap_string_key_clone(const char *key, RhcAllocator_i a) {
     char *clone = rhc_a_malloc(a, strlen(key) + 1);
     rhc_assume(clone, "hashmap_string failed to clone a key");
     memcpy(clone, key, strlen(key)+1);
     return clone;
 }
 
-static void rhc__hashmap_string_key_kill(const char *key, sAllocator_i a) {
+static void rhc__hashmap_string_key_kill(const char *key, RhcAllocator_i a) {
     rhc_a_free(a, (void *) key);
 }
 

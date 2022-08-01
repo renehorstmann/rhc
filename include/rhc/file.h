@@ -6,6 +6,7 @@
 // get a RhcStream_i from the file
 //
 
+#include "export.h"
 #include "string.h"
 
 #define RHC_FILE_STORAGE_SIZE 8
@@ -13,24 +14,31 @@
 typedef struct RhcFile RhcFile;
 
 
+RHC_EXPORT
 bool rhc_file_valid(RhcFile *self);
 
 // opens a file to read
+RHC_EXPORT
 RhcFile *rhc_file_new_read(const char *file, bool ascii);
 
 // opens a file to write
+RHC_EXPORT
 RhcFile *rhc_file_new_write(const char *file, bool ascii);
 
 // opens a file to append
+RHC_EXPORT
 RhcFile *rhc_file_new_append(const char *file, bool ascii);
 
 // closes the file
+RHC_EXPORT
 void rhc_file_kill(RhcFile **self_ptr);
 
 // returns the size of the whole file, returns 0 on error
+RHC_EXPORT
 rhcsize rhc_file_size(RhcFile *self);
 
 // returns a stream from the file (read and write)
+RHC_EXPORT
 RhcStream_i rhc_file_stream(RhcFile *file);
 
 // returns an input/read stream from the file
@@ -48,6 +56,7 @@ static RhcStream_i rhc_file_stream_out(RhcFile *self) {
 }
 
 // creates a stream from a c FILE*
+RHC_EXPORT
 RhcStream_i rhc_file_stream_from_cfile(FILE *cfile, bool read, bool write);
 
 // Returns a stream from the system file
@@ -67,6 +76,7 @@ static RhcStream_i rhc_file_stream_stdin() {
 
 
 // reads in a full file into the returned RhcString
+RHC_EXPORT
 RhcString *rhc_file_read_a(const char *file, bool ascii, RhcAllocator_i a);
 
 static RhcString *rhc_file_read(const char *file, bool ascii) {
@@ -74,9 +84,11 @@ static RhcString *rhc_file_read(const char *file, bool ascii) {
 }
 
 // writes a file and returns false on error
+RHC_EXPORT
 bool rhc_file_write(const char *file, RhcStr_s content, bool ascii);
 
 // appends to a file and returns false on error
+RHC_EXPORT
 bool rhc_file_append(const char *file, RhcStr_s content, bool ascii);
 
 #endif //RHC_FILE_H

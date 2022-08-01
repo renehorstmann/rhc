@@ -8,6 +8,7 @@
 //      The postfix *_a is also just for functions taking an allocator...
 //
 
+#include "export.h"
 #include "memory.h"
 
 //
@@ -167,6 +168,7 @@ do { \
 // the arena can be cleared with rhc_allocator_arena_clear to free all allocations
 // the arena must also be killed with rhc_allocator_arena_kill (which will also free all allocations)
 // Stack a version
+RHC_EXPORT
 RhcAllocator_i rhc_allocator_arena_new_a(rhcsize arena_size, RhcAllocator_i arena_stack_allocator);
 
 // An arena allocates everything on a fixed stack
@@ -178,15 +180,19 @@ static RhcAllocator_i rhc_allocator_arena_new(rhcsize arena_size) {
     return rhc_allocator_arena_new_a(arena_size, RHC_ALLOCATOR_DEFAULT);
 }
 
+RHC_EXPORT
 void rhc_allocator_arena_kill(RhcAllocator_i *self_arena);
 
 // clears / frees all allocations
+RHC_EXPORT
 void rhc_allocator_arena_clear(RhcAllocator_i self_arena);
 
 // returns the rhcsize the arena was created with
+RHC_EXPORT
 rhcsize rhc_allocator_arena_full_size(RhcAllocator_i self_arena);
 
 // returns the current remaining rhcsize of the arena
+RHC_EXPORT
 rhcsize rhc_allocator_arena_remaining_size(RhcAllocator_i self_arena);
 
 

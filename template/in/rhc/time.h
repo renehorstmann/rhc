@@ -5,7 +5,10 @@
 // functions for high precision time and a timer
 //
 
+#include "export.h"
+
 // returns the time in seconds from the monotonic clock
+RHC_EXPORT
 double rhc_time_monotonic();
 
 //

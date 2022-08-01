@@ -3,6 +3,7 @@
 #ifdef RHC_IMPL
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdarg.h>
 #include <signal.h>
 #include "../assume.h"
@@ -44,8 +45,8 @@ void rhc__rhc_assume_impl(const char *expression, const char *file, int line, co
 #else
     fprintf(stderr, "Assumption failed: %s at %s:%d %s\n", expression, file, line, msg);
 #endif
-    
-    
+
+
 #ifdef PLATFORM_EMSCRIPTEN
     {
         // exit emscriptens main loop and call js error handler
@@ -83,6 +84,7 @@ void rhc__rhc_assume_impl(const char *expression, const char *file, int line, co
 
     free(msg);
     raise(RHC_ASSUME_SIGNAL);
+}
 
 #endif //RHC_IMPL
 #endif //RHC_ASSUME_IMPL_H
