@@ -6,7 +6,7 @@
 //    Implementations are in string.h, file.h and socket.h
 //
 
-RHC_EXPORT
+#include "export.h"
 #include "common.h"
 
 struct RhcString;
