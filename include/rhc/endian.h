@@ -25,7 +25,21 @@ static void rhc_endian_swap(void *buf, int n) {
     memcpy(buf_data, tmp, n);
 }
 
-static rhcu16 rhc_endian_host_to_be16(rhcu16 x) {
+//
+// Contents;
+// uX host to le|be
+// uX le|be to host
+// iX host to le|be
+// iX le|be to host
+//
+
+
+
+//
+// unsigned
+//
+
+static rhcu16 rhc_endian_u16_host_to_be(rhcu16 x) {
     rhcu16 result;
     rhcu8 *c;
     c = (rhcu8 *) &result;
@@ -34,7 +48,7 @@ static rhcu16 rhc_endian_host_to_be16(rhcu16 x) {
     return result;
 }
 
-static rhcu16 rhc_endian_host_to_le16(rhcu16 x) {
+static rhcu16 rhc_endian_u16_host_to_le(rhcu16 x) {
     rhcu16 result;
     rhcu8 *c;
     c = (rhcu8 *) &result;
@@ -43,7 +57,7 @@ static rhcu16 rhc_endian_host_to_le16(rhcu16 x) {
     return result;
 }
 
-static rhcu16 rhc_endian_le_to_host16(rhcu16 x) {
+static rhcu16 rhc_endian_u16_le_to_host(rhcu16 x) {
     rhcu16 result;
     rhcu8 *c;
 
@@ -53,7 +67,7 @@ static rhcu16 rhc_endian_le_to_host16(rhcu16 x) {
     return result;
 }
 
-static rhcu16 rhc_endian_be_to_host16(rhcu16 x) {
+static rhcu16 rhc_endian_u16_be_to_host(rhcu16 x) {
     rhcu16 result;
     rhcu8 *c;
 
@@ -63,7 +77,7 @@ static rhcu16 rhc_endian_be_to_host16(rhcu16 x) {
     return result;
 }
 
-static rhcu32 rhc_endian_host_to_be32(rhcu32 x) {
+static rhcu32 rhc_endian_u32_host_to_be(rhcu32 x) {
     rhcu32 result;
     rhcu8 *c;
     c = (rhcu8 *) &result;
@@ -74,7 +88,7 @@ static rhcu32 rhc_endian_host_to_be32(rhcu32 x) {
     return result;
 }
 
-static rhcu32 rhc_endian_host_to_le32(rhcu32 x) {
+static rhcu32 rhc_endian_u32_host_to_le(rhcu32 x) {
     rhcu32 result;
     rhcu8 *c;
     c = (rhcu8 *) &result;
@@ -85,7 +99,7 @@ static rhcu32 rhc_endian_host_to_le32(rhcu32 x) {
     return result;
 }
 
-static rhcu32 rhc_endian_le_to_host32(rhcu32 x) {
+static rhcu32 rhc_endian_u32_le_to_host(rhcu32 x) {
     rhcu32 result;
     rhcu8 *c;
 
@@ -97,7 +111,7 @@ static rhcu32 rhc_endian_le_to_host32(rhcu32 x) {
     return result;
 }
 
-static rhcu32 rhc_endian_be_to_host32(rhcu32 x) {
+static rhcu32 rhc_endian_u32_be_to_host(rhcu32 x) {
     rhcu32 result;
     rhcu8 *c;
 
@@ -109,7 +123,7 @@ static rhcu32 rhc_endian_be_to_host32(rhcu32 x) {
     return result;
 }
 
-static rhcu64 rhc_endian_host_to_be64(rhcu64 x) {
+static rhcu64 rhc_endian_u64_host_to_be(rhcu64 x) {
     rhcu64 result;
     rhcu8 *c;
     c = (rhcu8 *) &result;
@@ -124,7 +138,7 @@ static rhcu64 rhc_endian_host_to_be64(rhcu64 x) {
     return result;
 }
 
-static rhcu64 rhc_endian_host_to_le64(rhcu64 x) {
+static rhcu64 rhc_endian_u64_host_to_le(rhcu64 x) {
     rhcu64 result;
     rhcu8 *c;
     c = (rhcu8 *) &result;
@@ -139,7 +153,7 @@ static rhcu64 rhc_endian_host_to_le64(rhcu64 x) {
     return result;
 }
 
-static rhcu64 rhc_endian_le_to_host64(rhcu64 x) {
+static rhcu64 rhc_endian_u64_le_to_host(rhcu64 x) {
     rhcu64 result;
     rhcu8 *c;
 
@@ -155,7 +169,7 @@ static rhcu64 rhc_endian_le_to_host64(rhcu64 x) {
     return result;
 }
 
-static rhcu64 rhc_endian_be_to_host64(rhcu64 x) {
+static rhcu64 rhc_endian_u64_be_to_host(rhcu64 x) {
     rhcu64 result;
     rhcu8 *c;
 
@@ -169,6 +183,73 @@ static rhcu64 rhc_endian_be_to_host64(rhcu64 x) {
     result |= (rhcu64) c[1] << 48;
     result |= (rhcu64) c[0] << 56;
     return result;
+}
+
+
+//
+// signed wrapper
+//
+
+static rhci16 rhc_endian_i16_host_to_be(rhci16 x) {
+    rhcu16 ret = rhc_endian_u16_host_to_be(*((rhcu16*)&x));
+    return *((rhci16*)&ret);
+}
+
+static rhci16 rhc_endian_i16_host_to_le(rhci16 x) {
+    rhcu16 ret = rhc_endian_u16_host_to_le(*((rhcu16*)&x));
+    return *((rhci16*)&ret);
+}
+
+static rhci16 rhc_endian_i16_le_to_host(rhci16 x) {
+    rhcu16 ret = rhc_endian_u16_le_to_host(*((rhcu16*)&x));
+    return *((rhci16*)&ret);
+}
+
+static rhci16 rhc_endian_i16_be_to_host(rhci16 x) {
+    rhcu16 ret = rhc_endian_u16_be_to_host(*((rhcu16*)&x));
+    return *((rhci16*)&ret);
+}
+
+
+static rhci32 rhc_endian_i32_host_to_be(rhci32 x) {
+    rhcu32 ret = rhc_endian_u32_host_to_be(*((rhcu32*)&x));
+    return *((rhci32*)&ret);
+}
+
+static rhci32 rhc_endian_i32_host_to_le(rhci32 x) {
+    rhcu32 ret = rhc_endian_u32_host_to_le(*((rhcu32*)&x));
+    return *((rhci32*)&ret);
+}
+
+static rhci32 rhc_endian_i32_le_to_host(rhci32 x) {
+    rhcu32 ret = rhc_endian_u32_le_to_host(*((rhcu32*)&x));
+    return *((rhci32*)&ret);
+}
+
+static rhci32 rhc_endian_i32_be_to_host(rhci32 x) {
+    rhcu32 ret = rhc_endian_u32_be_to_host(*((rhcu32*)&x));
+    return *((rhci32*)&ret);
+}
+
+
+static rhci64 rhc_endian_i64_host_to_be(rhci64 x) {
+    rhcu64 ret = rhc_endian_u64_host_to_be(*((rhcu64*)&x));
+    return *((rhci64*)&ret);
+}
+
+static rhci64 rhc_endian_i64_host_to_le(rhci64 x) {
+    rhcu64 ret = rhc_endian_u64_host_to_le(*((rhcu64*)&x));
+    return *((rhci64*)&ret);
+}
+
+static rhci64 rhc_endian_i64_le_to_host(rhci64 x) {
+    rhcu64 ret = rhc_endian_u64_le_to_host(*((rhcu64*)&x));
+    return *((rhci64*)&ret);
+}
+
+static rhci64 rhc_endian_i64_be_to_host(rhci64 x) {
+    rhcu64 ret = rhc_endian_u64_be_to_host(*((rhcu64*)&x));
+    return *((rhci64*)&ret);
 }
 
 #endif //RHC_ENDIAN_H
