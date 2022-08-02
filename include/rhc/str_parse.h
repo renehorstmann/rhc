@@ -326,7 +326,7 @@ static RhcStr_s rhc_str_eat_f64_binary_be(RhcStr_s s, rhcf64 *opt_eaten) {
 //
 
 // feeds a rhci8 as binary and returns the str without it (behind it).
-static RhcStr_s rhc_str_feed_i8_binary_le(RhcStr_s s, rhci8 feed) {
+static RhcStr_s rhc_str_feed_i8_binary(RhcStr_s s, rhci8 feed) {
     if(rhc_str_empty(s))
         return s;
     if(s.size < (8)/8) {
@@ -342,7 +342,7 @@ static RhcStr_s rhc_str_feed_i8_binary_le(RhcStr_s s, rhci8 feed) {
 
 
 // feeds a rhcu8 as binary and returns the str without it (behind it).
-static RhcStr_s rhc_str_feed_u8_binary_le(RhcStr_s s, rhcu8 feed) {
+static RhcStr_s rhc_str_feed_u8_binary(RhcStr_s s, rhcu8 feed) {
     if(rhc_str_empty(s))
         return s;
     if(s.size < (8)/8) {
