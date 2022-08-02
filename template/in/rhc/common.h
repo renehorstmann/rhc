@@ -20,6 +20,9 @@
 // Definitions
 //
 
+#define rhc_min(a, b) ((a)<(b)?(a):(b))
+#define rhc_max(a, b) ((a)>(b)?(a):(b))
+
 typedef uint8_t rhcu8;
 typedef int8_t rhci8;
 typedef uint16_t rhcu16;
@@ -32,9 +35,24 @@ typedef float rhcf32;
 typedef double rhcf64;
 typedef rhci64 rhcsize;
 
-#define rhc_min(a, b) ((a)<(b)?(a):(b))
-#define rhc_max(a, b) ((a)>(b)?(a):(b))
-
+#define RHC_U8_MIN 0
+#define RHC_U8_MAX 255
+#define RHC_I8_MIN (-128)
+#define RHC_I8_MAX 127
+#define RHC_U16_MIN 0
+#define RHC_U16_MAX 65535
+#define RHC_I16_MIN (-32768)
+#define RHC_I16_MAX 32767
+#define RHC_U32_MIN 0
+#define RHC_U32_MAX 4294967295
+#define RHC_I32_MIN (-2147483648)
+#define RHC_I32_MAX 2147483647
+#define RHC_U64_MIN 0
+#define RHC_U64_MAX 18446744073709551615UL
+#define RHC_I64_MIN (-9223372036854775808LL)
+#define RHC_I64_MAX 9223372036854775807LL
+#define RHC_SIZE_MIN (-9223372036854775808LL)
+#define RHC_SIZE_MAX 9223372036854775807LL
 
 //
 // windows stuff
