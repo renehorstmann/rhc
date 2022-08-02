@@ -12,7 +12,7 @@
 // ascii
 //
 
-// eats the next (with leading spaces) int_x_t and returns the str without it.
+// eats the next (with leading spaces) rhcix and returns the str without it.
 #define RHC__STR_PARSE_HELPER_EAT_IX_ASCII_PROTOTYPE_(x)\
 static RhcStr_s rhc_str_eat_i ## x ## _ascii(RhcStr_s s, rhci ## x *opt_eaten) {\
     if(rhc_str_empty(s))\
@@ -21,7 +21,7 @@ static RhcStr_s rhc_str_eat_i ## x ## _ascii(RhcStr_s s, rhci ## x *opt_eaten) {
     long long int res = strtoll(s.data, &end, 0);\
     rhcsize ate_size = end - s.data;\
     if(ate_size <= 0 || ate_size > s.size) {\
-        rhc_error_set("rhc_str_eat_int_ascii failed");\
+        rhc_error_set("rhc_str_eat_i_ascii failed");\
         rhc_log_warn("rhc_str_eat_i" #x "_ascii: failed");\
         return rhc_str_new_invalid();\
     }\
@@ -39,7 +39,7 @@ RHC__STR_PARSE_HELPER_EAT_IX_ASCII_PROTOTYPE_(32)
 RHC__STR_PARSE_HELPER_EAT_IX_ASCII_PROTOTYPE_(64)
 
 
-// eats the next (with leading spaces) uint_x_t and returns the str without it.
+// eats the next (with leading spaces) rhcux and returns the str without it.
 #define RHC__STR_PARSE_HELPER_EAT_UX_ASCII_PROTOTYPE_(x)\
 static RhcStr_s rhc_str_eat_u ## x ## _ascii(RhcStr_s s, rhcu ## x *opt_eaten) {\
     if(rhc_str_empty(s))\
@@ -48,7 +48,7 @@ static RhcStr_s rhc_str_eat_u ## x ## _ascii(RhcStr_s s, rhcu ## x *opt_eaten) {
     unsigned long long int res = strtoull(s.data, &end, 0);\
     rhcsize ate_size = end - s.data;\
     if(ate_size <= 0 || ate_size > s.size) {\
-        rhc_error_set("rhc_str_eat_uint_ascii failed");\
+        rhc_error_set("rhc_str_eat_u_ascii failed");\
         rhc_log_warn("rhc_str_eat_u" #x "_ascii: failed");\
         return rhc_str_new_invalid();\
     }\
@@ -105,13 +105,47 @@ static RhcStr_s rhc_str_eat_f64_ascii(RhcStr_s s, rhcf64 *opt_eaten) {
 // binary
 //
 
-// eats the next intx_t as binary little endian and returns the str without it.
+// eats the next rhci8 as binary little endian and returns the str without it.
+static RhcStr_s rhc_str_eat_i8_binary(RhcStr_s s, rhci8 *opt_eaten) {
+    if(rhc_str_empty(s))
+        return s;
+    if(s.size < (8)/8) {
+        rhc_error_set("rhc_str_eat_i_binary_le failed");
+        rhc_log_warn("rhc_str_eat_i8_binary_le: failed");
+        return rhc_str_new_invalid();
+    }
+    if(opt_eaten){
+        memcpy(opt_eaten, s.data, (8)/8);
+    }
+    s.data += (8)/8;
+    s.size -= (8)/8;
+    return s;
+}
+
+// eats the next rhcu8 as binary little endian and returns the str without it.
+static RhcStr_s rhc_str_eat_u8_binary(RhcStr_s s, rhcu8 *opt_eaten) {
+    if(rhc_str_empty(s))
+        return s;
+    if(s.size < (8)/8) {
+        rhc_error_set("rhc_str_eat_u_binary_le failed");
+        rhc_log_warn("rhc_str_eat_u8_binary_le: failed");
+        return rhc_str_new_invalid();
+    }
+    if(opt_eaten){
+        memcpy(opt_eaten, s.data, (8)/8);
+    }
+    s.data += (8)/8;
+    s.size -= (8)/8;
+    return s;
+}
+
+// eats the next rhcix as binary little endian and returns the str without it.
 #define RHC__STR_PARSE_HELPER_EAT_IX_BINARY_LE_PROTOTPYE_(x)\
 static RhcStr_s rhc_str_eat_i ## x ## _binary_le(RhcStr_s s, rhci ## x *opt_eaten) {\
     if(rhc_str_empty(s))\
         return s;\
     if(s.size < (x)/8) {\
-        rhc_error_set("rhc_str_eat_int_binary_le failed");\
+        rhc_error_set("rhc_str_eat_i_binary_le failed");\
         rhc_log_warn("rhc_str_eat_i" #x "_binary_le: failed");\
         return rhc_str_new_invalid();\
     }\
@@ -125,21 +159,19 @@ static RhcStr_s rhc_str_eat_i ## x ## _binary_le(RhcStr_s s, rhci ## x *opt_eate
     return s;\
 }
 
-RHC__STR_PARSE_HELPER_EAT_IX_BINARY_LE_PROTOTPYE_(8)
-
 RHC__STR_PARSE_HELPER_EAT_IX_BINARY_LE_PROTOTPYE_(16)
 
 RHC__STR_PARSE_HELPER_EAT_IX_BINARY_LE_PROTOTPYE_(32)
 
 RHC__STR_PARSE_HELPER_EAT_IX_BINARY_LE_PROTOTPYE_(64)
 
-// eats the next intx_t as binary big endian and returns the str without it.
+// eats the next rhcix as binary big endian and returns the str without it.
 #define RHC__STR_PARSE_HELPER_EAT_IX_BINARY_BE_PROTOTPYE_(x)\
 static RhcStr_s rhc_str_eat_i ## x ## _binary_be(RhcStr_s s, rhci ## x *opt_eaten) {\
     if(rhc_str_empty(s))\
         return s;\
     if(s.size < (x)/8) {\
-        rhc_error_set("rhc_str_eat_int_binary_be failed");\
+        rhc_error_set("rhc_str_eat_i_binary_be failed");\
         rhc_log_warn("rhc_str_eat_i" #x "_binary_be: failed");\
         return rhc_str_new_invalid();\
     }\
@@ -153,21 +185,19 @@ static RhcStr_s rhc_str_eat_i ## x ## _binary_be(RhcStr_s s, rhci ## x *opt_eate
     return s;\
 }
 
-RHC__STR_PARSE_HELPER_EAT_IX_BINARY_BE_PROTOTPYE_(8)
-
 RHC__STR_PARSE_HELPER_EAT_IX_BINARY_BE_PROTOTPYE_(16)
 
 RHC__STR_PARSE_HELPER_EAT_IX_BINARY_BE_PROTOTPYE_(32)
 
 RHC__STR_PARSE_HELPER_EAT_IX_BINARY_BE_PROTOTPYE_(64)
 
-// eats the next uintx_t as binary little endian and returns the str without it.
+// eats the next rhcux as binary little endian and returns the str without it.
 #define RHC__STR_PARSE_HELPER_EAT_UX_BINARY_LE_PROTOTPYE_(x)\
 static RhcStr_s rhc_str_eat_u ## x ## _binary_le(RhcStr_s s, rhcu ## x *opt_eaten) {\
     if(rhc_str_empty(s))\
         return s;\
     if(s.size < (x)/8) {\
-        rhc_error_set("rhc_str_eat_uint_binary_le failed");\
+        rhc_error_set("rhc_str_eat_u_binary_le failed");\
         rhc_log_warn("rhc_str_eat_u" #x "_binary_le: failed");\
         return rhc_str_new_invalid();\
     }\
@@ -181,21 +211,19 @@ static RhcStr_s rhc_str_eat_u ## x ## _binary_le(RhcStr_s s, rhcu ## x *opt_eate
     return s;\
 }
 
-RHC__STR_PARSE_HELPER_EAT_UX_BINARY_LE_PROTOTPYE_(8)
-
 RHC__STR_PARSE_HELPER_EAT_UX_BINARY_LE_PROTOTPYE_(16)
 
 RHC__STR_PARSE_HELPER_EAT_UX_BINARY_LE_PROTOTPYE_(32)
 
 RHC__STR_PARSE_HELPER_EAT_UX_BINARY_LE_PROTOTPYE_(64)
 
-// eats the next uintx_t as binary big endian and returns the str without it.
+// eats the next rhcux as binary big endian and returns the str without it.
 #define RHC__STR_PARSE_HELPER_EAT_UX_BINARY_BE_PROTOTPYE_(x)\
 static RhcStr_s rhc_str_eat_u ## x ## _binary_be(RhcStr_s s, rhcu ## x *opt_eaten) {\
     if(rhc_str_empty(s))\
         return s;\
     if(s.size < (x)/8) {\
-        rhc_error_set("rhc_str_eat_uint_binary_be failed");\
+        rhc_error_set("rhc_str_eat_u_binary_be failed");\
         rhc_log_warn("rhc_str_eat_u" #x "_binary_be: failed");\
         return rhc_str_new_invalid();\
     }\
@@ -208,8 +236,6 @@ static RhcStr_s rhc_str_eat_u ## x ## _binary_be(RhcStr_s s, rhcu ## x *opt_eate
     s.size -= (x)/8;\
     return s;\
 }
-
-RHC__STR_PARSE_HELPER_EAT_UX_BINARY_BE_PROTOTPYE_(8)
 
 RHC__STR_PARSE_HELPER_EAT_UX_BINARY_BE_PROTOTPYE_(16)
 
@@ -299,13 +325,44 @@ static RhcStr_s rhc_str_eat_f64_binary_be(RhcStr_s s, rhcf64 *opt_eaten) {
 // feed binary
 //
 
-// feeds an intx_t as binary little endian and returns the str without it (behind it).
+// feeds a rhci8 as binary and returns the str without it (behind it).
+static RhcStr_s rhc_str_feed_i8_binary_le(RhcStr_s s, rhci8 feed) {
+    if(rhc_str_empty(s))
+        return s;
+    if(s.size < (8)/8) {
+        rhc_error_set("rhc_str_feed_i_binary failed");
+        rhc_log_warn("rhc_str_feed_i8_binary_le: failed");
+        return rhc_str_new_invalid();
+    }
+    memcpy(s.data, &feed, (8)/8);
+    s.data += (8)/8;
+    s.size -= (8)/8;
+    return s;
+}
+
+
+// feeds a rhcu8 as binary and returns the str without it (behind it).
+static RhcStr_s rhc_str_feed_u8_binary_le(RhcStr_s s, rhcu8 feed) {
+    if(rhc_str_empty(s))
+        return s;
+    if(s.size < (8)/8) {
+        rhc_error_set("rhc_str_feed_u_binary failed");
+        rhc_log_warn("rhc_str_feed_u8_binary_le: failed");
+        return rhc_str_new_invalid();
+    }
+    memcpy(s.data, &feed, (8)/8);
+    s.data += (8)/8;
+    s.size -= (8)/8;
+    return s;
+}
+
+// feeds a rhcix as binary little endian and returns the str without it (behind it).
 #define RHC__STR_PARSE_HELPER_FEED_IX_BINARY_LE_PROTOTPYE_(x)\
-static RhcStr_s rhc_str_feed_int ## x ## _binary_le(RhcStr_s s, rhci ## x feed) {\
+static RhcStr_s rhc_str_feed_i ## x ## _binary_le(RhcStr_s s, rhci ## x feed) {\
     if(rhc_str_empty(s))\
         return s;\
     if(s.size < (x)/8) {\
-        rhc_error_set("rhc_str_feed_int_binary_le failed");\
+        rhc_error_set("rhc_str_feed_i_binary_le failed");\
         rhc_log_warn("rhc_str_feed_i" #x "_binary_le: failed");\
         return rhc_str_new_invalid();\
     }\
@@ -317,21 +374,19 @@ static RhcStr_s rhc_str_feed_int ## x ## _binary_le(RhcStr_s s, rhci ## x feed) 
     return s;\
 }
 
-RHC__STR_PARSE_HELPER_FEED_IX_BINARY_LE_PROTOTPYE_(8)
-
 RHC__STR_PARSE_HELPER_FEED_IX_BINARY_LE_PROTOTPYE_(16)
 
 RHC__STR_PARSE_HELPER_FEED_IX_BINARY_LE_PROTOTPYE_(32)
 
 RHC__STR_PARSE_HELPER_FEED_IX_BINARY_LE_PROTOTPYE_(64)
 
-// feeds an intx_t as binary bigb endian and returns the str without it (behind it).
+// feeds a rhcix as binary bigb endian and returns the str without it (behind it).
 #define RHC__STR_PARSE_HELPER_FEED_IX_BINARY_BE_PROTOTPYE_(x)\
-static RhcStr_s rhc_str_feed_int ## x ## _binary_be(RhcStr_s s, rhci ## x feed) {\
+static RhcStr_s rhc_str_feed_i ## x ## _binary_be(RhcStr_s s, rhci ## x feed) {\
     if(rhc_str_empty(s))\
         return s;\
     if(s.size < (x)/8) {\
-        rhc_error_set("rhc_str_feed_int_binary_be failed");\
+        rhc_error_set("rhc_str_feed_i_binary_be failed");\
         rhc_log_warn("rhc_str_feed_i" #x "_binary_be: failed");\
         return rhc_str_new_invalid();\
     }\
@@ -343,21 +398,19 @@ static RhcStr_s rhc_str_feed_int ## x ## _binary_be(RhcStr_s s, rhci ## x feed) 
     return s;\
 }
 
-RHC__STR_PARSE_HELPER_FEED_IX_BINARY_BE_PROTOTPYE_(8)
-
 RHC__STR_PARSE_HELPER_FEED_IX_BINARY_BE_PROTOTPYE_(16)
 
 RHC__STR_PARSE_HELPER_FEED_IX_BINARY_BE_PROTOTPYE_(32)
 
 RHC__STR_PARSE_HELPER_FEED_IX_BINARY_BE_PROTOTPYE_(64)
 
-// feeds an uintx_t as binary little endian and returns the str without it (behind it).
+// feeds a rhcux as binary little endian and returns the str without it (behind it).
 #define RHC__STR_PARSE_HELPER_FEED_UX_BINARY_LE_PROTOTPYE_(x)\
-static RhcStr_s rhc_str_feed_uint ## x ## _binary_le(RhcStr_s s, rhcu ## x feed) {\
+static RhcStr_s rhc_str_feed_u ## x ## _binary_le(RhcStr_s s, rhcu ## x feed) {\
     if(rhc_str_empty(s))\
         return s;\
     if(s.size < (x)/8) {\
-        rhc_error_set("rhc_str_feed_uint_binary_le failed");\
+        rhc_error_set("rhc_str_feed_u_binary_le failed");\
         rhc_log_warn("rhc_str_feed_u" #x "_binary_le: failed");\
         return rhc_str_new_invalid();\
     }\
@@ -369,21 +422,19 @@ static RhcStr_s rhc_str_feed_uint ## x ## _binary_le(RhcStr_s s, rhcu ## x feed)
     return s;\
 }
 
-RHC__STR_PARSE_HELPER_FEED_UX_BINARY_LE_PROTOTPYE_(8)
-
 RHC__STR_PARSE_HELPER_FEED_UX_BINARY_LE_PROTOTPYE_(16)
 
 RHC__STR_PARSE_HELPER_FEED_UX_BINARY_LE_PROTOTPYE_(32)
 
 RHC__STR_PARSE_HELPER_FEED_UX_BINARY_LE_PROTOTPYE_(64)
 
-// feeds an uintx_t as binary bigb endian and returns the str without it (behind it).
+// feeds a rhcux as binary bigb endian and returns the str without it (behind it).
 #define RHC__STR_PARSE_HELPER_FEED_UX_BINARY_BE_PROTOTPYE_(x)\
-static RhcStr_s rhc_str_feed_uint ## x ## _binary_be(RhcStr_s s, rhcu ## x  feed) {\
+static RhcStr_s rhc_str_feed_u ## x ## _binary_be(RhcStr_s s, rhcu ## x  feed) {\
     if(rhc_str_empty(s))\
         return s;\
     if(s.size < (x)/8) {\
-        rhc_error_set("rhc_str_feed_uint_binary_be failed");\
+        rhc_error_set("rhc_str_feed_u_binary_be failed");\
         rhc_log_warn("rhc_str_feed_u" #x "_binary_be: failed");\
         return rhc_str_new_invalid();\
     }\
@@ -394,8 +445,6 @@ static RhcStr_s rhc_str_feed_uint ## x ## _binary_be(RhcStr_s s, rhcu ## x  feed
     s.size -= (x)/8;\
     return s;\
 }
-
-RHC__STR_PARSE_HELPER_FEED_UX_BINARY_BE_PROTOTPYE_(8)
 
 RHC__STR_PARSE_HELPER_FEED_UX_BINARY_BE_PROTOTPYE_(16)
 
