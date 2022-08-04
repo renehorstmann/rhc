@@ -29,10 +29,10 @@ static double rhc_timer_elapsed(RhcTimer_s self) {
 }
 
 // resets the timer and return the elapsed time in seconds
-static double rhc_timer_reset(RhcTimer_s self) {
+static double rhc_timer_reset(RhcTimer_s *self) {
     double time = rhc_time_monotonic();
-    double elapsed = time - self.start_time;
-    self.start_time = time;
+    double elapsed = time - self->start_time;
+    self->start_time = time;
     return elapsed;
 }
 
