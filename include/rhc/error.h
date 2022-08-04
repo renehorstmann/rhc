@@ -1,8 +1,10 @@
 #ifndef RHC_ERROR_H
 #define RHC_ERROR_H
 
+#include "export.h"
+
 //
-// error managment
+// error management
 //      used for files and sockets for example.
 //
 
