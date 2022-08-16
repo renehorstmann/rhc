@@ -2,9 +2,9 @@
 #define RHC_STRING_IMPL_H
 #ifdef RHC_IMPL
 
-static rhcsize rhc__string_stream_read(struct RhcStream_i stream, void *data, rhcsize len);
-static rhcsize rhc__string_stream_write(struct RhcStream_i stream, const void *data, rhcsize len);
-static bool rhc__string_stream_valid(struct RhcStream_i stream);
+static rhcsize rhc__string_stream_read(struct RhcStream_i *stream, void *data, rhcsize len);
+static rhcsize rhc__string_stream_write(struct RhcStream_i *stream, const void *data, rhcsize len);
+static bool rhc__string_stream_valid(struct RhcStream_i *stream);
 
 
 
@@ -123,8 +123,8 @@ void rhc_string_append(RhcString *self, RhcStr_s append) {
 
 
 
-static rhcsize rhc__string_stream_read(struct RhcStream_i stream, void *data, rhcsize len) {
-    RhcString *self = stream.impl;
+static rhcsize rhc__string_stream_read(struct RhcStream_i *stream, void *data, rhcsize len) {
+    RhcString *self = stream->impl;
     if(!rhc_string_valid(self) || len <=0)
         return 0;
     rhcsize s = rhc_min(self->size - self->stream_pos, len);
@@ -132,15 +132,15 @@ static rhcsize rhc__string_stream_read(struct RhcStream_i stream, void *data, rh
     self->stream_pos+=s;
     return s;
 }
-static rhcsize rhc__string_stream_write(struct RhcStream_i stream, const void *data, rhcsize len) {
-    RhcString *self = stream.impl;
+static rhcsize rhc__string_stream_write(struct RhcStream_i *stream, const void *data, rhcsize len) {
+    RhcString *self = stream->impl;
     if(!rhc_string_valid(self) || len <=0)
         return 0;
     rhc_string_append(self, (RhcStr_s) {(char *) data, len});
     return len;
 }
-static bool rhc__string_stream_valid(struct RhcStream_i stream) {
-    RhcString *self = stream.impl;
+static bool rhc__string_stream_valid(struct RhcStream_i *stream) {
+    RhcString *self = stream->impl;
     return rhc_string_valid(self);
 }
 
