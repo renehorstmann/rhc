@@ -17,10 +17,10 @@ struct RhcString;
 
 struct RhcStream_i;
 
-typedef rhcsize (*rhc_stream_read_try_fn)(struct RhcStream_i stream, void *memory, rhcsize n);
-typedef rhcsize (*rhc_stream_write_try_fn)(struct RhcStream_i stream, const void *memory, rhcsize n);
-typedef void (*rhc_stream_flush_fn)(struct RhcStream_i stream);
-typedef bool (*rhc_stream_valid_fn)(struct RhcStream_i stream);
+typedef rhcsize (*rhc_stream_read_try_fn)(struct RhcStream_i *stream, void *memory, rhcsize n);
+typedef rhcsize (*rhc_stream_write_try_fn)(struct RhcStream_i *stream, const void *memory, rhcsize n);
+typedef void (*rhc_stream_flush_fn)(struct RhcStream_i *stream);
+typedef bool (*rhc_stream_valid_fn)(struct RhcStream_i *stream);
 
 typedef struct RhcStream_i {
     void *impl;
@@ -45,27 +45,27 @@ static RhcStream_i rhc_stream_new_invalid() {
 // returns bytes read or <=0 on error
 static rhcsize rhc_stream_read_try(RhcStream_i self, void *memory, rhcsize n) {
     assert(self.opt_read_try);
-    return self.opt_read_try(self, memory, n);
+    return self.opt_read_try(&self, memory, n);
 }
     
 // trys writes up to n bytes into the stream from memory
 // returns bytes written or <=0 on error
 static rhcsize rhc_stream_write_try(RhcStream_i self, const void *memory, rhcsize n) {
     assert(self.opt_write_try);
-    return self.opt_write_try(self, memory, n);
+    return self.opt_write_try(&self, memory, n);
 }
 
 // flushes the stream, if opt_flush is available
 static void rhc_stream_flush(RhcStream_i self) {
     if(self.opt_flush)
-        self.opt_flush(self);
+        self.opt_flush(&self);
 }
 
 // returns true, if the stream (implementation) is in a valid state
 static bool rhc_stream_valid(RhcStream_i self) {
     if(!self.valid)
         return false;
-    return self.valid(self);
+    return self.valid(&self);
 }
 
 // reads exactly n bytes from the stream into memory

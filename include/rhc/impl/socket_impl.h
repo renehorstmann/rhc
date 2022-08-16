@@ -38,8 +38,8 @@ static void rhc__socketserver_close(RhcSocketServer *self) {
 }
 
 
-static rhcsize rhc__socket_read(struct RhcStream_i stream, void *memory, rhcsize n) {
-    RhcSocket *self = stream.impl;
+static rhcsize rhc__socket_read(struct RhcStream_i *stream, void *memory, rhcsize n) {
+    RhcSocket *self = stream->impl;
     if(!rhc_socket_valid(self))
         return 0;
 
@@ -53,8 +53,8 @@ static rhcsize rhc__socket_read(struct RhcStream_i stream, void *memory, rhcsize
     return read;
 }
 
-static rhcsize rhc__socket_write(struct RhcStream_i stream, const void *memory, rhcsize n) {
-    RhcSocket *self = stream.impl;
+static rhcsize rhc__socket_write(struct RhcStream_i *stream, const void *memory, rhcsize n) {
+    RhcSocket *self = stream->impl;
     if(!rhc_socket_valid(self))
         return 0;
 
@@ -205,8 +205,8 @@ static void rhc__socketserver_close(RhcSocketServer *self) {
     self->so = -1;
 }
 
-static rhcsize rhc__socket_read(struct RhcStream_i stream, void *memory, rhcsize n) {
-    RhcSocket *self = stream.impl;
+static rhcsize rhc__socket_read(struct RhcStream_i *stream, void *memory, rhcsize n) {
+    RhcSocket *self = stream->impl;
     if(!rhc_socket_valid(self))
         return 0;
 
@@ -220,8 +220,8 @@ static rhcsize rhc__socket_read(struct RhcStream_i stream, void *memory, rhcsize
     return read;
 }
 
-static rhcsize rhc__socket_write(struct RhcStream_i stream, const void *memory, rhcsize n) {
-    RhcSocket *self = stream.impl;
+static rhcsize rhc__socket_write(struct RhcStream_i *stream, const void *memory, rhcsize n) {
+    RhcSocket *self = stream->impl;
     if(!rhc_socket_valid(self))
         return 0;
 
@@ -420,8 +420,8 @@ static void rhc__socketserver_close(RhcSocketServer *self) {
     self->so = INVALID_SOCKET;
 }
 
-static rhcsize rhc__socket_read(struct RhcStream_i stream, void *memory, rhcsize n) {
-    RhcSocket *self = stream.impl;
+static rhcsize rhc__socket_read(struct RhcStream_i *stream, void *memory, rhcsize n) {
+    RhcSocket *self = stream->impl;
     if(!rhc_socket_valid(self))
         return 0;
 
@@ -435,8 +435,8 @@ static rhcsize rhc__socket_read(struct RhcStream_i stream, void *memory, rhcsize
     return read;
 }
 
-static rhcsize rhc__socket_write(struct RhcStream_i stream, const void *memory, rhcsize n) {
-    RhcSocket *self = stream.impl;
+static rhcsize rhc__socket_write(struct RhcStream_i *stream, const void *memory, rhcsize n) {
+    RhcSocket *self = stream->impl;
     if(!rhc_socket_valid(self))
         return 0;
 
@@ -638,8 +638,8 @@ RhcSocket *rhc_socket_new(const char *address, rhcu16 port) {
 // for all:
 //
 
-static bool rhc__socket_valid(struct RhcStream_i stream) {
-    RhcSocket *self = stream.impl;
+static bool rhc__socket_valid(struct RhcStream_i *stream) {
+    RhcSocket *self = stream->impl;
     return rhc_socket_valid(self);
 }
 

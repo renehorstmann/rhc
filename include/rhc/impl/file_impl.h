@@ -111,8 +111,8 @@ rhcsize rhc_file_size(RhcFile *self) {
 #endif
 }
 
-static rhcsize rhc__file_stream_read(struct RhcStream_i stream, void *memory, rhcsize n) {
-    RhcFile *self = stream.impl;
+static rhcsize rhc__file_stream_read(struct RhcStream_i *stream, void *memory, rhcsize n) {
+    RhcFile *self = stream->impl;
     if (!rhc_file_valid(self)) {
         return 0;
     }
@@ -128,8 +128,8 @@ static rhcsize rhc__file_stream_read(struct RhcStream_i stream, void *memory, rh
     return read;
 }
 
-static rhcsize rhc__file_stream_write(struct RhcStream_i stream, const void *memory, rhcsize n) {
-    RhcFile *self = stream.impl;
+static rhcsize rhc__file_stream_write(struct RhcStream_i *stream, const void *memory, rhcsize n) {
+    RhcFile *self = stream->impl;
     if (!rhc_file_valid(self)) {
         return 0;
     }
@@ -145,8 +145,8 @@ static rhcsize rhc__file_stream_write(struct RhcStream_i stream, const void *mem
     return written;
 }
 
-static void rhc__file_stream_flush(struct RhcStream_i stream) {
-    RhcFile *self = stream.impl;
+static void rhc__file_stream_flush(struct RhcStream_i *stream) {
+    RhcFile *self = stream->impl;
     if (!rhc_file_valid(self)) {
         return;
     }
@@ -156,8 +156,8 @@ static void rhc__file_stream_flush(struct RhcStream_i stream) {
 #endif
 }
 
-static bool rhc__file_stream_valid(struct RhcStream_i stream) {
-    RhcFile *self = stream.impl;
+static bool rhc__file_stream_valid(struct RhcStream_i *stream) {
+    RhcFile *self = stream->impl;
     return rhc_file_valid(self);
 }
 
