@@ -172,6 +172,10 @@ RhcSocket *rhc_socket_new(const char *address, rhcu16 port) {
     return self;
 }
 
+void rhc_socket_set_timeout(RhcSocket *self, int timeout_ms) {
+    rhc_log_warn("rhc_socket_set_timeout not supported in sdl socket (can be done with SDLNet_SocketReady...)");
+}
+
 #else
 
 //
@@ -384,6 +388,15 @@ RhcSocket *rhc_socket_new(const char *address, rhcu16 port) {
     }
     return self;
 }
+
+void rhc_socket_set_timeout(RhcSocket *self, int timeout_ms) {
+    struct timeval tv;
+    tv.tv_sec = timeout_ms / 1000;
+    tv.tv_usec = (timeout_ms % 1000) * 1000;
+    setsockopt(self->so, SOL_SOCKET, SO_RCVTIMEO, (struct timeval *) &tv,sizeof tv);
+    setsockopt(self->so, SOL_SOCKET, SO_SNDTIMEO, (struct timeval *) &tv,sizeof tv);
+}
+
 
 #endif // PLATFORM_UNIX
 
@@ -628,6 +641,13 @@ RhcSocket *rhc_socket_new(const char *address, rhcu16 port) {
     }
     return self;
 }
+
+void rhc_socket_set_timeout(RhcSocket *self, int timeout_ms) {
+    DWORD time = timeout_ms;
+    setsockopt(self->so, SOL_SOCKET, SO_RCVTIMEO, (char*) &time, sizeof time);
+    setsockopt(self->so, SOL_SOCKET, SO_SNDTIMEO, (char*) &time, sizeof time);
+}
+
 #endif // Windows
 
 #endif //OPTION_SDL

@@ -65,6 +65,12 @@ RHC_EXPORT
 RhcSocket *rhc_socket_new(const char *address, rhcu16 port);
 
 
+// Sets the timeout in ms for recv and send
+// not supported for sdl (which will log a warning)
+RHC_EXPORT
+void rhc_socket_set_timeout(RhcSocket *self, int timeout_ms);
+
+
 // kills the socket and sets it invalid
 RHC_EXPORT
 void rhc_socket_kill(RhcSocket **self_ptr);
