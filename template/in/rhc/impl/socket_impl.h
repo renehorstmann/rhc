@@ -390,6 +390,8 @@ RhcSocket *rhc_socket_new(const char *address, rhcu16 port) {
 }
 
 void rhc_socket_set_timeout(RhcSocket *self, int timeout_ms) {
+    if(!rhc_socket_valid(self))
+        return;
     struct timeval tv;
     tv.tv_sec = timeout_ms / 1000;
     tv.tv_usec = (timeout_ms % 1000) * 1000;
@@ -643,6 +645,8 @@ RhcSocket *rhc_socket_new(const char *address, rhcu16 port) {
 }
 
 void rhc_socket_set_timeout(RhcSocket *self, int timeout_ms) {
+    if(!rhc_socket_valid(self))
+        return;
     DWORD time = timeout_ms;
     setsockopt(self->so, SOL_SOCKET, SO_RCVTIMEO, (char*) &time, sizeof time);
     setsockopt(self->so, SOL_SOCKET, SO_SNDTIMEO, (char*) &time, sizeof time);
