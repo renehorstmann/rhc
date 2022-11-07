@@ -22,6 +22,13 @@
 #define RHC_LOG_COLORED true
 #endif
 
+
+#if !defined(RHC_LOG_DO_NOT_USE_MULTILINE) && defined(PLATFORM_MSVC)
+#define RHC_LOG_HEADER_END "\n   ->    "
+#else
+#define RHC_LOG_HEADER_END ""
+#endif
+
 static struct {
     enum rhc_log_level level;
     bool quiet;
@@ -56,12 +63,12 @@ static int rhc_log_to_str_v(char *str, rhcsize n,
             RHC_TERMINALCOLOR_RESET RHC_TERMINALCOLOR_HIGHINTENSITY_BLACK
             "%s:%d"
                             RHC_TERMINALCOLOR_RESET
-            " [%s] ",
+            " [%s] " RHC_LOG_HEADER_END,
                     time_str, rhc_log_src_level_colors_[level], rhc_log_src_level_names_[level], opt_file, line,
                     opt_func);
         } else {
             size = snprintf(str, n,
-                            "%s %-5s %s:%d [%s] ",
+                            "%s %-5s %s:%d [%s] " RHC_LOG_HEADER_END,
                             time_str, rhc_log_src_level_names_[level], opt_file, line, opt_func);
         }
     } else {
@@ -69,11 +76,11 @@ static int rhc_log_to_str_v(char *str, rhcsize n,
             size = snprintf(str, n,
                             "%s %s%-5s"
             RHC_TERMINALCOLOR_RESET
-            " [%s] ",
+            " [%s] " RHC_LOG_HEADER_END,
                     time_str, rhc_log_src_level_colors_[level], rhc_log_src_level_names_[level], opt_func);
         } else {
             size = snprintf(str, n,
-                            "%s %-5s [%s] ",
+                            "%s %-5s [%s] " RHC_LOG_HEADER_END,
                             time_str, rhc_log_src_level_names_[level], opt_func);
         }
     }

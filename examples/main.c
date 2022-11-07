@@ -6,7 +6,7 @@
 
 
 int main() {
-    rhc_assume(0, "wtf");
+//    rhc_assume(0, "wtf");
     rhc_log_trace("hey");
     rhc_log_debug("hey");
     rhc_log_info("hey");
