@@ -179,7 +179,7 @@ RhcStream_i rhc_file_stream_from_cfile(FILE *cfile, bool read, bool write) {
 #else
     f.file = cfile;
 #endif
-    RhcStream_i stream = rhc_file_stream_out(&f);
+    RhcStream_i stream = rhc_file_stream(&f);
     if(!read)
         stream.opt_read_try = NULL;
     if(!write)
