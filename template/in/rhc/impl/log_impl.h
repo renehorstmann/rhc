@@ -24,9 +24,9 @@
 
 
 #if !defined(RHC_LOG_DO_NOT_USE_MULTILINE) && defined(PLATFORM_MSVC)
-#define RHC_LOG_HEADER_END "\n   ->    "
+#define RHC_LOG_OPT_NEWLINE "\n   ->    "
 #else
-#define RHC_LOG_HEADER_END ""
+#define RHC_LOG_OPT_NEWLINE ""
 #endif
 
 static struct {
@@ -60,27 +60,33 @@ static int rhc_log_to_str_v(char *str, rhcsize n,
         if (colored) {
             size = snprintf(str, n,
                             "%s %s%-5s "
-            RHC_TERMINALCOLOR_RESET RHC_TERMINALCOLOR_HIGHINTENSITY_BLACK
-            "%s:%d"
+                            RHC_TERMINALCOLOR_RESET RHC_TERMINALCOLOR_HIGHINTENSITY_BLACK
+                            "%s:%d"
                             RHC_TERMINALCOLOR_RESET
-            " [%s] " RHC_LOG_HEADER_END,
-                    time_str, rhc_log_src_level_colors_[level], rhc_log_src_level_names_[level], opt_file, line,
-                    opt_func);
+                            RHC_LOG_OPT_NEWLINE
+                            "[%s] ",
+                            time_str, rhc_log_src_level_colors_[level], rhc_log_src_level_names_[level], opt_file, line,
+                            opt_func);
         } else {
             size = snprintf(str, n,
-                            "%s %-5s %s:%d [%s] " RHC_LOG_HEADER_END,
+                            "%s %-5s %s:%d"
+                            RHC_LOG_OPT_NEWLINE
+                            "[%s] ",
                             time_str, rhc_log_src_level_names_[level], opt_file, line, opt_func);
         }
     } else {
         if (colored) {
             size = snprintf(str, n,
                             "%s %s%-5s"
-            RHC_TERMINALCOLOR_RESET
-            " [%s] " RHC_LOG_HEADER_END,
-                    time_str, rhc_log_src_level_colors_[level], rhc_log_src_level_names_[level], opt_func);
+                            RHC_TERMINALCOLOR_RESET
+                            RHC_LOG_OPT_NEWLINE
+                            "[%s] ",
+                            time_str, rhc_log_src_level_colors_[level], rhc_log_src_level_names_[level], opt_func);
         } else {
             size = snprintf(str, n,
-                            "%s %-5s [%s] " RHC_LOG_HEADER_END,
+                            "%s %-5s"
+                            RHC_LOG_OPT_NEWLINE
+                            "[%s] ",
                             time_str, rhc_log_src_level_names_[level], opt_func);
         }
     }
@@ -129,7 +135,7 @@ void rhc_log_base(enum rhc_log_level level, const char *opt_file, int line,
 #endif
 
     va_list args;
-    va_start(args, format);
+            va_start(args, format);
     char msg[RHC_LOG_MAX_LENGTH];
     rhc_log_to_str_v(msg, sizeof msg,
                      level, opt_file, line, opt_func, RHC_LOG_COLORED, time_str,
