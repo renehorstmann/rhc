@@ -64,7 +64,9 @@ static int rhc_log_to_str_v(char *str, rhcsize n,
                             "%s:%d"
                             RHC_TERMINALCOLOR_RESET
                             RHC_LOG_OPT_NEWLINE
-                            "[%s] ",
+                            RHC_TERMINALCOLOR_HIGHINTENSITY_BLACK
+                            "[%s] "
+                            RHC_TERMINALCOLOR_RESET,
                             time_str, rhc_log_src_level_colors_[level], rhc_log_src_level_names_[level], opt_file, line,
                             opt_func);
         } else {
@@ -80,7 +82,9 @@ static int rhc_log_to_str_v(char *str, rhcsize n,
                             "%s %s%-5s"
                             RHC_TERMINALCOLOR_RESET
                             RHC_LOG_OPT_NEWLINE
-                            "[%s] ",
+                            RHC_TERMINALCOLOR_HIGHINTENSITY_BLACK
+                            "[%s] "
+                            RHC_TERMINALCOLOR_RESET,
                             time_str, rhc_log_src_level_colors_[level], rhc_log_src_level_names_[level], opt_func);
         } else {
             size = snprintf(str, n,
