@@ -4,42 +4,42 @@ A style guide for modern C programming
 In this file I'll show you my recommendations for a good coding style in the C programming language.
 Its based on the style of glib/gtk, with a few changes and simplifications.
 
-## <a name="S-contents"></a>Contents
+## Contents
 
-- [tl;dr naming](#S-tldrnaming)
+- [tl;dr naming](#tldr-naming)
 
-- [Basics](#S-basics)
-    - [Where to put variable instantiations](#S-basics-where_variables)
-    - [Prefer autotypes](#S-basics-autotypes)
+- [Basics](#basics)
+    - [Where to put variable instantiations](#where-to-put-variable-instantiations)
+    - [Prefer autotypes](#prefer-autotypes)
 
-- [Error handling](#S-err)
-    - [Avoid when possible](#S-err-avoid_when_possible)
-    - [Error delivery](#S-err-error_delivery)
-        - [Compile Time](#S-err-compile_time)
-        - [Debug Time](#S-err-debug_time)
-        - [Run Time](#S-err-run_time)
-            - [Signals](#S-err-signals)
-            - [Parameter](#S-err-parameter)
-    - [Illegal State](#S-err-illegal_state)
-    - [Error Paramter Options](#S-err-error_parameter_options)
+- [Error handling](#error-handling)
+    - [Avoid when possible](#avoid-when-possible)
+    - [Error delivery](#error-delivery)
+        - [Compile Time](#compile-time)
+        - [Debug Time](#debug-time)
+        - [Run Time](#run-time)
+            - [Signals](#signals)
+            - [Parameter](#parameter)
+    - [Illegal State](#illegal_state)
+    - [Error Paramter Options](#error-parameter-options)
 
-- [Naming](#S-naming)
-    - [Variables](#S-naming-variables)
-    - [Functions](#S-naming-functions)
-    - [Macros](#S-naming-macros)
-    - [Structs](#S-naming-structs)
-    - [Classes](#S-naming-classes)
-    - [Namespaces](#S-naming-namespaces)
+- [Naming](#naming)
+    - [Variables](#variables)
+    - [Functions](#functions)
+    - [Macros](#macros)
+    - [Structs](#structs)
+    - [Classes](#classes)
+    - [Namespaces](#namespaces)
 
-- [Object orientation in C](#S-oo)
-    - [When not to use](#S-oo-not)
-    - [Simple machine](#S-oo-simple)
-    - [Inheritance](#S-oo-inheritance)
-    - [RTTI](#S-oo-rtti)
-    - [Virtual Methods](#S-oo-virtual)
-    - [Interfaces](#S-oo-interfaces)
+- [Object orientation in C](#object-orientation-in-c)
+    - [When not to use](#when-not-to-use)
+    - [Simple machine](#simple-machine)
+    - [Inheritance](#inheritance)
+    - [RTTI](#rtti)
+    - [Virtual Methods](#virtual-methods)
+    - [Interfaces](#interfaces)
 
-## <a name="S-tldrnaming"></a>tl;dr naming
+## tl;dr naming
 Here is the rhc naming scheme:
 
 - variables
@@ -95,8 +95,8 @@ Here is the rhc naming scheme:
   - `void class_kill(Class **self_ptr); // used for allocated classes, to also set the pointer to NULL`
   - `void ns_class_kill(Class **self_ptr);`
 
-## <a name="S-basics"></a>Basics
-### <a name="S-basics-where_variables"></a>Where to put variable instantiations
+## Basics
+### Where to put variable instantiations
 In old C compilers, variable instantiations must be at the beginning of a function.
 In modern C (if you dont care for function stack sizes), you can and should create variables at the line, where they are first needed.
 (If you need a variable multiple times for different use cases (e. g. error codes), put it at the start).
@@ -128,7 +128,7 @@ void foo() {
 }
 ```
 
-### <a name="S-basics-autotypes"></a>Prefer autotypes
+### Prefer autotypes
 Always prefer autotypes, e. g. use char str[64] instead of char *str_heap = malloc(64).
 Its not only faster, but you also dont need to worry about freeing memory.
 Structs that represents dynamic arrays can also make use of them:
@@ -145,9 +145,9 @@ but if the contents are small enough, always prefer them.
 
 
 
-## <a name="S-err"></a>Error handling
+## Error handling
 
-### <a name="S-err-avoid_when_possible"></a> Avoid when possible
+### Avoid when possible
 If possible, always write functions that do not produce any errors at all.
 For example:
 ```c
@@ -172,16 +172,16 @@ vec3 rgb2hsv(vec3 rgb) {
 }
 ```
 
-### <a name="S-err-error_delivery"></a> Error delivery
+### Error delivery
 If you must do some error management, determine what the error should do:
-- [Create a compile time error](#S-err-compile_time)
-- [Create an error in the debug session](#S-err-debug_time)
-- [Create a run time error](#S-err-run_time)
-    - [via a signal](#S-err-signal)
-    - [via a function parameter](#S-err-parameter)
+- [Create a compile time error](#compile-time)
+- [Create an error in the debug session](#debug-time)
+- [Create a run time error](#run-time)
+    - [via a signal](#signal)
+    - [via a function parameter](#parameter)
 
 
-#### <a name="S-err-compile_time"></a> Compile Time
+#### Compile Time
 If a function/macro is completely misused (wrong types...), try to generate a compile warning/error.
 For example:
 ```c
@@ -216,7 +216,7 @@ Array3_s very_good_array3_zero() {
 Have a look at [Mathc](https://github.com/renehorstmann/Mathc) for a linear algebra math library,
 it contains structs for vectors and matrices (`vec3`, `mat4`)
 
-#### <a name="S-err-debug_time"></a> Debug Time
+#### Debug Time
 If a function is misused (should have called another way), use assertions.
 For example:
 ```c
@@ -241,12 +241,12 @@ void machine_work(int *data, int n) {
 }
 ```
 
-#### <a name="S-err-run_time"></a> Run Time
+#### Run Time
 There are two versions of runtime errors. Predictable errors and "Should not happen" errors.
 The "Should not happen" errors should let the program or module die.
 In order to do this, we can raise a signal.
 
-##### <a name="S-err-signals"></a> Signals
+##### Signals
 We can use signals to inform the user, that something unexpected happened.
 For example:
 ```c
@@ -262,13 +262,13 @@ If you do not want a module to crash the whole program, you have two options:
 - Sandbox the module in an own process with fork
 - Recover from a function call with a signal handler and long jumps
 
-##### <a name="S-err-parameter"></a> Parameter
+##### Parameter
 If the error is common or predictable, report the error with a function parameter or return the value to the user.
 This seems to be the default, but consider the above options to minimize these.
-For more informations on how to use them, see [section below](#S-err-error_parameter_options).
+For more informations on how to use them, see [section below](#error-parameter-options).
 
 
-### <a name="S-err-illegal_state"></a> Illegal state
+### Illegal state
 If you have multiple functions, that use the same state, make the state illegal if a function fails.
 So you must not check every function for failure and just once for all functions in a sequence.
 For example:
@@ -345,7 +345,7 @@ int main() {
 }
 ```
 
-### <a name="S-err-error_parameter_options"></a> Error Parameter Options
+### Error Parameter Options
 
 rhc uses a thread local error message (`const char *`)
 You can read and write to it with the `rhc_error_get` and `rhc_error_set` functions
@@ -383,14 +383,14 @@ RhcString string_cat(RhcStr_s a, RhcStr_s b) {
 
 
 
-## <a name="S-naming"></a>Naming
+## Naming
 A consistent naming scheme is generally useful for all kinds of stuff, but especially in programming and its very very important in C programming.
 In the C programming world, there is no specific definition of, for example, a class and its methods.
 Its the programmers task to use a naming scheme, so that the reader can easily see whats going on.
 With autocompletion, there is no need for small names like strtof. The programmer should always write readable code, with only common and/ or good abbreviations.
 
 
-### <a name="S-naming-variables"></a>Variables
+### Variables
 I prefer to use snake_case names for variables, if you want to use a member of a struct and you have no clue, use its lowercase name or a good abbreviation.
 ```c
 int car_petrol;
@@ -399,15 +399,15 @@ RhcStr_s str;
 IntIterator_i iter;
 ```
 
-### <a name="S-naming-functions"></a>Functions
-Like the variables [above](#S-naming-variables), I also prefer snake_case names.
+### Functions
+Like the variables [above](#variables), I also prefer snake_case names.
 ```c
 FILE *open_and_check(const char *filepath);
 IntSet_s set_diff(IntSet_s a, IntSet_s b);
 int max(int a, int b);
 ```
 
-### <a name="S-naming-macros"></a>Macros
+### Macros
 Lots of C programmers use SCREAM_CASE for macros. But it leads to errors if these are reset by other libraries.
 If you want to use SCREAM_CASE, always use a namespace prefix like MYLIB_SCREAM_CASE (MYLIB should be replaced...).
 
@@ -429,18 +429,18 @@ type inc_ ## type (type t) { \
 ```
 
 
-### <a name="S-naming-structs"></a>Structs
-Structs can occour in three [code areas](#S-naming-structs-area):
+### Structs
+Structs can occour in three [code areas](#code-areas):
 + Implementation
 + Interface header with uncommon use
 + Interface header with common use
 
-With one of the following three [use cases](#S-naming-structs-usecases):
+With one of the following three [use cases](#use-cases):
 + Autotype Structs
 + Structs that needs to be freed/ killed
 + Classes
 
-#### <a name="S-naming-structs-area"></a>Code Areas
+#### Code Areas
 Within an implementation, or when commonly used in an interface header,
 create the struct with a typedef:
 
@@ -475,8 +475,8 @@ struct Uncommen_s uc;
 ```
 
 
-#### <a name="S-naming-structs-usecases"></a>Use Cases
-As explained in Chapter [Prefer autotypes](#S-basics-autotypes), you should always prefer autotype structs.
+#### Use Cases
+As explained in Chapter [Prefer autotypes](#prefer-autotypes), you should always prefer autotype structs.
 Autotype structs should be marked, so the user can directly identify them.
 There is a lot of code using `*_t` for struct members, but thats reserved for C and compiler devs.
 So I'm using PascalCase_s for autotype structs. 
@@ -567,7 +567,7 @@ void int_array_push(IntArray *self, int append) {
 }
 ```
 
-### <a name="S-naming-classes"></a>Classes
+### Classes
 As seen in the previous example above, I prefer PascalCase for classes.
 The data section of the class gets the ClassName.
 The constructor is called class_name_new and the destructor class_name_kill.
@@ -575,7 +575,7 @@ All methods also use this naming scheme, like class_name_length.
 With this style and an ide with autocompletion, the user gets a similar feeling to an object orientated language.
 
 
-### <a name="S-naming-namespaces"></a>Namespaces
+### Namespaces
 If you write a small library with a handful of good used names in the interface, you must not use a namespace.
 For example a library that loads a .csv file, can use an interface header like this:
 
@@ -661,11 +661,11 @@ Have a look at [Mathc](https://github.com/renehorstmann/Mathc) for a linear alge
 that contains structs for vectors and matrices (`vec3`, `mat4`)
 
 
-## <a name="S-oo"></a>Object Orientation in C
+## Object Orientation in C
 Although the C programming language doesn't support object orientated programming natively,
 it's still possible and quite easy.
 
-### <a name="S-oo-not"></a>When not to use
+### When not to use
 Unlike many do, you should NOT use OOP in every scenario!
 In most cases its unnecessary to use all features of it and it can slow down your program.
 Imagine you write a game in an OOP manner with the following hierarchy:
@@ -687,8 +687,8 @@ In the performance critical section focus on data, not code.
 If you still want an OO-Hierarchy, take the focus on the data, and than let your class point to the data, instead to own it.
 
 
-### <a name="S-oo-simple"></a>Simple machine
-A little example of a simple "machine" class was already shown in chapter [Naming structs (use cases)](#S-naming-structs-usecases).
+### Simple machine
+A little example of a simple "machine" class was already shown in chapter [Naming structs (use cases)](#use-cases).
 If you know that there will never be more than one instance of your class, go the procedure way.
 Examples for this style include loggers and systeminfo machines.
 
@@ -902,7 +902,7 @@ void foo_print(const Foo *self) {
 
 
 
-### <a name="S-oo-inheritance"></a>Inheritance
+### Inheritance
 Deriving from a class is easy in C. But its important that your users know the base class.
 In the following example, the class Child derives (static) from the class Mother:
 (static = no runtime information and no virtual methods -> the user must call the right methods himself)
@@ -980,7 +980,7 @@ int main() {
 ```
 
 
-### <a name="S-oo-rtti"></a>RTTI
+### RTTI
 Runtime type information is needed, to determine the type of a class at runtime (dynamic_cast/ isinstance/ instanceof/ etc.).
 To achieve this, the root base class could have an identification string (as char array autotype).
 Or all root base classes inherit from an Object class that implements the string.
@@ -1098,7 +1098,7 @@ int main() {
 }
 ```
 
-### <a name="S-oo-virtual"></a>Virtual Methods
+### Virtual Methods
 With virtual methods, the user must not know the exact type, to call the right overloaded class function (method).
 As with the rest of OOP, its easy to implement in C:
 
@@ -1194,7 +1194,7 @@ int main() {
 
 
 
-### <a name="S-oo-interfaces"></a>Interfaces
+### Interfaces
 Often interfaces perform a better job, compared to inheritance, to provide an easy OOP-feel.
 An interface only consists of virtual methods and so is like an abstract class without data.
 In C you also must pass an void * or keep space in the printable struct for the implementation.
