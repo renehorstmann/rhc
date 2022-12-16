@@ -177,7 +177,7 @@ If you must do some error management, determine what the error should do:
 - [Create a compile time error](#compile-time)
 - [Create an error in the debug session](#debug-time)
 - [Create a run time error](#run-time)
-    - [via a signal](#signal)
+    - [via a signal](#signals)
     - [via a function parameter](#parameter)
 
 
