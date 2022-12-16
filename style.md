@@ -20,7 +20,7 @@ Its based on the style of glib/gtk, with a few changes and simplifications.
         - [Run Time](#run-time)
             - [Signals](#signals)
             - [Parameter](#parameter)
-    - [Illegal State](#illegal_state)
+    - [Illegal State](#illegal-state)
     - [Error Paramter Options](#error-parameter-options)
 
 - [Naming](#naming)
