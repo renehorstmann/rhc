@@ -64,7 +64,7 @@ RhcString *rhc_string_new_cat_a(RhcStr_s *strs, int n, RhcAllocator_i a) {
 
     for (int i = 0; i < n; i++) {
         if (!rhc_str_empty(strs[i])) {
-            rhc_str_cpy(strs[i], (RhcStr_s) {res->data + res->size, strs[i].size});
+            rhc_str_cpy((RhcStr_s) {res->data + res->size, strs[i].size}, strs[i]);
             res->size += strs[i].size;
         }
     }
