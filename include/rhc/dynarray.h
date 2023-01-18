@@ -64,10 +64,18 @@ static bool RHC_NAME_CONCAT2(FN_NAME, _valid)(CLASS self) {
     return self.array != NULL && rhc_allocator_valid(self.allocator);
 }
 
+// forward declaration
+// Foo foo_new_invalid_a(RhcAllocator_i a)
+static CLASS RHC_NAME_CONCAT2(FN_NAME, _new_invalid_a)(RhcAllocator_i a);
+
 
 // Foo foo_new_a(rhcsize start_capacity, RhcAllocator_i a)
 static CLASS RHC_NAME_CONCAT2(FN_NAME, _new_a)(rhcsize start_capacity, RhcAllocator_i a) {
     rhc_assume(rhc_allocator_valid(a), "a needs to be valid");
+
+    if(start_capacity <= 0)
+        return RHC_NAME_CONCAT2(FN_NAME, _new_invalid_a)(a);
+
     CLASS self = {
             rhc_a_new(a, TYPE, start_capacity),
             0,
