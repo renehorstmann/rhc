@@ -38,22 +38,25 @@ static void rhc_free(void *memory) {
 }
 
 // malloc + rhc_assume
+// returns NULL on n==0
 static void *rhc_malloc(rhcsize n) {
-    rhc_assume(n > 0, "at least 1 byte (could also be an overflow)");
+    rhc_assume(n >= 0, "overflow?");
     void *mem = rhc_malloc_try(n);
     rhc_assume(mem, "rhc_malloc failed");
     return mem;
 }
 
 // calloc + rhc_assume
+// returns NULL on n==0
 static void *rhc_malloc0(rhcsize n) {
-    rhc_assume(n > 0, "at least 1 byte (could also be an overflow)");
+    rhc_assume(n >= 0, "overflow?");
     void *mem = rhc_malloc0_try(n);
     rhc_assume(mem, "rhc_malloc0 failed");
     return mem;
 }
 
 // realloc + rhc_assume
+// if(n==0) { rhc_free(memory); return NULL; }
 static void *rhc_realloc(void *memory, rhcsize n) {
     rhc_assume(n >= 0, "overflow?");
     void *mem = rhc_realloc_try(memory, n);
