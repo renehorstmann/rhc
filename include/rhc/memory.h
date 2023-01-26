@@ -42,7 +42,7 @@ static void rhc_free(void *memory) {
 static void *rhc_malloc(rhcsize n) {
     rhc_assume(n >= 0, "overflow?");
     void *mem = rhc_malloc_try(n);
-    rhc_assume(mem, "rhc_malloc failed");
+    rhc_assume(n==0 || mem, "rhc_malloc failed");
     return mem;
 }
 
@@ -51,7 +51,7 @@ static void *rhc_malloc(rhcsize n) {
 static void *rhc_malloc0(rhcsize n) {
     rhc_assume(n >= 0, "overflow?");
     void *mem = rhc_malloc0_try(n);
-    rhc_assume(mem, "rhc_malloc0 failed");
+    rhc_assume(n==0 || mem, "rhc_malloc0 failed");
     return mem;
 }
 
@@ -60,7 +60,7 @@ static void *rhc_malloc0(rhcsize n) {
 static void *rhc_realloc(void *memory, rhcsize n) {
     rhc_assume(n >= 0, "overflow?");
     void *mem = rhc_realloc_try(memory, n);
-    rhc_assume(n==0||mem, "rhc_realloc failed");
+    rhc_assume(n==0 || mem, "rhc_realloc failed");
     return mem;
 }
 
