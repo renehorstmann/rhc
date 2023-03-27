@@ -23,6 +23,16 @@
 #define rhc_min(a, b) ((a)<(b)?(a):(b))
 #define rhc_max(a, b) ((a)>(b)?(a):(b))
 
+#define rhc_sign(x) ((x) > 0 ? 1 : ((x) < 0 ? -1 : 0))
+#define rhc_clamp(x, min, max) (x) < (min) ? (min) : ((x) > (max) ? (max) : (x))
+#define rhc_step(x, edge) (x) < (edge) ? 0 : 1;
+
+
+// unpack arrays
+#define RHC_UP2(v) (v)[0], (v)[1]
+#define RHC_UP3(v) (v)[0], (v)[1], (v)[2]
+#define RHC_UP4(v) (v)[0], (v)[1], (v)[2], (v)[3]
+
 typedef uint8_t rhcu8;
 typedef int8_t rhci8;
 typedef uint16_t rhcu16;
