@@ -28,10 +28,13 @@
 #define rhc_step(x, edge) (x) < (edge) ? 0 : 1;
 
 
-// unpack arrays
+// unpack arrays (and matrices 3x3=9, 4x4=16)
 #define RHC_UP2(v) (v)[0], (v)[1]
 #define RHC_UP3(v) (v)[0], (v)[1], (v)[2]
 #define RHC_UP4(v) (v)[0], (v)[1], (v)[2], (v)[3]
+#define RHC_UP9(v) (v)[0], (v)[1], (v)[2], (v)[3], (v)[4], (v)[5], (v)[6], (v)[7], (v)[8]
+#define RHC_UP16(v) (v)[0], (v)[1], (v)[2], (v)[3], (v)[4], (v)[5], (v)[6], (v)[7], \
+(v)[8], (v)[9], (v)[10], (v)[11], (v)[12], (v)[13], (v)[14], (v)[15]
 
 typedef uint8_t rhcu8;
 typedef int8_t rhci8;
